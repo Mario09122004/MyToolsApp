@@ -56,7 +56,7 @@ import { useState } from 'react';
 type Note = {
   tittle: string,
   content: string,
-  date: number
+  date: Date
 }
 
 type NoteForm = {
@@ -68,53 +68,8 @@ const notesExamples: Array<Note> = [
   {
     tittle: 'Note 1',
     content: 'Content 1',
-    date: Date.now()
-  },
-  {
-    tittle: 'Note 2',
-    content: 'Content 2',
-    date: Date.now()
-  },
-  {
-    tittle: 'Note 3',
-    content: 'Content 3',
-    date: Date.now()
-  },
-  {
-    tittle: 'Note 4',
-    content: 'Content 4',
-    date: Date.now()
-  },
-  {
-    tittle: 'Note 5',
-    content: 'Content 5',
-    date: Date.now()
-  },
-  {
-    tittle: 'Note 6',
-    content: 'Content 6',
-    date: Date.now()
-  },
-  {
-    tittle: 'Note 7',
-    content: 'Content 7',
-    date: Date.now()
-  },
-  {
-    tittle: 'Note 8',
-    content: 'Content 8',
-    date: Date.now()
-  },
-  {
-    tittle: 'Note 9',
-    content: 'Content 9',
-    date: Date.now()
-  },
-  {
-    tittle: 'Note 10',
-    content: 'Content 10',
-    date: Date.now()
-  },
+    date: new Date(Date.now())
+  }
 ]
 
 export default function App() {
@@ -131,7 +86,7 @@ export default function App() {
     const noteToSave: Note = {
       tittle: noteForm.tittle,
       content: noteForm.content,
-      date: Date.now()
+      date: new Date(Date.now())
     }
 
     setAllNotesView([...allNotesView, noteToSave])
@@ -155,6 +110,7 @@ export default function App() {
     const note: Note = allNotesView[noteId]
     console.log("Tittle: ", note.tittle)
     console.log("Content: ", note.content)
+
   }
 
   return (
@@ -170,16 +126,16 @@ export default function App() {
                   onLongPress={() => console.log("borrando..")}
                   key={index}
                 >
-                  <Card size="lg" variant="elevated" className="m-2">
+                  <Card size="lg" variant="outline" className="m-2">
                     <Box className="flex flex-row justify-between">
-                      <Heading size="xl" className="mb-1 color-red-600">
+                      <Heading size="xl" className="mb-1">
                         {note.tittle}
                       </Heading>
                       <Heading size="xs" className="mb-1 text-gray-500">
-                        {note.date}
+                        {note.date.toDateString()}
                       </Heading>
                     </Box>
-                    <Text className='color-green-500 line-clamp-3'>{note.content}</Text>
+                    <Text className='line-clamp-3'>{note.content}</Text>
                   </Card>
                 </Pressable>
               ))}
@@ -264,6 +220,7 @@ export default function App() {
             onPress={() => {
               setAddNoteModalVisible(true);
             }}
+            className='absolute bottom-16 right-4'
           >
             <FabIcon as={AddIcon} />
             <FabLabel>Create</FabLabel>
