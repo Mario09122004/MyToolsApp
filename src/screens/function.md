@@ -1,0 +1,2 @@
+screens/
+Screens represent the different views in your app (for example, Home, Profile, or Settings). They often compose multiple components and serve as the primary building blocks for your app’s user interface.
