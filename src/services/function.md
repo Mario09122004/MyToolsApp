@@ -1,0 +1,2 @@
+services/
+This folder is ideal for files that handle API calls, external integrations, and side-effect management. Organizing network calls and service-related logic in one place makes it easier to handle updates or debugging.
