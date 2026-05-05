@@ -16,6 +16,10 @@ module.exports = function (api) {
           },
         },
       ],
+      [
+        //SQLite with drizzle
+        "inline-import", { "extensions": [".sql"] }
+      ],
       'react-native-worklets/plugin',
     ],
   };

@@ -53,16 +53,17 @@ import {
 } from 'react-native-safe-area-context';
 import { useState } from 'react';
 
-type Note = {
-  tittle: string,
-  content: string,
-  date: Date
-}
+//Hooks
+import { useModalNotes } from './hooks/notes/modalAdd';
 
-type NoteForm = {
-  tittle: string,
-  content: string
-}
+//Types
+import { Note } from './types/Notes/Note';
+import { NoteForm } from './types/Notes/NoteForm';
+
+//Layout
+import { ScreenLayout } from './layout/ScreenLayout';
+
+
 
 const notesExamples: Array<Note> = [
   {
@@ -73,7 +74,9 @@ const notesExamples: Array<Note> = [
 ]
 
 export default function App() {
-  const [addNoteModalVisible, setAddNoteModalVisible] = useState(false);
+  //init Hooks
+  const { addNoteModalVisible, openAddModal, closeAddModal } = useModalNotes();
+
   const [noteForm, setNoteForm] = useState<NoteForm>({
     tittle: '',
     content: ''
@@ -96,7 +99,7 @@ export default function App() {
       content: ''
     })
 
-    setAddNoteModalVisible(false);
+    closeAddModal();
   };
 
   const handleDeleteNote = (index: number) => {
@@ -114,156 +117,152 @@ export default function App() {
   }
 
   return (
-    <SafeAreaProvider>
-      <GluestackUIProvider>
-        <SafeAreaView style={{ flex: 1 }}>
-          <ScrollView>
-            <Box className="h-full w-full rounded-xs">
+    <ScreenLayout>
+      <ScrollView>
+        <Box className="h-full w-full rounded-xs">
 
-              {allNotesView.map((note, index) => (
-                <Pressable
-                  onPress={() => handleShowNote(index)}
-                  onLongPress={() => console.log("borrando..")}
-                  key={index}
-                >
-                  <Card size="lg" variant="outline" className="m-2">
-                    <Box className="flex flex-row justify-between">
-                      <Heading size="xl" className="mb-1">
-                        {note.tittle}
-                      </Heading>
-                      <Heading size="xs" className="mb-1 text-gray-500">
-                        {note.date.toDateString()}
-                      </Heading>
-                    </Box>
-                    <Text className='line-clamp-3'>{note.content}</Text>
-                  </Card>
-                </Pressable>
-              ))}
-            </Box>
-
-            <Modal
-              isOpen={addNoteModalVisible}
-              onClose={() => {
-                setAddNoteModalVisible(false);
-              }}
-              size="lg"
+          {allNotesView.map((note, index) => (
+            <Pressable
+              onPress={() => handleShowNote(index)}
+              onLongPress={() => console.log("borrando..")}
+              key={index}
             >
-              <ModalBackdrop />
-              <ModalContent>
-                <ModalHeader>
-                  <Heading size="lg">Add note</Heading>
-                  <ModalCloseButton>
-                    <Icon as={CloseIcon} />
-                  </ModalCloseButton>
-                </ModalHeader>
-                <Divider className="my-3" />
-                <ModalBody>
+              <Card size="lg" variant="outline" className="m-2">
+                <Box className="flex flex-row justify-between">
+                  <Heading size="xl" className="mb-1">
+                    {note.tittle}
+                  </Heading>
+                  <Heading size="xs" className="mb-1 text-gray-500">
+                    {note.date.toDateString()}
+                  </Heading>
+                </Box>
+                <Text className='line-clamp-3'>{note.content}</Text>
+              </Card>
+            </Pressable>
+          ))}
+        </Box>
 
-                  <FormControl
-                    size="md"
-                    isDisabled={false}
-                    isReadOnly={false}
-                    isRequired={false}
-                  >
-                    <FormControlLabel>
-                      <FormControlLabelText>Tittle</FormControlLabelText>
-                    </FormControlLabel>
-                    <Input className="my-1" size="md">
-                      <InputField
-                        type="text"
-                        placeholder="Tittle"
-                        value={noteForm.tittle}
-                        onChangeText={(text) => setNoteForm({ ...noteForm, tittle: text })}
-                      />
-                    </Input>
-                    <FormControlLabel className='mt-2'>
-                      <FormControlLabelText>Content</FormControlLabelText>
-                    </FormControlLabel>
-                    <Textarea
-                      size="md"
-                      isReadOnly={false}
-                      isInvalid={false}
-                      isDisabled={false}
-                      className='mt-2'
-                    >
-                      <TextareaInput placeholder="Note content..." onChangeText={(text) => setNoteForm({ ...noteForm, content: text })} value={noteForm.content} />
-                    </Textarea>
-                    <FormControlError>
-                      <FormControlErrorIcon as={AlertCircleIcon} className="text-red-500" />
-                      <FormControlErrorText className="text-red-500">
-                        Please, complete all the fields.
-                      </FormControlErrorText>
-                    </FormControlError>
+        <Modal
+          isOpen={addNoteModalVisible}
+          onClose={() => {
+            closeAddModal();
+          }}
+          size="lg"
+        >
+          <ModalBackdrop />
+          <ModalContent>
+            <ModalHeader>
+              <Heading size="lg">Add note</Heading>
+              <ModalCloseButton>
+                <Icon as={CloseIcon} />
+              </ModalCloseButton>
+            </ModalHeader>
+            <Divider className="my-3" />
+            <ModalBody>
 
-                  </FormControl>
-                </ModalBody>
-                <ModalFooter>
-                  <Button
-                    onPress={() => {
-                      handleSaveNote();
-                    }}
-                    className="bg-green-500"
-                  >
-                    <ButtonText className='text-black dark:text-white'>Save</ButtonText>
-                  </Button>
-                </ModalFooter>
-              </ModalContent>
-            </Modal>
-          </ScrollView>
-
-          <Fab
-            size="lg"
-            placement="bottom right"
-            isHovered={false}
-            isDisabled={false}
-            isPressed={true}
-            onPress={() => {
-              setAddNoteModalVisible(true);
-            }}
-            className='absolute bottom-16 right-4'
-          >
-            <FabIcon as={AddIcon} />
-            <FabLabel>Create</FabLabel>
-          </Fab>
-
-          <AlertDialog isOpen={deleteConfirmModalVisible} onClose={() => { setDeleteConfirmModalVisible(false) }}>
-            <AlertDialogBackdrop />
-            <AlertDialogContent className="max-w-[415px] gap-4 items-center">
-              <Box className="rounded-full h-[52px] w-[52px] bg-background-error items-center justify-center">
-                <Icon as={TrashIcon} size="lg" className="stroke-error-500" />
-              </Box>
-              <AlertDialogHeader className="mb-2">
-                <Heading size="md">Delete note?</Heading>
-              </AlertDialogHeader>
-              <AlertDialogBody>
-                <Text className="text-center">
-                  The note will be deleted permanently. This cannot be undone.
-                </Text>
-              </AlertDialogBody>
-              <AlertDialogFooter className="mt-5">
-                <Button
-                  size="sm"
-                  action="negative"
-                  onPress={() => setDeleteConfirmModalVisible(false)}
-                  className="px-[30px]"
+              <FormControl
+                size="md"
+                isDisabled={false}
+                isReadOnly={false}
+                isRequired={false}
+              >
+                <FormControlLabel>
+                  <FormControlLabelText>Tittle</FormControlLabelText>
+                </FormControlLabel>
+                <Input className="my-1" size="md">
+                  <InputField
+                    type="text"
+                    placeholder="Tittle"
+                    value={noteForm.tittle}
+                    onChangeText={(text) => setNoteForm({ ...noteForm, tittle: text })}
+                  />
+                </Input>
+                <FormControlLabel className='mt-2'>
+                  <FormControlLabelText>Content</FormControlLabelText>
+                </FormControlLabel>
+                <Textarea
+                  size="md"
+                  isReadOnly={false}
+                  isInvalid={false}
+                  isDisabled={false}
+                  className='mt-2'
                 >
-                  <ButtonText>Delete</ButtonText>
-                </Button>
-                <Button
-                  variant="outline"
-                  action="secondary"
-                  onPress={() => setDeleteConfirmModalVisible(false)}
-                  size="sm"
-                  className="px-[30px]"
-                >
-                  <ButtonText>Cancel</ButtonText>
-                </Button>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+                  <TextareaInput placeholder="Note content..." onChangeText={(text) => setNoteForm({ ...noteForm, content: text })} value={noteForm.content} />
+                </Textarea>
+                <FormControlError>
+                  <FormControlErrorIcon as={AlertCircleIcon} className="text-red-500" />
+                  <FormControlErrorText className="text-red-500">
+                    Please, complete all the fields.
+                  </FormControlErrorText>
+                </FormControlError>
 
-        </SafeAreaView>
-      </GluestackUIProvider>
-    </SafeAreaProvider>
+              </FormControl>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                onPress={() => {
+                  handleSaveNote();
+                }}
+                className="bg-green-500"
+              >
+                <ButtonText className='text-black dark:text-white'>Save</ButtonText>
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </ScrollView>
+
+      <Fab
+        size="lg"
+        placement="bottom right"
+        isHovered={false}
+        isDisabled={false}
+        isPressed={true}
+        onPress={() => {
+          openAddModal();
+        }}
+        className='absolute bottom-16 right-4'
+      >
+        <FabIcon as={AddIcon} />
+        <FabLabel>Create</FabLabel>
+      </Fab>
+
+      <AlertDialog isOpen={deleteConfirmModalVisible} onClose={() => { setDeleteConfirmModalVisible(false) }}>
+        <AlertDialogBackdrop />
+        <AlertDialogContent className="max-w-[415px] gap-4 items-center">
+          <Box className="rounded-full h-[52px] w-[52px] bg-background-error items-center justify-center">
+            <Icon as={TrashIcon} size="lg" className="stroke-error-500" />
+          </Box>
+          <AlertDialogHeader className="mb-2">
+            <Heading size="md">Delete note?</Heading>
+          </AlertDialogHeader>
+          <AlertDialogBody>
+            <Text className="text-center">
+              The note will be deleted permanently. This cannot be undone.
+            </Text>
+          </AlertDialogBody>
+          <AlertDialogFooter className="mt-5">
+            <Button
+              size="sm"
+              action="negative"
+              onPress={() => setDeleteConfirmModalVisible(false)}
+              className="px-[30px]"
+            >
+              <ButtonText>Delete</ButtonText>
+            </Button>
+            <Button
+              variant="outline"
+              action="secondary"
+              onPress={() => setDeleteConfirmModalVisible(false)}
+              size="sm"
+              className="px-[30px]"
+            >
+              <ButtonText>Cancel</ButtonText>
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+    </ScreenLayout>
   );
 }
