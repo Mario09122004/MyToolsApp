@@ -3,6 +3,7 @@ import {
     SafeAreaProvider,
 } from 'react-native-safe-area-context';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import '@/global.css';
 
 //db
 import { Suspense } from 'react';
@@ -13,8 +14,11 @@ import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import migrations from '@/drizzle/migrations';
 
 export const DATABASE_NAME = 'tasks';
+const queryClient = new QueryClient();
+
 
 export const ScreenLayout = ({ children }: { children: React.ReactNode }) => {
+
     return (
         <Suspense fallback={<ActivityIndicator size="large" />}>
             <SQLiteProvider
