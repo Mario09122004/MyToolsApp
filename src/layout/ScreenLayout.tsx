@@ -21,7 +21,6 @@ const db = drizzle(expoDb);
 export const ScreenLayout = ({ children }: { children: React.ReactNode }) => {
     const { success, error } = useMigrations(db, migrations);
 
-
     if (error) {
         return (
             <SafeAreaView className="flex-1 justify-center items-center">

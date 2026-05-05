@@ -57,10 +57,10 @@ import { Task } from '@/db/schema';
 export default function NotesScreen() {
     //init Hooks
     const { addNoteModalVisible, openAddModal, closeAddModal } = useModalNotes();
-    const { deleteConfirmModalVisible, openDeleteModal, closeDeleteModal } = useNoteModalDelete();
+    const { deleteConfirmModalVisible, openDeleteModal, closeDeleteModal, idNote } = useNoteModalDelete();
     const { queryNotes, insertNote, deleteNote, updateNote } = useCRUDNotes();
 
-    //
+    //Notes
     const [dataNotes, setDataNotes] = useState<Task[]>();
 
     useEffect(() => {
@@ -73,24 +73,13 @@ export default function NotesScreen() {
 
     const handleSaveNote = async () => {
         try {
-            console.log("Guardando...");
-
-            await insertNote("Titulo1", "Descripcion1");
-
-            console.log("Guardado");
-
-            console.log(dataNotes);
-
+            await insertNote(noteForm.tittle, noteForm.content);
             const notes = await queryNotes();
             setDataNotes(notes);
-
             closeAddModal();
-
         } catch (error) {
             console.log(error);
         }
-
-
     };
 
     const [noteForm, setNoteForm] = useState<NoteForm>({
@@ -98,8 +87,10 @@ export default function NotesScreen() {
         content: ''
     });
 
-    const handleDeleteNote = (index: number) => {
-        console.log("Eliminando...");
+    const handleDeleteNote = async () => {
+        await deleteNote(idNote);
+        const notes = await queryNotes();
+        setDataNotes(notes);
         closeDeleteModal();
     }
 
@@ -112,25 +103,31 @@ export default function NotesScreen() {
             <ScrollView>
                 <Box className="h-full w-full rounded-xs">
 
-                    {/*allNotesView.map((note, index) => (
-                        <Pressable
-                            onPress={() => handleShowNote(index)}
-                            onLongPress={() => console.log("borrando..")}
-                            key={index}
-                        >
-                            <Card size="lg" variant="outline" className="m-2">
-                                <Box className="flex flex-row justify-between">
-                                    <Heading size="xl" className="mb-1">
-                                        {note.tittle}
-                                    </Heading>
-                                    <Heading size="xs" className="mb-1 text-gray-500">
-                                        {note.date.toDateString()}
-                                    </Heading>
-                                </Box>
-                                <Text className='line-clamp-3'>{note.content}</Text>
-                            </Card>
-                        </Pressable>
-                    ))*/}
+                    {
+                        dataNotes ? (
+                            dataNotes.map((note) => (
+                                <Pressable
+                                    onPress={() => handleShowNote(note.id)}
+                                    onLongPress={() => openDeleteModal(note.id)}
+                                    key={note.id}
+                                >
+                                    <Card size="lg" variant="outline" className="m-2">
+                                        <Box className="flex flex-row justify-between">
+                                            <Heading size="xl" className="mb-1">
+                                                {note.title}
+                                            </Heading>
+                                            <Heading size="xs" className="mb-1 text-gray-500">
+                                                {note.date}
+                                            </Heading>
+                                        </Box>
+                                        <Text className='line-clamp-3'>{note.content}</Text>
+                                    </Card>
+                                </Pressable>
+                            ))
+                        ) : (
+                            <Text>No hay notas</Text>
+                        )
+                    }
                 </Box>
 
                 <Modal
@@ -236,7 +233,7 @@ export default function NotesScreen() {
                         <Button
                             size="sm"
                             action="negative"
-                            onPress={() => closeDeleteModal()}
+                            onPress={() => handleDeleteNote()}
                             className="px-[30px]"
                         >
                             <ButtonText>Delete</ButtonText>
