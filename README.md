@@ -6,6 +6,9 @@ This mobile app, is making to have all my tools in one place. Because exist a lo
 - Expo
 - TypeScript
 - Gluestack UI
+- SQLite
+- Drizzle
+
 
 ## Design
 - The app should be minimalist and modern.
@@ -16,8 +19,7 @@ This mobile app, is making to have all my tools in one place. Because exist a lo
 ## Notes modules tasks
 
 Tasks:
-- implement markdown for notes
-- implement db to persist notes
+- Fix the problem that doing when the user write quickly and dupli the text.
 
 ## Modules to make
 - Birthdays

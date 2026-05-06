@@ -11,10 +11,11 @@ import {
 } from '@/components/ui/drawer';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
-import { Text } from '@/components/ui/text';
 import { Icon, CloseIcon, MenuIcon } from '@/components/ui/icon';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { MenuOptions } from "./menu";
+import { Divider } from "@/components/ui/divider";
 
 export const Header = () => {
     const [showDrawer, setShowDrawer] = useState(false);
@@ -43,22 +44,31 @@ export const Header = () => {
                 }}
             >
                 <DrawerBackdrop />
-                <DrawerContent className="bg-red-600" style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
+                <DrawerContent style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
                     <DrawerHeader>
-                        <Heading size="lg">Menu</Heading>
-                        <DrawerCloseButton>
-                            <Icon as={CloseIcon} />
+                        <Heading size="xl" className="w-full text-center" >Menu</Heading>
+                        <DrawerCloseButton className="absolute right-0">
+                            <Icon as={CloseIcon} size="xl" />
                         </DrawerCloseButton>
                     </DrawerHeader>
-                    <DrawerBody>
-                        <Text>This is the basic drawer component.</Text>
+
+                    <Divider className="my-0.5" />
+
+                    <DrawerBody className="mt-2" >
+
+                        <MenuOptions />
+
                     </DrawerBody>
-                    <DrawerFooter>
+
+                    <Divider className="mb-2" />
+
+                    <DrawerFooter className="py-3">
                         <Button
                             variant="outline"
                             onPress={() => {
                                 setShowDrawer(false);
                             }}
+                            className="w-full"
                         >
                             <ButtonText>Cancel</ButtonText>
                         </Button>
