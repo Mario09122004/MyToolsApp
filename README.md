@@ -19,7 +19,7 @@ This mobile app, is making to have all my tools in one place. Because exist a lo
 ## Notes modules tasks
 
 Tasks:
-- Fix the problem that doing when the user write quickly and dupli the text.
+- Fix the problem that doing when the user write quickly and dupli the text. (It's because the screen is rendering all, to solve it, maybe I can specify what component re-rendering to do every thing so quickly)
 
 ## Modules to make
 - Birthdays

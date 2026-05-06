@@ -13,6 +13,8 @@ import { AlertCircleIcon } from '@/components/ui/icon';
 import { NoteForm } from '@/src/types/Notes/NoteForm';
 
 export const FormNote = ({ note, setNoteForm }: { note: NoteForm, setNoteForm: (note: NoteForm) => void }) => {
+    console.log("Re-rendering");
+
     return (
         <FormControl
             size="md"
@@ -25,7 +27,10 @@ export const FormNote = ({ note, setNoteForm }: { note: NoteForm, setNoteForm: (
                     type="text"
                     placeholder="Tittle"
                     value={note.tittle}
-                    onChangeText={(text) => setNoteForm({ ...note, tittle: text })}
+                    onChangeText={(text) => {
+                        console.log(text);
+                        setNoteForm({ ...note, tittle: text })
+                    }}
                 />
             </Input>
             <FormControlLabel className='mt-2'>
