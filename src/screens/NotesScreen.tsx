@@ -53,12 +53,17 @@ import { Note } from '@/src/types/Notes/Note';
 import { NoteForm } from '@/src/types/Notes/NoteForm';
 import { useNoteModalDelete } from '@/src/hooks/notes/noteDeleteModal';
 import { Task } from '@/db/schema';
+import { isNull } from 'drizzle-orm';
 
 export default function NotesScreen() {
     //init Hooks
     const { addNoteModalVisible, openAddModal, closeAddModal } = useModalNotes();
     const { deleteConfirmModalVisible, openDeleteModal, closeDeleteModal, idNote } = useNoteModalDelete();
-    const { queryNotes, insertNote, deleteNote, updateNote } = useCRUDNotes();
+    const { queryNotes, insertNote, deleteNote, updateNote, queryNotesById } = useCRUDNotes();
+
+    //Edit mode
+    const [editMode, sutEditMode] = useState(false);
+    const [idNoteToedit, setIdNoteToedit] = useState(0)
 
     //Notes
     const [dataNotes, setDataNotes] = useState<Task[]>();
@@ -73,7 +78,7 @@ export default function NotesScreen() {
 
     const handleSaveNote = async () => {
         try {
-            await insertNote(noteForm.tittle, noteForm.content);
+            await insertNote(noteForm.tittle, noteForm.content as string);
             const notes = await queryNotes();
             setDataNotes(notes);
             closeAddModal();
@@ -84,7 +89,7 @@ export default function NotesScreen() {
 
     const [noteForm, setNoteForm] = useState<NoteForm>({
         tittle: '',
-        content: ''
+        content: '',
     });
 
     const handleDeleteNote = async () => {
@@ -94,8 +99,34 @@ export default function NotesScreen() {
         closeDeleteModal();
     }
 
-    const handleShowNote = (noteId: number) => {
+    const handleShowNote = async (noteId: number) => {
+        await sutEditMode(true);
+
         console.log("Habriendo nota...")
+        const noteToEdit = await queryNotesById(noteId);
+        console.log(noteToEdit)
+        setNoteForm({ tittle: noteToEdit[0].title, content: noteToEdit[0].content });
+        setIdNoteToedit(noteId);
+        console.log(editMode);
+
+        openAddModal();
+    }
+
+    const handleSaveEdit = async () => {
+        await updateNote(noteForm.tittle, noteForm.content as string, idNoteToedit);
+        const notes = await queryNotes();
+        setDataNotes(notes);
+
+        closeAddModal();
+    }
+
+    const handleNewNotes = async () => {
+        await sutEditMode(false);
+
+        setNoteForm({ tittle: "", content: "" });
+        console.log(editMode);
+
+        openAddModal();
     }
 
     return (
@@ -117,7 +148,7 @@ export default function NotesScreen() {
                                                 {note.title}
                                             </Heading>
                                             <Heading size="xs" className="mb-1 text-gray-500">
-                                                {note.date}
+                                                {new Date(note.date).toDateString()}
                                             </Heading>
                                         </Box>
                                         <Text className='line-clamp-3'>{note.content}</Text>
@@ -175,7 +206,7 @@ export default function NotesScreen() {
                                     isDisabled={false}
                                     className='mt-2'
                                 >
-                                    <TextareaInput placeholder="Note content..." onChangeText={(text) => setNoteForm({ ...noteForm, content: text })} value={noteForm.content} />
+                                    <TextareaInput placeholder="Note content..." onChangeText={(text) => setNoteForm({ ...noteForm, content: text })} value={noteForm.content as string} />
                                 </Textarea>
                                 <FormControlError>
                                     <FormControlErrorIcon as={AlertCircleIcon} className="text-red-500" />
@@ -189,7 +220,13 @@ export default function NotesScreen() {
                         <ModalFooter>
                             <Button
                                 onPress={() => {
-                                    handleSaveNote();
+                                    console.log(editMode);
+                                    console.log("Comparando...");
+                                    if (editMode) {
+                                        handleSaveEdit();
+                                    } else {
+                                        handleSaveNote();
+                                    }
                                 }}
                                 className="bg-green-500"
                             >
@@ -207,7 +244,7 @@ export default function NotesScreen() {
                 isDisabled={false}
                 isPressed={true}
                 onPress={() => {
-                    openAddModal();
+                    handleNewNotes();
                 }}
                 className='absolute bottom-16 right-4'
             >

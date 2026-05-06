@@ -9,6 +9,8 @@ export const useCRUDNotes = () => {
 
     const queryNotes = async () => await drizzleDb.select().from(schema.tasks);
 
+    const queryNotesById = async (id: number) => await drizzleDb.select().from(schema.tasks).where(eq(schema.tasks.id, id));
+
     const insertNote = async (
         tittle: string = "",
         content: string = ""
@@ -42,5 +44,5 @@ export const useCRUDNotes = () => {
     );
 
 
-    return { queryNotes, insertNote, deleteNote, updateNote }
+    return { queryNotes, insertNote, deleteNote, updateNote, queryNotesById }
 }
