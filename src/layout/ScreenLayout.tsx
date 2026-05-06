@@ -27,16 +27,16 @@ import {
 import { Button, ButtonText } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
-import { Icon, CloseIcon } from '@/components/ui/icon';
+import { Icon, CloseIcon, MenuIcon } from '@/components/ui/icon';
 import { Box } from '@/components/ui/box';
 import { Divider } from '@/components/ui/divider';
+import { Header } from '@/src/components/Header';
 
 export const DATABASE_NAME = 'tasks.db';
 const expoDb = openDatabaseSync(DATABASE_NAME);
 const db = drizzle(expoDb);
 
 export const ScreenLayout = ({ children }: { children: React.ReactNode }) => {
-    const [showDrawer, setShowDrawer] = useState(false);
     const { success, error } = useMigrations(db, migrations);
 
     if (error) {
@@ -67,49 +67,7 @@ export const ScreenLayout = ({ children }: { children: React.ReactNode }) => {
                 <SafeAreaProvider>
                     <GluestackUIProvider>
                         <SafeAreaView style={{ flex: 1 }}>
-                            <Box>
-                                <Button
-                                    onPress={() => {
-                                        setShowDrawer(true);
-                                    }}
-                                >
-                                    <ButtonText>Open Drawer</ButtonText>
-                                </Button>
-                                <Heading>
-                                    Title of the component
-                                </Heading>
-                                <Drawer
-                                    isOpen={showDrawer}
-                                    size="full"
-                                    anchor="top"
-                                    onClose={() => {
-                                        setShowDrawer(false);
-                                    }}
-                                >
-                                    <DrawerBackdrop />
-                                    <DrawerContent>
-                                        <DrawerHeader>
-                                            <Heading size="lg">Menu</Heading>
-                                            <DrawerCloseButton>
-                                                <Icon as={CloseIcon} />
-                                            </DrawerCloseButton>
-                                        </DrawerHeader>
-                                        <DrawerBody>
-                                            <Text>This is the basic drawer component.</Text>
-                                        </DrawerBody>
-                                        <DrawerFooter>
-                                            <Button
-                                                variant="outline"
-                                                onPress={() => {
-                                                    setShowDrawer(false);
-                                                }}
-                                            >
-                                                <ButtonText>Cancel</ButtonText>
-                                            </Button>
-                                        </DrawerFooter>
-                                    </DrawerContent>
-                                </Drawer>
-                            </Box>
+                            <Header />
                             <Divider className="my-0.5" />
                             {children}
                         </SafeAreaView>
