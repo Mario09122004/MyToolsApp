@@ -1,9 +1,6 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, Text } from 'react-native';
 
 import { Box } from '@/components/ui/box';
-import { Fab, FabIcon, FabLabel } from '@/components/ui/fab';
-import { AddIcon } from '@/components/ui/icon';
-import { Card } from '@/components/ui/card';
 import { Heading } from '@/components/ui/heading';
 
 import {
@@ -26,8 +23,6 @@ import {
     FormControlError,
     FormControlErrorText,
     FormControlErrorIcon,
-    FormControlHelper,
-    FormControlHelperText,
     FormControlLabelText,
 } from '@/components/ui/form-control';
 import { AlertCircleIcon } from '@/components/ui/icon';
@@ -37,7 +32,6 @@ import {
     AlertDialogBackdrop,
     AlertDialogContent,
     AlertDialogHeader,
-    AlertDialogCloseButton,
     AlertDialogFooter,
     AlertDialogBody,
 } from '@/components/ui/alert-dialog';
@@ -49,11 +43,12 @@ import { useModalNotes } from '@/src/hooks/notes/modalAdd';
 import { useCRUDNotes } from '@/src/hooks/notes/noteAdd';
 
 //Types
-import { Note } from '@/src/types/Notes/Note';
 import { NoteForm } from '@/src/types/Notes/NoteForm';
 import { useNoteModalDelete } from '@/src/hooks/notes/noteDeleteModal';
 import { Task } from '@/db/schema';
-import { isNull } from 'drizzle-orm';
+import { NoteItem } from '../components/Notes/noteItem';
+import { ButtonAddNote } from '../components/Notes/buttonAddNote';
+import { FormNote } from '../components/Notes/formNote';
 
 export default function NotesScreen() {
     //init Hooks
@@ -138,17 +133,7 @@ export default function NotesScreen() {
                                     onLongPress={() => openDeleteModal(note.id)}
                                     key={note.id}
                                 >
-                                    <Card size="lg" variant="outline" className="m-2">
-                                        <Box className="flex flex-row justify-between">
-                                            <Heading size="xl" className="mb-1">
-                                                {note.title}
-                                            </Heading>
-                                            <Heading size="xs" className="mb-1 text-gray-500">
-                                                {new Date(note.date).toDateString()}
-                                            </Heading>
-                                        </Box>
-                                        <Text className='line-clamp-3'>{note.content}</Text>
-                                    </Card>
+                                    <NoteItem title={note.title as string} content={note.content as string} date={note.date} />
                                 </Pressable>
                             ))
                         ) : (
@@ -167,7 +152,7 @@ export default function NotesScreen() {
                     <ModalBackdrop />
                     <ModalContent>
                         <ModalHeader>
-                            <Heading size="lg">Add note</Heading>
+                            <Heading size="lg">{editMode ? "Edit" : "Add"} note</Heading>
                             <ModalCloseButton>
                                 <Icon as={CloseIcon} />
                             </ModalCloseButton>
@@ -175,43 +160,8 @@ export default function NotesScreen() {
                         <Divider className="my-3" />
                         <ModalBody>
 
-                            <FormControl
-                                size="md"
-                                isDisabled={false}
-                                isReadOnly={false}
-                                isRequired={false}
-                            >
-                                <FormControlLabel>
-                                    <FormControlLabelText>Tittle</FormControlLabelText>
-                                </FormControlLabel>
-                                <Input className="my-1" size="md">
-                                    <InputField
-                                        type="text"
-                                        placeholder="Tittle"
-                                        value={noteForm.tittle}
-                                        onChangeText={(text) => setNoteForm({ ...noteForm, tittle: text })}
-                                    />
-                                </Input>
-                                <FormControlLabel className='mt-2'>
-                                    <FormControlLabelText>Content</FormControlLabelText>
-                                </FormControlLabel>
-                                <Textarea
-                                    size="md"
-                                    isReadOnly={false}
-                                    isInvalid={false}
-                                    isDisabled={false}
-                                    className='mt-2'
-                                >
-                                    <TextareaInput placeholder="Note content..." onChangeText={(text) => setNoteForm({ ...noteForm, content: text })} value={noteForm.content as string} />
-                                </Textarea>
-                                <FormControlError>
-                                    <FormControlErrorIcon as={AlertCircleIcon} className="text-red-500" />
-                                    <FormControlErrorText className="text-red-500">
-                                        Please, complete all the fields.
-                                    </FormControlErrorText>
-                                </FormControlError>
+                            <FormNote note={noteForm} setNoteForm={setNoteForm} />
 
-                            </FormControl>
                         </ModalBody>
                         <ModalFooter>
                             <Button
@@ -231,20 +181,7 @@ export default function NotesScreen() {
                 </Modal>
             </ScrollView>
 
-            <Fab
-                size="lg"
-                placement="bottom right"
-                isHovered={false}
-                isDisabled={false}
-                isPressed={true}
-                onPress={() => {
-                    handleNewNotes();
-                }}
-                className='absolute bottom-16 right-4'
-            >
-                <FabIcon as={AddIcon} />
-                <FabLabel>Create</FabLabel>
-            </Fab>
+            <ButtonAddNote handleNewNotes={handleNewNotes} />
 
             <AlertDialog isOpen={deleteConfirmModalVisible} onClose={() => { closeDeleteModal() }}>
                 <AlertDialogBackdrop />
