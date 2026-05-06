@@ -102,12 +102,9 @@ export default function NotesScreen() {
     const handleShowNote = async (noteId: number) => {
         await sutEditMode(true);
 
-        console.log("Habriendo nota...")
         const noteToEdit = await queryNotesById(noteId);
-        console.log(noteToEdit)
         setNoteForm({ tittle: noteToEdit[0].title, content: noteToEdit[0].content });
         setIdNoteToedit(noteId);
-        console.log(editMode);
 
         openAddModal();
     }
@@ -124,7 +121,6 @@ export default function NotesScreen() {
         await sutEditMode(false);
 
         setNoteForm({ tittle: "", content: "" });
-        console.log(editMode);
 
         openAddModal();
     }
@@ -220,8 +216,6 @@ export default function NotesScreen() {
                         <ModalFooter>
                             <Button
                                 onPress={() => {
-                                    console.log(editMode);
-                                    console.log("Comparando...");
                                     if (editMode) {
                                         handleSaveEdit();
                                     } else {

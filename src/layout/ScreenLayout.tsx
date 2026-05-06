@@ -4,10 +4,12 @@ import {
 } from 'react-native-safe-area-context';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import '@/global.css';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Text } from '@/components/ui/text';
+import { Divider } from '@/components/ui/divider';
+import { Header } from '@/src/components/Header';
 
 //db
-import { Suspense, useState } from 'react';
+import { Suspense } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { SQLiteProvider, openDatabaseSync } from 'expo-sqlite';
 import { drizzle } from 'drizzle-orm/expo-sqlite';
@@ -15,22 +17,6 @@ import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import migrations from '@/drizzle/migrations';
 
 //Menu
-import {
-    Drawer,
-    DrawerBackdrop,
-    DrawerContent,
-    DrawerHeader,
-    DrawerBody,
-    DrawerFooter,
-    DrawerCloseButton,
-} from '@/components/ui/drawer';
-import { Button, ButtonText } from '@/components/ui/button';
-import { Heading } from '@/components/ui/heading';
-import { Text } from '@/components/ui/text';
-import { Icon, CloseIcon, MenuIcon } from '@/components/ui/icon';
-import { Box } from '@/components/ui/box';
-import { Divider } from '@/components/ui/divider';
-import { Header } from '@/src/components/Header';
 
 export const DATABASE_NAME = 'tasks.db';
 const expoDb = openDatabaseSync(DATABASE_NAME);
