@@ -14,18 +14,7 @@ import {
 } from '@/components/ui/modal';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Icon, CloseIcon, TrashIcon } from '@/components/ui/icon';
-import { Input, InputField } from '@/components/ui/input';
-import { Textarea, TextareaInput } from '@/components/ui/textarea';
 import { Divider } from '@/components/ui/divider';
-import {
-    FormControl,
-    FormControlLabel,
-    FormControlError,
-    FormControlErrorText,
-    FormControlErrorIcon,
-    FormControlLabelText,
-} from '@/components/ui/form-control';
-import { AlertCircleIcon } from '@/components/ui/icon';
 import { Pressable } from '@/components/ui/pressable';
 import {
     AlertDialog,
@@ -49,20 +38,16 @@ import { Task } from '@/db/schema';
 import { NoteItem } from '../components/Notes/noteItem';
 import { ButtonAddNote } from '../components/Notes/buttonAddNote';
 import { FormNote } from '../components/Notes/formNote';
-import { useNoteForm } from '../hooks/notes/noteForm';
 
 export default function NotesScreen() {
     //init Hooks
     const { addNoteModalVisible, openAddModal, closeAddModal } = useModalNotes();
     const { deleteConfirmModalVisible, openDeleteModal, closeDeleteModal, idNote } = useNoteModalDelete();
-    const { queryNotes, insertNote, deleteNote, updateNote, queryNotesById } = useCRUDNotes();
+    const { queryNotes, deleteNote } = useCRUDNotes();
+
+    //States
     const [idNOte, setIdNote] = useState(idNote);
-
-    //Edit mode
     const [editMode, sutEditMode] = useState(false);
-    const [idNoteToedit, setIdNoteToedit] = useState(0)
-
-    //Notes
     const [dataNotes, setDataNotes] = useState<Task[]>();
 
     useEffect(() => {
@@ -74,12 +59,6 @@ export default function NotesScreen() {
     }, [])
 
 
-
-    const [noteForm, setNoteForm] = useState<NoteForm>({
-        tittle: '',
-        content: '',
-    });
-
     const handleDeleteNote = async () => {
         await deleteNote(idNote);
         const notes = await queryNotes();
@@ -90,27 +69,11 @@ export default function NotesScreen() {
     const handleShowNote = async (noteId: number) => {
         await sutEditMode(true);
         await setIdNote(noteId);
-
-        const noteToEdit = await queryNotesById(noteId);
-        setNoteForm({ tittle: noteToEdit[0].title, content: noteToEdit[0].content });
-        setIdNoteToedit(noteId);
-
         openAddModal();
-    }
-
-    const handleSaveEdit = async () => {
-        await updateNote(noteForm.tittle, noteForm.content as string, idNoteToedit);
-        const notes = await queryNotes();
-        setDataNotes(notes);
-
-        closeAddModal();
     }
 
     const handleNewNotes = async () => {
         await sutEditMode(false);
-
-        setNoteForm({ tittle: "", content: "" });
-
         openAddModal();
     }
 
