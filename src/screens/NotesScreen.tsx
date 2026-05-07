@@ -49,12 +49,14 @@ import { Task } from '@/db/schema';
 import { NoteItem } from '../components/Notes/noteItem';
 import { ButtonAddNote } from '../components/Notes/buttonAddNote';
 import { FormNote } from '../components/Notes/formNote';
+import { useNoteForm } from '../hooks/notes/noteForm';
 
 export default function NotesScreen() {
     //init Hooks
     const { addNoteModalVisible, openAddModal, closeAddModal } = useModalNotes();
     const { deleteConfirmModalVisible, openDeleteModal, closeDeleteModal, idNote } = useNoteModalDelete();
     const { queryNotes, insertNote, deleteNote, updateNote, queryNotesById } = useCRUDNotes();
+    const [idNOte, setIdNote] = useState(idNote);
 
     //Edit mode
     const [editMode, sutEditMode] = useState(false);
@@ -71,16 +73,7 @@ export default function NotesScreen() {
         queryDataNotes();
     }, [])
 
-    const handleSaveNote = async () => {
-        try {
-            await insertNote(noteForm.tittle, noteForm.content as string);
-            const notes = await queryNotes();
-            setDataNotes(notes);
-            closeAddModal();
-        } catch (error) {
-            console.log(error);
-        }
-    };
+
 
     const [noteForm, setNoteForm] = useState<NoteForm>({
         tittle: '',
@@ -96,6 +89,7 @@ export default function NotesScreen() {
 
     const handleShowNote = async (noteId: number) => {
         await sutEditMode(true);
+        await setIdNote(noteId);
 
         const noteToEdit = await queryNotesById(noteId);
         setNoteForm({ tittle: noteToEdit[0].title, content: noteToEdit[0].content });
@@ -160,22 +154,11 @@ export default function NotesScreen() {
                         <Divider className="my-3" />
                         <ModalBody>
 
-                            <FormNote note={noteForm} setNoteForm={setNoteForm} />
+                            <FormNote editMode={editMode} idNote={idNOte} />
 
                         </ModalBody>
                         <ModalFooter>
-                            <Button
-                                onPress={() => {
-                                    if (editMode) {
-                                        handleSaveEdit();
-                                    } else {
-                                        handleSaveNote();
-                                    }
-                                }}
-                                className="bg-green-500"
-                            >
-                                <ButtonText className='text-black dark:text-white'>Save</ButtonText>
-                            </Button>
+
                         </ModalFooter>
                     </ModalContent>
                 </Modal>
