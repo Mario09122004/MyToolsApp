@@ -15,6 +15,10 @@ import { useNoteForm } from '@/src/hooks/notes/noteForm';
 import { useCRUDNotes } from '@/src/hooks/notes/noteAdd';
 import { Button, ButtonText } from '@/components/ui/button';
 
+
+import { Text } from '@/components/ui/text';
+
+
 export const FormNote = ({ editMode, idNote = 0 }: { editMode: boolean, idNote?: number }) => {
     const { noteForm, handleSetContent, handleSetTittle, handleSetNewForm } = useNoteForm();
     const { insertNote, queryNotesById, updateNote } = useCRUDNotes();
@@ -30,10 +34,11 @@ export const FormNote = ({ editMode, idNote = 0 }: { editMode: boolean, idNote?:
             console.log("Entro a editar una nota: ", NoteIdEdit);
             const NoteData = async () => {
                 const note = await queryNotesById(NoteIdEdit);
-                console.log("Nota: ", note[0].title);
+                console.log("Write te new data: ", note);
                 await handleSetTittle(note[0].title);
+                console.log(noteForm);
                 await handleSetContent(note[0].content);
-                console.log("Note form: ", noteForm);
+                console.log(noteForm);
             }
             NoteData();
         }
@@ -103,7 +108,7 @@ export const FormNote = ({ editMode, idNote = 0 }: { editMode: boolean, idNote?:
                         handleSaveNote();
                     }
                 }}
-                className="bg-green-500"
+                className="bg-green-500 mt-5"
             >
                 <ButtonText className='text-black dark:text-white'>Save</ButtonText>
             </Button>
