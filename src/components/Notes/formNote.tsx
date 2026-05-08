@@ -15,45 +15,40 @@ import { useNoteForm } from '@/src/hooks/notes/noteForm';
 import { useCRUDNotes } from '@/src/hooks/notes/noteAdd';
 import { Button, ButtonText } from '@/components/ui/button';
 
-export const FormNote = ({ editMode, idNote = 0 }: { editMode: boolean, idNote?: number }) => {
+export const FormNote = ({ editMode, idNote = 0, onSave }: { editMode: boolean, idNote?: number, onSave?: () => void }) => {
     const { noteForm, handleSetContent, handleSetTittle, handleSetNewForm } = useNoteForm();
     const { insertNote, queryNotesById, updateNote } = useCRUDNotes();
     const [NoteIdEdit, setNoteIdEdit] = useState(idNote);
     const [editModeNote, setEditModeNote] = useState(editMode);
 
     useEffect(() => {
-        console.log("Edit mode: ", editModeNote);
         if (!editModeNote) {
-            console.log("Entro a crear una nota");
             handleSetNewForm();
         } else {
-            console.log("Entro a editar una nota: ", NoteIdEdit);
             const NoteData = async () => {
                 const note = await queryNotesById(NoteIdEdit);
-                console.log("Nota: ", note[0].title);
                 await handleSetTittle(note[0].title);
                 await handleSetContent(note[0].content);
-                console.log("Note form: ", noteForm);
             }
             NoteData();
         }
     }, [editModeNote, NoteIdEdit]);
 
     const handleSaveNote = async () => {
-        console.log("Guardando nota nueva...");
         try {
             const noteCreated = await insertNote(noteForm.tittle, noteForm.content as string);
             setNoteIdEdit(noteCreated.lastInsertRowId);
             setEditModeNote(true);
+            if (onSave) onSave();
         } catch (error) {
             console.log(error);
         }
     };
 
     const handleSaveEdit = async () => {
-        console.log("Guardando nota editada...");
         try {
             await updateNote(noteForm.tittle, noteForm.content as string, NoteIdEdit);
+            if (onSave) onSave();
         } catch (error) {
             console.log(error);
         }
@@ -103,7 +98,7 @@ export const FormNote = ({ editMode, idNote = 0 }: { editMode: boolean, idNote?:
                         handleSaveNote();
                     }
                 }}
-                className="bg-green-500"
+                className="bg-green-500 mt-5"
             >
                 <ButtonText className='text-black dark:text-white'>Save</ButtonText>
             </Button>

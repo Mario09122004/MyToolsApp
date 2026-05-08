@@ -7,12 +7,12 @@ export const useNoteForm = () => {
         content: '',
     });
 
-    const handleSetTittle = async (tittle: string) => {
-        await setNoteForm({ ...noteForm, tittle });
+    const handleSetTittle = (tittle: string) => {
+        setNoteForm(prev => ({ ...prev, tittle }));
     }
 
-    const handleSetContent = async (content: string | null) => {
-        await setNoteForm({ ...noteForm, content });
+    const handleSetContent = (content: string | null) => {
+        setNoteForm(prev => ({ ...prev, content }));
     }
 
     const handleSetNewForm = () => {
