@@ -15,7 +15,7 @@ import { useNoteForm } from '@/src/hooks/notes/noteForm';
 import { useCRUDNotes } from '@/src/hooks/notes/noteAdd';
 import { Button, ButtonText } from '@/components/ui/button';
 
-export const FormNote = ({ editMode, idNote = 0 }: { editMode: boolean, idNote?: number }) => {
+export const FormNote = ({ editMode, idNote = 0, onSave }: { editMode: boolean, idNote?: number, onSave?: () => void }) => {
     const { noteForm, handleSetContent, handleSetTittle, handleSetNewForm } = useNoteForm();
     const { insertNote, queryNotesById, updateNote } = useCRUDNotes();
     const [NoteIdEdit, setNoteIdEdit] = useState(idNote);
@@ -39,6 +39,7 @@ export const FormNote = ({ editMode, idNote = 0 }: { editMode: boolean, idNote?:
             const noteCreated = await insertNote(noteForm.tittle, noteForm.content as string);
             setNoteIdEdit(noteCreated.lastInsertRowId);
             setEditModeNote(true);
+            if (onSave) onSave();
         } catch (error) {
             console.log(error);
         }
@@ -47,6 +48,7 @@ export const FormNote = ({ editMode, idNote = 0 }: { editMode: boolean, idNote?:
     const handleSaveEdit = async () => {
         try {
             await updateNote(noteForm.tittle, noteForm.content as string, NoteIdEdit);
+            if (onSave) onSave();
         } catch (error) {
             console.log(error);
         }

@@ -117,7 +117,10 @@ export default function NotesScreen() {
                         <Divider className="my-3" />
                         <ModalBody>
 
-                            <FormNote editMode={editMode} idNote={idNOte} />
+                            <FormNote editMode={editMode} idNote={idNOte} onSave={async () => {
+                                const notes = await queryNotes();
+                                setDataNotes(notes);
+                            }} />
 
                         </ModalBody>
                         <ModalFooter>
