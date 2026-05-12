@@ -17,9 +17,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MenuOptions } from "./menu";
 import { Divider } from "@/components/ui/divider";
 
+import { useNavigation } from '@react-navigation/native';
+
 export const Header = () => {
     const [showDrawer, setShowDrawer] = useState(false);
     const insets = useSafeAreaInsets();
+    const navigation = useNavigation();
 
     return (
         <Box className='p-4 flex-row items-center'>
@@ -56,7 +59,7 @@ export const Header = () => {
 
                     <DrawerBody className="mt-2" >
 
-                        <MenuOptions />
+                        <MenuOptions navigation={navigation} />
 
                     </DrawerBody>
 

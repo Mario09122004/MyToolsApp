@@ -4,14 +4,18 @@ import { Divider } from "@/components/ui/divider"
 import { ScrollView } from "react-native"
 import { Text } from '@/components/ui/text';
 
+import { NavigationProp } from '@react-navigation/native';
+
 const options = [
     {
         name: 'Notes',
+        screenName: 'NotesScreen',
         icon: 'tasks',
         action: () => console.log('Go to Notes')
     },
     {
         name: 'Birthdays',
+        screenName: 'BirthdaysScreen',
         icon: 'settings',
         action: () => console.log('Go to Birthdays')
     },
@@ -46,13 +50,14 @@ const options = [
         action: () => console.log('Go to Entrepreneurship')
     }
 ]
-export const MenuOptions = () => {
+export const MenuOptions = ({ navigation }: { navigation: any }) => {
+
     return (
         <ScrollView>
             {options.map((option, index) => {
                 return (
                     <Box key={index}>
-                        <Button onPress={option.action} className="bg-transparent" size="lg">
+                        <Button onPress={() => option.screenName ? navigation.navigate(option.screenName as never) : option.action()} className="bg-transparent" size="lg">
                             <ButtonText size="xl" className="dark:color-white color-black">
                                 {option.name}
                             </ButtonText>

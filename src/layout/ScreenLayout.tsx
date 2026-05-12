@@ -5,9 +5,6 @@ import {
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import '@/global.css';
 import { Text } from '@/components/ui/text';
-import { Divider } from '@/components/ui/divider';
-import { Header } from '@/src/components/Header';
-
 //db
 import { Suspense } from 'react';
 import { ActivityIndicator } from 'react-native';
@@ -15,8 +12,6 @@ import { SQLiteProvider, openDatabaseSync } from 'expo-sqlite';
 import { drizzle } from 'drizzle-orm/expo-sqlite';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import migrations from '@/drizzle/migrations';
-
-//Menu
 
 export const DATABASE_NAME = 'tasks.db';
 const expoDb = openDatabaseSync(DATABASE_NAME);
@@ -53,8 +48,6 @@ export const ScreenLayout = ({ children }: { children: React.ReactNode }) => {
                 <SafeAreaProvider>
                     <GluestackUIProvider>
                         <SafeAreaView style={{ flex: 1 }}>
-                            <Header />
-                            <Divider className="my-0.5" />
                             {children}
                         </SafeAreaView>
                     </GluestackUIProvider>
