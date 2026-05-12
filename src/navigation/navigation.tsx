@@ -12,6 +12,7 @@ import ProjectsScreen from '../screens/ProjectsScreen';
 import LoansScreen from '../screens/LoansScreen';
 import ProgramingMessageScreen from '../screens/ProgramingMessageScreen';
 import EntrepreneurshipScreen from '../screens/EntrepreneurshipScreen';
+import RandomScreen from '../screens/RandomScreen';
 
 const RootStack = createNativeStackNavigator({
     screenOptions: {
@@ -26,6 +27,10 @@ const RootStack = createNativeStackNavigator({
         NotesScreen: {
             screen: NotesScreen,
             options: { title: 'Notes' },
+        },
+        RandomScreen: {
+            screen: RandomScreen,
+            options: { title: 'Random' },
         },
         BirthdaysScreen: {
             screen: BirthdaysScreen,

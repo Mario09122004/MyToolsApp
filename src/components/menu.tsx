@@ -10,6 +10,10 @@ const options = [
         screenName: 'NotesScreen',
     },
     {
+        name: 'Random',
+        screenName: 'RandomScreen',
+    },
+    {
         name: 'Birthdays',
         screenName: 'BirthdaysScreen',
     },
