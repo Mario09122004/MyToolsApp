@@ -4,50 +4,38 @@ import { Divider } from "@/components/ui/divider"
 import { ScrollView } from "react-native"
 import { Text } from '@/components/ui/text';
 
-import { NavigationProp } from '@react-navigation/native';
-
 const options = [
     {
         name: 'Notes',
         screenName: 'NotesScreen',
-        icon: 'tasks',
-        action: () => console.log('Go to Notes')
     },
     {
         name: 'Birthdays',
         screenName: 'BirthdaysScreen',
-        icon: 'settings',
-        action: () => console.log('Go to Birthdays')
     },
     {
         name: 'Habits',
-        icon: 'info',
-        action: () => console.log('Go to Habits')
+        screenName: 'HabitsScreen',
     },
     {
         name: 'Tasks',
-        icon: 'info',
-        action: () => console.log('Go to Tasks')
+        screenName: 'TasksScreen',
     },
     {
         name: 'Projects',
-        icon: 'info',
-        action: () => console.log('Go to Projects')
+        screenName: 'ProjectsScreen',
     },
     {
         name: 'Loans',
-        icon: 'info',
-        action: () => console.log('Go to Loans')
+        screenName: 'LoansScreen',
     },
     {
         name: 'Programing message',
-        icon: 'info',
-        action: () => console.log('Go to Programing message')
+        screenName: 'ProgramingMessageScreen',
     },
     {
         name: 'Entrepreneurship',
-        icon: 'info',
-        action: () => console.log('Go to Entrepreneurship')
+        screenName: 'EntrepreneurshipScreen',
     }
 ]
 export const MenuOptions = ({ navigation }: { navigation: any }) => {
@@ -57,7 +45,7 @@ export const MenuOptions = ({ navigation }: { navigation: any }) => {
             {options.map((option, index) => {
                 return (
                     <Box key={index}>
-                        <Button onPress={() => option.screenName ? navigation.navigate(option.screenName as never) : option.action()} className="bg-transparent" size="lg">
+                        <Button onPress={() => navigation.navigate(option.screenName as never)} className="bg-transparent" size="lg">
                             <ButtonText size="xl" className="dark:color-white color-black">
                                 {option.name}
                             </ButtonText>

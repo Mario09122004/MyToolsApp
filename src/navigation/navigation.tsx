@@ -6,6 +6,12 @@ import BirthdaysScreen from '@/src/screens/BirthdaysScreen';
 
 import { Header } from '@/src/components/Header';
 import { Divider } from '@/components/ui/divider';
+import HabitsScreen from '../screens/HabitsScreen';
+import TasksScreen from '../screens/TasksScreen';
+import ProjectsScreen from '../screens/ProjectsScreen';
+import LoansScreen from '../screens/LoansScreen';
+import ProgramingMessageScreen from '../screens/ProgramingMessageScreen';
+import EntrepreneurshipScreen from '../screens/EntrepreneurshipScreen';
 
 const RootStack = createNativeStackNavigator({
     screenOptions: {
@@ -24,6 +30,30 @@ const RootStack = createNativeStackNavigator({
         BirthdaysScreen: {
             screen: BirthdaysScreen,
             options: { title: 'Birthdays' },
+        },
+        HabitsScreen: {
+            screen: HabitsScreen,
+            options: { title: 'Habits' },
+        },
+        TasksScreen: {
+            screen: TasksScreen,
+            options: { title: 'Tasks' },
+        },
+        ProjectsScreen: {
+            screen: ProjectsScreen,
+            options: { title: 'Projects' },
+        },
+        LoansScreen: {
+            screen: LoansScreen,
+            options: { title: 'Loans' },
+        },
+        ProgramingMessageScreen: {
+            screen: ProgramingMessageScreen,
+            options: { title: 'Programing message' },
+        },
+        EntrepreneurshipScreen: {
+            screen: EntrepreneurshipScreen,
+            options: { title: 'Entrepreneurship' },
         },
     },
 });
