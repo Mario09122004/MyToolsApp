@@ -72,7 +72,7 @@ export const Header = () => {
                             }}
                             className="w-full"
                         >
-                            <ButtonText>Cancel</ButtonText>
+                            <ButtonText>Close menu</ButtonText>
                         </Button>
                     </DrawerFooter>
                 </DrawerContent>
