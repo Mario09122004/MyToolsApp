@@ -38,14 +38,17 @@ const options = [
         screenName: 'EntrepreneurshipScreen',
     }
 ]
-export const MenuOptions = ({ navigation }: { navigation: any }) => {
+export const MenuOptions = ({ navigation, handleClose }: { navigation: any, handleClose: () => void }) => {
 
     return (
         <ScrollView>
             {options.map((option, index) => {
                 return (
                     <Box key={index}>
-                        <Button onPress={() => navigation.navigate(option.screenName as never)} className="bg-transparent" size="lg">
+                        <Button className="bg-transparent" size="lg" onPress={() => {
+                            handleClose();
+                            navigation.navigate(option.screenName as never);
+                        }}>
                             <ButtonText size="xl" className="dark:color-white color-black">
                                 {option.name}
                             </ButtonText>

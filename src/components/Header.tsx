@@ -28,7 +28,6 @@ export const Header = () => {
         <Box className='p-4 flex-row items-center'>
             <Button
                 onPress={() => {
-                    console.log('Menu button pressed');
                     setShowDrawer(true);
                 }}
                 className=''
@@ -59,7 +58,7 @@ export const Header = () => {
 
                     <DrawerBody className="mt-2" >
 
-                        <MenuOptions navigation={navigation} />
+                        <MenuOptions navigation={navigation} handleClose={() => setShowDrawer(false)} />
 
                     </DrawerBody>
 
