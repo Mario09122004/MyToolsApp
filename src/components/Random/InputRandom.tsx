@@ -15,11 +15,14 @@ export const InputRandom = () => {
 
     const textInput = (text: string) => {
         setOptions(text);
-        console.log(options);
+        handleSeparateOptions(text)
     }
 
     const handleSeparateOptions = (text: string) => {
-        console.log("Texto separado: ", text.split("\n"));
+        console.log("Texto: ", text);
+        const opciones = text.split("\n")
+        console.log("Texto separado: ", opciones);
+        console.log("cantidad de opciones: ", opciones.length)
     }
 
     return (
