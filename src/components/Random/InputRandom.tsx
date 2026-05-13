@@ -19,7 +19,6 @@ export const InputRandom = () => {
     }
 
     const handleSeparateOptions = (text: string) => {
-        console.log("Texto: ", text);
         const opciones = text.split("\n")
         console.log("Texto separado: ", opciones);
         console.log("cantidad de opciones: ", opciones.length)
@@ -32,7 +31,7 @@ export const InputRandom = () => {
                     <FormControlLabelText>Write the options.</FormControlLabelText>
                 </FormControlLabel>
                 <Textarea>
-                    <TextareaInput placeholder="Option 1, \n Option 2, \n Option 3 ..." className="w-full" value={options} onChangeText={(text) => textInput(text)} />
+                    <TextareaInput placeholder={`Option 1\nOption 2\nOption 3\n...\nOption N`} className="w-full" value={options} onChangeText={(text) => textInput(text)} />
                 </Textarea>
                 <FormControlHelper>
                     <FormControlHelperText>Separate each option by enter.</FormControlHelperText>
