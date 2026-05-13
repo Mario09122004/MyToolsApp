@@ -9,9 +9,12 @@ import {
     FormControlHelperText,
 } from '@/components/ui/form-control';
 import { useState } from "react";
+import { Divider } from "@/components/ui/divider";
+import { Roulette } from "./Roulette";
 
 export const InputRandom = () => {
-    const [options, setOptions] = useState("")
+    const [options, setOptions] = useState("");
+    const [arrayOptions, setArrayOptions] = useState<String[]>([])
 
     const textInput = (text: string) => {
         setOptions(text);
@@ -22,6 +25,7 @@ export const InputRandom = () => {
         const opciones = text.split("\n")
         console.log("Texto separado: ", opciones);
         console.log("cantidad de opciones: ", opciones.length)
+        setArrayOptions(opciones);
     }
 
     return (
@@ -37,6 +41,8 @@ export const InputRandom = () => {
                     <FormControlHelperText>Separate each option by enter.</FormControlHelperText>
                 </FormControlHelper>
             </FormControl>
+            <Divider />
+            <Roulette options={arrayOptions} />
         </View>
     )
 }

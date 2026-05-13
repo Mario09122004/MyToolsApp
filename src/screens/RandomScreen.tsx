@@ -4,7 +4,7 @@ import { InputRandom } from "@/src/components/Random/InputRandom"
 
 export default function RandomScreen() {
     return (
-        <View className="p-1 bg-green-500">
+        <View className="p-1 bg-green-500 h-full">
             <Instruction />
             <InputRandom />
         </View>
