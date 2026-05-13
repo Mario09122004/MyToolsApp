@@ -7,6 +7,7 @@ const OptionsRoulette = { option: String }
 
 export const Roulette = ({ options }: { options: String[] }) => {
     const [option, setOption] = useState<String[]>(options);
+    const [rotation, setRotation] = useState<number>(option.length / 360);
 
     if (options.length < 2) {
         return (
@@ -22,7 +23,7 @@ export const Roulette = ({ options }: { options: String[] }) => {
                 <Circle cx="50" cy="50" r="45" stroke="red" strokeWidth="2.5" fill="green" />
                 {
                     option.map((data, index) => (
-                        <Line x1="50" y1="50" x2="50" y2="5" stroke="red" strokeWidth="2.5" transform={`rotate(${index * 5}, 50, 50)`} key={index} />
+                        <Line x1="50" y1="50" x2="50" y2="5" stroke="red" strokeWidth="2.5" transform={`rotate(${index * rotation}, 50, 50)`} key={index} />
                     ))
                 }
                 <Line x1="50" y1="50" x2="50" y2="5" stroke="black" strokeWidth="2.5" transform="rotate(0, 50, 50)" />
