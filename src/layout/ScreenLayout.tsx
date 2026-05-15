@@ -13,6 +13,9 @@ import { drizzle } from 'drizzle-orm/expo-sqlite';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import migrations from '@/drizzle/migrations';
 
+//
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 export const DATABASE_NAME = 'tasks.db';
 const expoDb = openDatabaseSync(DATABASE_NAME);
 const db = drizzle(expoDb);
@@ -48,7 +51,9 @@ export const ScreenLayout = ({ children }: { children: React.ReactNode }) => {
                 <SafeAreaProvider>
                     <GluestackUIProvider>
                         <SafeAreaView style={{ flex: 1 }}>
-                            {children}
+                            <GestureHandlerRootView>
+                                {children}
+                            </GestureHandlerRootView>
                         </SafeAreaView>
                     </GluestackUIProvider>
                 </SafeAreaProvider >
