@@ -7,6 +7,7 @@ const OptionsRoulette = { option: String }
 export const Roulette = ({ options }: { options: String[] }) => {
     const [option, setOption] = useState<String[]>(options);
     const [rotation, setRotation] = useState<number>(0);
+    const [textRotation, setTextRotation] = useState(0);
 
     console.log("opciones entraas:", option)
     console.log("Rotacion: ", rotation)
@@ -17,6 +18,7 @@ export const Roulette = ({ options }: { options: String[] }) => {
         console.log(option.length)
         setRotation(360 / option.length)
         console.log("Rotacion: ", rotation)
+        setTextRotation(rotation / 2)
     }, [option, rotation, options])
 
     if (options.length < 2) {
@@ -34,7 +36,13 @@ export const Roulette = ({ options }: { options: String[] }) => {
                 {
                     option.map((data, index) => (
                         <>
-                            <Text transform={`rotate(${index * rotation}, 50, 50)`}>{data}</Text>
+                            <Text
+                                x="50" y="20"
+                                textAnchor="middle"
+                                transform={`rotate(${textRotation + (index * rotation)}, 50, 50)`}
+                            >
+                                {data}
+                            </Text>
                             <Line x1="50" y1="50" x2="50" y2="5" stroke="red" strokeWidth="2.5" transform={`rotate(${index * rotation}, 50, 50)`} key={index} />
                         </>
                     ))
