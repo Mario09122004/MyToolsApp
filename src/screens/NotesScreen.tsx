@@ -32,14 +32,21 @@ import { useModalNotes } from '@/src/hooks/notes/modalAdd';
 import { useCRUDNotes } from '@/src/hooks/notes/noteAdd';
 
 //Types
-import { NoteForm } from '@/src/types/Notes/NoteForm';
 import { useNoteModalDelete } from '@/src/hooks/notes/noteDeleteModal';
 import { Task } from '@/db/schema';
 import { NoteItem } from '../components/Notes/noteItem';
 import { ButtonAddNote } from '../components/Notes/buttonAddNote';
 import { FormNote } from '../components/Notes/formNote';
+import { name_Screen } from '../helpers/name_screen';
 
 export default function NotesScreen() {
+    //Name screen
+    const { changeNameScreen } = name_Screen();
+
+    useEffect(() => {
+        changeNameScreen("Notes")
+    }, [])
+
     //init Hooks
     const { addNoteModalVisible, openAddModal, closeAddModal } = useModalNotes();
     const { deleteConfirmModalVisible, openDeleteModal, closeDeleteModal, idNote } = useNoteModalDelete();

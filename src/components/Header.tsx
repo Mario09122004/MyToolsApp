@@ -18,11 +18,13 @@ import { MenuOptions } from "./menu";
 import { Divider } from "@/components/ui/divider";
 
 import { useNavigation } from '@react-navigation/native';
+import { name_Screen } from "../helpers/name_screen";
 
 export const Header = () => {
     const [showDrawer, setShowDrawer] = useState(false);
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
+    const { nameScreen } = name_Screen();
 
     return (
         <Box className='p-4 flex-row items-center'>
@@ -35,7 +37,7 @@ export const Header = () => {
                 <Icon as={MenuIcon} />
             </Button>
             <Heading className="mx-5 w-4/5" size="xl">
-                Title of the componentes
+                {nameScreen}
             </Heading>
             <Drawer
                 isOpen={showDrawer}
