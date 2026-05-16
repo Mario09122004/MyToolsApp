@@ -3,8 +3,6 @@ import { View } from "react-native";
 import Svg, { Circle, Rect, Line, Text } from 'react-native-svg';
 import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-gesture-handler';
 
-const OptionsRoulette = { option: String }
-
 export const Roulette = ({ options }: { options: String[] }) => {
     const [option, setOption] = useState<String[]>(options);
     const [rotation, setRotation] = useState<number>(0);
