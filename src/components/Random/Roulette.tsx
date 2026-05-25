@@ -89,14 +89,11 @@ export const Roulette = ({ options }: { options: String[] }) => {
 
     return (
         <>
-        <View className="items-center w-full bg-blue-600 aspect-square">
+        <View className="items-center w-full aspect-square">
             <GestureHandlerRootView style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
                 <GestureDetector gesture={panGesture}>
                     <Animated.View style={[wheelAnimatedStyle, { width: "100%", height: "100%" }]} >
                         <Svg height="100%" width="100%"viewBox="0 0 100 100">
-                            
-                            <Rect x="0" y="0" width="100%" height="100%" fill="orange" />
-
                             <Circle cx="50" cy="50" r="45" stroke="red" strokeWidth="0.5" fill="green" />
                             {
                                 option.map((data, index) => (
@@ -117,7 +114,7 @@ export const Roulette = ({ options }: { options: String[] }) => {
                 </GestureDetector>
             </GestureHandlerRootView>
         </View>
-        <View className="bg-red-600 h-[10%] w-full -mt-16">
+        <View className="h-[10%] w-full -mt-16">
             <Arrow />
         </View>
         </>
