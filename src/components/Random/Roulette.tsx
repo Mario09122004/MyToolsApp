@@ -45,7 +45,11 @@ export const Roulette = ({ options }: { options: String[] }) => {
             rotate.value = withDecay({
                 velocity: event.velocityX * 0.5,
                 deceleration: 0.9999,
-            });
+            },
+            (finished) => {
+                console.log("finished", finished);
+            }
+        );
         });
         
     const wheelAnimatedStyle = useAnimatedStyle(() => {
@@ -94,7 +98,7 @@ export const Roulette = ({ options }: { options: String[] }) => {
                 </GestureDetector>
             </GestureHandlerRootView>
         </View>
-        <View className="h-[10%] w-full -mt-16">
+        <View className="bg-red-600 h-[10%] w-full -mt-16">
             <Arrow />
         </View>
         </>
