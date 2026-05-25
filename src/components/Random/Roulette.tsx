@@ -31,7 +31,21 @@ export const Roulette = ({ options }: { options: String[] }) => {
     const startRotation = useSharedValue(0);
 
     const reportDegrees = (degrees: number) =>{
-        console.log("Total degrees: ",degrees.toFixed(2))
+        let cleanDegrees = Math.round(degrees + 180) % 360;
+        if (cleanDegrees < 0) {
+            cleanDegrees += 360;
+        }
+
+        let targetAngle = (360 - cleanDegrees) % 360;
+
+        const sliceSize = 360 / option.length;
+
+        //Discover the index of the winner with floor which rounded to down value
+        const selectedIndex = Math.floor(targetAngle / sliceSize);
+        const winnerOption = option[selectedIndex];
+
+        // Winner
+        console.log(`The winner option is: ${winnerOption}`);
     }
 
     const panGesture = Gesture.Pan()
