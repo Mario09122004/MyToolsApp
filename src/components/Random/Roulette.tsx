@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import Svg, { Circle, Rect, Line, Text, Polygon, G } from 'react-native-svg';
 import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-gesture-handler';
-import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import Animated, { runOnJS, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { withDecay } from 'react-native-reanimated';
 import { Text as TextApp } from "@/components/ui/text";
 import { Arrow } from "./arrow";
@@ -30,6 +30,10 @@ export const Roulette = ({ options }: { options: String[] }) => {
     //Check if detec the speed of the roulette in terminal
     const startRotation = useSharedValue(0);
 
+    const reportDegrees = (degrees: number) =>{
+        console.log("Total degrees: ",degrees.toFixed(2))
+    }
+
     const panGesture = Gesture.Pan()
         .onStart((event) => {
             //init with 0
@@ -48,6 +52,7 @@ export const Roulette = ({ options }: { options: String[] }) => {
             },
             (finished) => {
                 console.log("finished", finished);
+                runOnJS(reportDegrees)(rotate.value);
             }
         );
         });
