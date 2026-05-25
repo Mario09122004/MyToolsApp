@@ -23,9 +23,8 @@ export const InputRandom = () => {
 
     const handleSeparateOptions = (text: string) => {
         const opciones = text.split("\n")
-        console.log("Texto separado: ", opciones);
-        console.log("cantidad de opciones: ", opciones.length)
-        setArrayOptions(opciones);
+        const cleanOptions = opciones.filter(opcion => opcion.trim() !== "");
+        setArrayOptions(cleanOptions);
     }
 
     return (
