@@ -5,6 +5,7 @@ import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-g
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { withDecay } from 'react-native-reanimated';
 import { Text as TextApp } from "@/components/ui/text";
+import { Arrow } from "./arrow";
 
 export const Roulette = ({ options }: { options: String[] }) => {
     const [option, setOption] = useState<String[]>(options);
@@ -31,17 +32,15 @@ export const Roulette = ({ options }: { options: String[] }) => {
 
     const panGesture = Gesture.Pan()
         .onStart((event) => {
+            //init with 0
             startRotation.value = rotate.value;
-            //console.log("Inicio - X:", event.x.toFixed(2), "Y:", event.y.toFixed(2));
         })
         .onUpdate((event) => {
-            rotate.value = startRotation.value + (event.translationX * 0.2);
-            /*if (Math.abs(event.translationX) % 20 < 2) {
-                console.log("Movimiento X:", event.translationX.toFixed(2));
-            }*/
+            //add speed in rotation
+            rotate.value = startRotation.value + (event.translationX * -0.2);
         })
         .onEnd((event) => {
-            //console.log("Fin - Velocidad final:", event.velocityX.toFixed(2));
+            // start to slowing down 
             console.log("slowing down...");
             rotate.value = withDecay({
                 velocity: event.velocityX * 0.5,
@@ -66,12 +65,16 @@ export const Roulette = ({ options }: { options: String[] }) => {
     }
 
     return (
-        <View className="bg-blue-500 items-center w-full h-3/5">
+        <>
+        <View className="items-center w-full bg-blue-600 aspect-square">
             <GestureHandlerRootView style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
                 <GestureDetector gesture={panGesture}>
                     <Animated.View style={[wheelAnimatedStyle, { width: "100%", height: "100%" }]} >
-                        <Svg height="100%" width="100%" viewBox="0 0 100 100" className="bg-red-600">
-                            <Circle cx="50" cy="50" r="45" stroke="red" strokeWidth="1.5" fill="green" />
+                        <Svg height="100%" width="100%"viewBox="0 0 100 100">
+                            
+                            <Rect x="0" y="0" width="100%" height="100%" fill="orange" />
+
+                            <Circle cx="50" cy="50" r="45" stroke="red" strokeWidth="0.5" fill="green" />
                             {
                                 option.map((data, index) => (
                                     <G key={index}>
@@ -86,15 +89,15 @@ export const Roulette = ({ options }: { options: String[] }) => {
                                     </G>
                                 ))
                             }
-                            <Polygon
-                                points="50,75 40,100 60,100"
-                                fill="yellow"
-                            />
                         </Svg>
                     </Animated.View>
                 </GestureDetector>
             </GestureHandlerRootView>
         </View>
+        <View className="h-[10%] w-full -mt-16">
+            <Arrow />
+        </View>
+        </>
     )
 }
 
