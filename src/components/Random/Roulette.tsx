@@ -45,7 +45,7 @@ export const Roulette = ({ options }: { options: String[] }) => {
             console.log("slowing down...");
             rotate.value = withDecay({
                 velocity: event.velocityX * 0.5,
-                deceleration: 0.995,
+                deceleration: 0.9999,
             });
         });
         
@@ -74,7 +74,7 @@ export const Roulette = ({ options }: { options: String[] }) => {
                             <Circle cx="50" cy="50" r="45" stroke="red" strokeWidth="1.5" fill="green" />
                             {
                                 option.map((data, index) => (
-                                    <G key={index} >
+                                    <G key={index}>
                                         <Text
                                             x="50" y="20"
                                             textAnchor="middle"
