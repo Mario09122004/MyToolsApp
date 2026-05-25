@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
-import Svg, { Circle, Rect, Line, Text } from 'react-native-svg';
+import Svg, { Circle, Rect, Line, Text, Polygon } from 'react-native-svg';
 import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export const Roulette = ({ options }: { options: String[] }) => {
@@ -62,6 +62,10 @@ export const Roulette = ({ options }: { options: String[] }) => {
                                 </View>
                             ))
                         }
+                        <Polygon
+                            points="50,75 40,100 60,100"
+                            fill="yellow"
+                        />
                     </Svg>
                 </GestureDetector>
             </GestureHandlerRootView>
