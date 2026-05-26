@@ -1,28 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
-import Svg, { Circle, Rect, Line, Text, Polygon, G } from 'react-native-svg';
+import Svg, { Circle, Line, Text, G } from 'react-native-svg';
 import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { withDecay } from 'react-native-reanimated';
 import { Text as TextApp } from "@/components/ui/text";
 import { Arrow } from "./arrow";
 
-export const Roulette = ({ options }: { options: String[] }) => {
+import {
+  Modal,
+  ModalBackdrop,
+  ModalContent,
+  ModalBody,
+  ModalFooter,
+} from '@/components/ui/modal';
+import { Button, ButtonText } from '@/components/ui/button';
+
+export const Roulette = ({ options, setWriteOptions, setOptions }: { options: String[], setWriteOptions: (writeoptions: boolean) => void, setOptions: (options:string) => void }) => {
     const [option, setOption] = useState<String[]>(options);
     const [rotation, setRotation] = useState<number>(0);
     const [textRotation, setTextRotation] = useState(0);
+    //Modal
+    const [showModal, setShowModal] = React.useState(false);
+    const [winnerName, setWinnerName] = useState("");
 
-    console.log("opciones entraas:", option)
-    console.log("Rotacion: ", rotation)
     useEffect(() => {
-        console.log("Recreqando...")
         setOption(options);
-        console.log("opciones:", option)
-        console.log(option.length)
-        setRotation(360 / option.length)
-        console.log("Rotacion: ", rotation)
-        setTextRotation(rotation / 2)
-    }, [option, rotation, options])
+        if (options.length > 0) {
+            const newRotation = 360 / options.length;
+            setRotation(newRotation);
+            setTextRotation(newRotation / 2);
+        }
+    }, [options])
 
     //Animation
     const rotate = useSharedValue(0);
@@ -45,13 +54,19 @@ export const Roulette = ({ options }: { options: String[] }) => {
         const winnerOption = option[selectedIndex];
 
         // Winner
-        console.log(`The winner option is: ${winnerOption}`);
+        setWinnerNameModal(winnerOption as string);
+    }
+    
+    const setWinnerNameModal = async (name: string) =>{
+        await setWinnerName(name.toString());
+        setShowModal(true);
     }
 
     const panGesture = Gesture.Pan()
         .onStart((event) => {
             //init with 0
             startRotation.value = rotate.value;
+            runOnJS(setWriteOptions)(true);
         })
         .onUpdate((event) => {
             //add speed in rotation
@@ -59,13 +74,11 @@ export const Roulette = ({ options }: { options: String[] }) => {
         })
         .onEnd((event) => {
             // start to slowing down 
-            console.log("slowing down...");
             rotate.value = withDecay({
                 velocity: event.velocityX * 0.5,
                 deceleration: 0.9999,
             },
             (finished) => {
-                console.log("finished", finished);
                 runOnJS(reportDegrees)(rotate.value);
             }
         );
@@ -79,10 +92,10 @@ export const Roulette = ({ options }: { options: String[] }) => {
             };
     });
 
-    if (options.length < 2) {
+    if (options.length < 1) {
         return (
             <View>
-                <TextApp>Agrega al menos 2 opciones</TextApp>
+                <TextApp>Add options to the roulette.</TextApp>
             </View>
         )
     }
@@ -94,18 +107,19 @@ export const Roulette = ({ options }: { options: String[] }) => {
                 <GestureDetector gesture={panGesture}>
                     <Animated.View style={[wheelAnimatedStyle, { width: "100%", height: "100%" }]} >
                         <Svg height="100%" width="100%"viewBox="0 0 100 100">
-                            <Circle cx="50" cy="50" r="45" stroke="red" strokeWidth="0.5" fill="green" />
+                            <Circle cx="50" cy="50" r="45" stroke="#969696" strokeWidth="0.5" fill="#c3073f" />
                             {
                                 option.map((data, index) => (
                                     <G key={index}>
                                         <Text
                                             x="50" y="20"
                                             textAnchor="middle"
+                                            fill="#969696"
                                             transform={`rotate(${textRotation + (index * rotation)}, 50, 50)`}
                                         >
                                             {data}
                                         </Text>
-                                        <Line x1="50" y1="50" x2="50" y2="5" stroke="red" strokeWidth="1" transform={`rotate(${index * rotation}, 50, 50)`} />
+                                        <Line x1="50" y1="50" x2="50" y2="5" stroke="#969696" strokeWidth="1" transform={`rotate(${index * rotation}, 50, 50)`} />
                                     </G>
                                 ))
                             }
@@ -117,6 +131,57 @@ export const Roulette = ({ options }: { options: String[] }) => {
         <View className="h-[10%] w-full -mt-16">
             <Arrow />
         </View>
+        <Modal
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false);
+          setWriteOptions(false);
+        }}
+        size="md"
+      >
+        <ModalBackdrop />
+        <ModalContent>
+          <ModalBody>
+            <TextApp 
+                className="text-center text-5xl font-bold text-[#FF0000]"
+                numberOfLines={1}
+                adjustsFontSizeToFit
+            >
+                {winnerName}
+            </TextApp>
+          </ModalBody>
+          <ModalFooter className="justify-center">
+            <Button
+              onPress={() => {
+                setShowModal(false);
+                setWriteOptions(false);
+              }}
+              className="w-1/2 text-center"
+            >
+              <ButtonText>
+                Ok
+              </ButtonText>
+            </Button>
+            <Button
+              onPress={() => {
+                setShowModal(false);
+                setWriteOptions(false);
+                const newOptions = option.filter((_, index) => index !== option.indexOf(winnerName));
+                setOption(newOptions);
+                const stringOptions = newOptions.join("\n");
+                setOptions(stringOptions);
+              }}
+              className="w-1/2 text-center"
+              variant="outline"
+            >
+              <ButtonText>
+                Discart option
+              </ButtonText>
+            </Button>
+
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
         </>
     )
 }
