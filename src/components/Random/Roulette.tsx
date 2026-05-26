@@ -166,11 +166,8 @@ export const Roulette = ({ options, setWriteOptions, setOptions }: { options: St
               onPress={() => {
                 setShowModal(false);
                 setWriteOptions(false);
-
                 const newOptions = option.filter((_, index) => index !== option.indexOf(winnerName));
-                console.log(newOptions);
                 setOption(newOptions);
-
                 const stringOptions = newOptions.join("\n");
                 setOptions(stringOptions);
               }}
