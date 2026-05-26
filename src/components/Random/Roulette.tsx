@@ -139,11 +139,10 @@ export const Roulette = ({ options }: { options: String[] }) => {
       >
         <ModalBackdrop />
         <ModalContent>
-          <ModalHeader>
-            <Heading size="lg">El ganador es:</Heading>
-          </ModalHeader>
           <ModalBody>
-            <TextApp>{winnerName}</TextApp>
+            <TextApp 
+            className="text-center text-9xl font-bold text-red-600"
+            >{winnerName}</TextApp>
           </ModalBody>
           <ModalFooter>
             <Button
