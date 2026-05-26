@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/modal';
 import { Button, ButtonText } from '@/components/ui/button';
 
-export const Roulette = ({ options, setWriteOptions }: { options: String[], setWriteOptions: (writeoptions: boolean) => void }) => {
+export const Roulette = ({ options, setWriteOptions, setOptions }: { options: String[], setWriteOptions: (writeoptions: boolean) => void, setOptions: (options:string) => void }) => {
     const [option, setOption] = useState<String[]>(options);
     const [rotation, setRotation] = useState<number>(0);
     const [textRotation, setTextRotation] = useState(0);
@@ -147,19 +147,35 @@ export const Roulette = ({ options, setWriteOptions }: { options: String[], setW
                 {winnerName}
             </TextApp>
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter className="justify-center">
             <Button
               onPress={() => {
                 setShowModal(false);
                 setWriteOptions(false);
               }}
+              className="w-1/2 text-center"
             >
-              <ButtonText
-                className="w-full text-center"
-              >
+              <ButtonText>
                 Ok
               </ButtonText>
             </Button>
+            <Button
+              onPress={() => {
+                setShowModal(false);
+                setWriteOptions(false);
+
+                const newOptions = option.filter((_, index) => index !== option.indexOf(winnerName));
+                const stringOptions = newOptions.join("\n");
+                setOptions(stringOptions);
+              }}
+              className="w-1/2 text-center"
+              variant="outline"
+            >
+              <ButtonText>
+                Discart option
+              </ButtonText>
+            </Button>
+
           </ModalFooter>
         </ModalContent>
       </Modal>

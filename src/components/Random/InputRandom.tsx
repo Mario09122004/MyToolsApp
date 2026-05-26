@@ -47,7 +47,7 @@ export const InputRandom = () => {
                 </FormControlHelper>
             </FormControl>
             <Divider />
-            <Roulette options={arrayOptions} setWriteOptions={setWriteOptions}/>
+            <Roulette options={arrayOptions} setWriteOptions={setWriteOptions} setOptions={setOptions}/>
         </View>
     )
 }
