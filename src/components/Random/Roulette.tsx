@@ -7,10 +7,26 @@ import { withDecay } from 'react-native-reanimated';
 import { Text as TextApp } from "@/components/ui/text";
 import { Arrow } from "./arrow";
 
+import {
+  Modal,
+  ModalBackdrop,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+} from '@/components/ui/modal';
+import { Button, ButtonText } from '@/components/ui/button';
+import { Heading } from '@/components/ui/heading';
+import { Icon, CloseIcon } from '@/components/ui/icon';
+
 export const Roulette = ({ options }: { options: String[] }) => {
     const [option, setOption] = useState<String[]>(options);
     const [rotation, setRotation] = useState<number>(0);
     const [textRotation, setTextRotation] = useState(0);
+    //Modal
+    const [showModal, setShowModal] = React.useState(false);
+    const [winnerName, setWinnerName] = useState("");
 
     console.log("opciones entraas:", option)
     console.log("Rotacion: ", rotation)
@@ -45,7 +61,14 @@ export const Roulette = ({ options }: { options: String[] }) => {
         const winnerOption = option[selectedIndex];
 
         // Winner
-        console.log(`The winner option is: ${winnerOption}`);
+        setWinnerNameModal(winnerOption as string);
+    }
+    
+    const setWinnerNameModal = async (name: string) =>{
+        console.log(`The winner option is (correct): ${name}`);
+        await setWinnerName(name.toString());
+        console.log("Winner Name (Modal): ", winnerName)
+        setShowModal(true);
     }
 
     const panGesture = Gesture.Pan()
@@ -117,6 +140,39 @@ export const Roulette = ({ options }: { options: String[] }) => {
         <View className="h-[10%] w-full -mt-16">
             <Arrow />
         </View>
+        <Modal
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false);
+        }}
+        size="md"
+      >
+        <ModalBackdrop />
+        <ModalContent>
+          <ModalHeader>
+            <Heading size="lg">El ganador es:</Heading>
+          </ModalHeader>
+          <ModalBody className="bg-red-600">
+            <Text>
+                {winnerName}
+                aaaaa
+            </Text>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              onPress={() => {
+                setShowModal(false);
+              }}
+            >
+              <ButtonText
+                className="w-full text-center"
+              >
+                Ok
+              </ButtonText>
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
         </>
     )
 }
