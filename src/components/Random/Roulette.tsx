@@ -107,18 +107,19 @@ export const Roulette = ({ options }: { options: String[] }) => {
                 <GestureDetector gesture={panGesture}>
                     <Animated.View style={[wheelAnimatedStyle, { width: "100%", height: "100%" }]} >
                         <Svg height="100%" width="100%"viewBox="0 0 100 100">
-                            <Circle cx="50" cy="50" r="45" stroke="red" strokeWidth="0.5" fill="green" />
+                            <Circle cx="50" cy="50" r="45" stroke="#969696" strokeWidth="0.5" fill="#c3073f" />
                             {
                                 option.map((data, index) => (
                                     <G key={index}>
                                         <Text
                                             x="50" y="20"
                                             textAnchor="middle"
+                                            fill="#969696"
                                             transform={`rotate(${textRotation + (index * rotation)}, 50, 50)`}
                                         >
                                             {data}
                                         </Text>
-                                        <Line x1="50" y1="50" x2="50" y2="5" stroke="red" strokeWidth="1" transform={`rotate(${index * rotation}, 50, 50)`} />
+                                        <Line x1="50" y1="50" x2="50" y2="5" stroke="#969696" strokeWidth="1" transform={`rotate(${index * rotation}, 50, 50)`} />
                                     </G>
                                 ))
                             }
@@ -141,7 +142,7 @@ export const Roulette = ({ options }: { options: String[] }) => {
         <ModalContent>
           <ModalBody>
             <TextApp 
-                className="text-center text-5xl font-bold text-red-600"
+                className="text-center text-5xl font-bold text-[#FF0000]"
                 numberOfLines={1}
                 adjustsFontSizeToFit
             >
