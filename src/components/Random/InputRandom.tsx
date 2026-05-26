@@ -27,7 +27,7 @@ export const InputRandom = () => {
         const cleanOptions = opciones.filter(opcion => opcion.trim() !== "");
         setArrayOptions(cleanOptions);
     }
-
+    
     return (
         <View className="w-full p-2">
             <FormControl size="md" className="w-full p-2">
@@ -47,7 +47,7 @@ export const InputRandom = () => {
                 </FormControlHelper>
             </FormControl>
             <Divider />
-            <Roulette options={arrayOptions} setWriteOptions={setWriteOptions} setOptions={setOptions}/>
+            <Roulette options={arrayOptions} setWriteOptions={setWriteOptions} setOptions={textInput}/>
         </View>
     )
 }

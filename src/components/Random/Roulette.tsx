@@ -26,9 +26,12 @@ export const Roulette = ({ options, setWriteOptions, setOptions }: { options: St
 
     useEffect(() => {
         setOption(options);
-        setRotation(360 / option.length)
-        setTextRotation(rotation / 2)
-    }, [option, rotation, options])
+        if (options.length > 0) {
+            const newRotation = 360 / options.length;
+            setRotation(newRotation);
+            setTextRotation(newRotation / 2);
+        }
+    }, [options])
 
     //Animation
     const rotate = useSharedValue(0);
@@ -89,10 +92,10 @@ export const Roulette = ({ options, setWriteOptions, setOptions }: { options: St
             };
     });
 
-    if (options.length < 2) {
+    if (options.length < 1) {
         return (
             <View>
-                <TextApp>Agrega al menos 2 opciones</TextApp>
+                <TextApp>Add options to the roulette.</TextApp>
             </View>
         )
     }
@@ -165,6 +168,9 @@ export const Roulette = ({ options, setWriteOptions, setOptions }: { options: St
                 setWriteOptions(false);
 
                 const newOptions = option.filter((_, index) => index !== option.indexOf(winnerName));
+                console.log(newOptions);
+                setOption(newOptions);
+
                 const stringOptions = newOptions.join("\n");
                 setOptions(stringOptions);
               }}
