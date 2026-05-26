@@ -15,6 +15,7 @@ import { Roulette } from "./Roulette";
 export const InputRandom = () => {
     const [options, setOptions] = useState("");
     const [arrayOptions, setArrayOptions] = useState<String[]>([])
+    const [writeoptions, setWriteOptions] = useState<boolean>(false);
 
     const textInput = (text: string) => {
         setOptions(text);
@@ -33,15 +34,20 @@ export const InputRandom = () => {
                 <FormControlLabel>
                     <FormControlLabelText>Write the options.</FormControlLabelText>
                 </FormControlLabel>
-                <Textarea>
-                    <TextareaInput placeholder={`Option 1\nOption 2\nOption 3\n...\nOption N`} className="w-full" value={options} onChangeText={(text) => textInput(text)} />
+                <Textarea isDisabled={writeoptions}>
+                    <TextareaInput 
+                        placeholder={`Option 1\nOption 2\nOption 3\n...\nOption N`} 
+                        className="w-full" 
+                        value={options} 
+                        onChangeText={(text) => textInput(text)} 
+                    />
                 </Textarea>
                 <FormControlHelper>
                     <FormControlHelperText>Separate each option by enter.</FormControlHelperText>
                 </FormControlHelper>
             </FormControl>
             <Divider />
-            <Roulette options={arrayOptions} />
+            <Roulette options={arrayOptions} setWriteOptions={setWriteOptions}/>
         </View>
     )
 }

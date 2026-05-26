@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
-import Svg, { Circle, Rect, Line, Text, Polygon, G } from 'react-native-svg';
+import Svg, { Circle, Line, Text, G } from 'react-native-svg';
 import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { withDecay } from 'react-native-reanimated';
@@ -11,16 +11,12 @@ import {
   Modal,
   ModalBackdrop,
   ModalContent,
-  ModalHeader,
-  ModalCloseButton,
   ModalBody,
   ModalFooter,
 } from '@/components/ui/modal';
 import { Button, ButtonText } from '@/components/ui/button';
-import { Heading } from '@/components/ui/heading';
-import { Icon, CloseIcon } from '@/components/ui/icon';
 
-export const Roulette = ({ options }: { options: String[] }) => {
+export const Roulette = ({ options, setWriteOptions }: { options: String[], setWriteOptions: (writeoptions: boolean) => void }) => {
     const [option, setOption] = useState<String[]>(options);
     const [rotation, setRotation] = useState<number>(0);
     const [textRotation, setTextRotation] = useState(0);
@@ -67,6 +63,7 @@ export const Roulette = ({ options }: { options: String[] }) => {
         .onStart((event) => {
             //init with 0
             startRotation.value = rotate.value;
+            runOnJS(setWriteOptions)(true);
         })
         .onUpdate((event) => {
             //add speed in rotation
@@ -135,6 +132,7 @@ export const Roulette = ({ options }: { options: String[] }) => {
         isOpen={showModal}
         onClose={() => {
           setShowModal(false);
+          setWriteOptions(false);
         }}
         size="md"
       >
@@ -153,6 +151,7 @@ export const Roulette = ({ options }: { options: String[] }) => {
             <Button
               onPress={() => {
                 setShowModal(false);
+                setWriteOptions(false);
               }}
             >
               <ButtonText
