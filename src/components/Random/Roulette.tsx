@@ -141,8 +141,12 @@ export const Roulette = ({ options }: { options: String[] }) => {
         <ModalContent>
           <ModalBody>
             <TextApp 
-            className="text-center text-9xl font-bold text-red-600"
-            >{winnerName}</TextApp>
+                className="text-center text-5xl font-bold text-red-600"
+                numberOfLines={1}
+                adjustsFontSizeToFit
+            >
+                {winnerName}
+            </TextApp>
           </ModalBody>
           <ModalFooter>
             <Button
