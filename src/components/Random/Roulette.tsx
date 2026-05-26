@@ -28,15 +28,9 @@ export const Roulette = ({ options }: { options: String[] }) => {
     const [showModal, setShowModal] = React.useState(false);
     const [winnerName, setWinnerName] = useState("");
 
-    console.log("opciones entraas:", option)
-    console.log("Rotacion: ", rotation)
     useEffect(() => {
-        console.log("Recreqando...")
         setOption(options);
-        console.log("opciones:", option)
-        console.log(option.length)
         setRotation(360 / option.length)
-        console.log("Rotacion: ", rotation)
         setTextRotation(rotation / 2)
     }, [option, rotation, options])
 
@@ -65,9 +59,7 @@ export const Roulette = ({ options }: { options: String[] }) => {
     }
     
     const setWinnerNameModal = async (name: string) =>{
-        console.log(`The winner option is (correct): ${name}`);
         await setWinnerName(name.toString());
-        console.log("Winner Name (Modal): ", winnerName)
         setShowModal(true);
     }
 
@@ -82,13 +74,11 @@ export const Roulette = ({ options }: { options: String[] }) => {
         })
         .onEnd((event) => {
             // start to slowing down 
-            console.log("slowing down...");
             rotate.value = withDecay({
                 velocity: event.velocityX * 0.5,
                 deceleration: 0.9999,
             },
             (finished) => {
-                console.log("finished", finished);
                 runOnJS(reportDegrees)(rotate.value);
             }
         );
@@ -152,11 +142,8 @@ export const Roulette = ({ options }: { options: String[] }) => {
           <ModalHeader>
             <Heading size="lg">El ganador es:</Heading>
           </ModalHeader>
-          <ModalBody className="bg-red-600">
-            <Text>
-                {winnerName}
-                aaaaa
-            </Text>
+          <ModalBody>
+            <TextApp>{winnerName}</TextApp>
           </ModalBody>
           <ModalFooter>
             <Button
