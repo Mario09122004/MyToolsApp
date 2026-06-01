@@ -1,4 +1,3 @@
-import { Pressable } from '@/components/ui/pressable';
 import { Card } from '@/components/ui/card';
 import { Box } from '@/components/ui/box';
 import { Heading } from '@/components/ui/heading';

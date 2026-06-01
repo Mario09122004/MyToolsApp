@@ -50,11 +50,11 @@ export const ScreenLayout = ({ children }: { children: React.ReactNode }) => {
                 useSuspense>
                 <SafeAreaProvider>
                     <GluestackUIProvider>
-                        <SafeAreaView style={{ flex: 1 }}>
-                            <GestureHandlerRootView>
+                        <GestureHandlerRootView>
+                            <SafeAreaView style={{ flex: 1 }}>
                                 {children}
-                            </GestureHandlerRootView>
-                        </SafeAreaView>
+                            </SafeAreaView>
+                        </GestureHandlerRootView>
                     </GluestackUIProvider>
                 </SafeAreaProvider >
             </SQLiteProvider>
