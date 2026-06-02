@@ -63,7 +63,6 @@ export const ButtonAddBirthday = () => {
                         <InputField placeholder="Enter Name" />
                     </Input>
 
-                    {/* Muestra la fecha seleccionada en el botón */}
                     <Button onPress={() => setOpen(true)}>
                         <ButtonText>
                             {date.toLocaleDateString() === new Date().toLocaleDateString() 
@@ -74,12 +73,12 @@ export const ButtonAddBirthday = () => {
 
                     <DatePicker
                         modal
-                        open={open} // CORRECCIÓN: Usa el estado 'open', no 'modalOpen'
-                        date={date} // CORRECCIÓN: Usa el estado 'date', no 'new Date()' directamente
-                        mode="date" // Opcional: restringe para que solo pida fecha y no hora
+                        open={open}
+                        date={date}
+                        mode="date"
                         onConfirm={(selectedDate) => {
-                            setOpen(false) // CORRECCIÓN: Cierra solo el calendario
-                            setDate(selectedDate) // CORRECCIÓN: Guarda la fecha seleccionada
+                            setOpen(false)
+                            setDate(selectedDate)
                         }}
                         onCancel={() => {
                             setOpen(false)
