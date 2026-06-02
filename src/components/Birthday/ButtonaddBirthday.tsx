@@ -14,9 +14,13 @@ import { Button, ButtonText } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
 import { Icon, CloseIcon } from '@/components/ui/icon';
+import DatePicker from 'react-native-date-picker'
+import { Input, InputField } from '@/components/ui/input';
 
 export const ButtonAddBirthday = () => {
     const [ modalOpen, setModalOpen ] = useState(false);
+    const [date, setDate] = useState(new Date())
+    const [open, setOpen] = useState(false)
 
     return (
         <>
@@ -44,13 +48,44 @@ export const ButtonAddBirthday = () => {
                 <ModalBackdrop />
                 <ModalContent>
                 <ModalHeader>
-                    <Heading size="lg">Modal Title</Heading>
+                    <Heading size="lg">Add Birthday</Heading>
                     <ModalCloseButton>
                     <Icon as={CloseIcon} />
                     </ModalCloseButton>
                 </ModalHeader>
                 <ModalBody>
-                    <Text>This is the modal body. You can add any content here.</Text>
+                    <ModalBody>
+                    <Input
+                        variant="outline"
+                        size="md"
+                        className="mb-4"
+                    >
+                        <InputField placeholder="Enter Name" />
+                    </Input>
+
+                    {/* Muestra la fecha seleccionada en el botón */}
+                    <Button onPress={() => setOpen(true)}>
+                        <ButtonText>
+                            {date.toLocaleDateString() === new Date().toLocaleDateString() 
+                                ? "Select Date" 
+                                : date.toLocaleDateString()}
+                        </ButtonText>
+                    </Button>
+
+                    <DatePicker
+                        modal
+                        open={open} // CORRECCIÓN: Usa el estado 'open', no 'modalOpen'
+                        date={date} // CORRECCIÓN: Usa el estado 'date', no 'new Date()' directamente
+                        mode="date" // Opcional: restringe para que solo pida fecha y no hora
+                        onConfirm={(selectedDate) => {
+                            setOpen(false) // CORRECCIÓN: Cierra solo el calendario
+                            setDate(selectedDate) // CORRECCIÓN: Guarda la fecha seleccionada
+                        }}
+                        onCancel={() => {
+                            setOpen(false)
+                        }}
+                    />
+                </ModalBody>
                 </ModalBody>
                 <ModalFooter>
                     <Button
