@@ -7,5 +7,11 @@ export const tasks = sqliteTable('tasks', {
     date: integer().notNull(),
 });
 
+export const birthdays = sqliteTable('birthdays', {
+    id: integer().primaryKey({ autoIncrement: true }),
+    name: text().notNull(),
+    date: integer().notNull(),
+});
+
 // Export Task to use as an interface in your app
 export type Task = typeof tasks.$inferSelect;
