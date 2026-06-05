@@ -15,3 +15,5 @@ export const birthdays = sqliteTable('birthdays', {
 
 // Export Task to use as an interface in your app
 export type Task = typeof tasks.$inferSelect;
+
+export type Birthday = typeof birthdays.$inferSelect;

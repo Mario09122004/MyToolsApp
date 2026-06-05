@@ -15,6 +15,13 @@
       "when": 1778012097704,
       "tag": "0001_square_venus",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1780677019839,
+      "tag": "0002_daffy_crusher_hogan",
+      "breakpoints": true
     }
   ]
 }
