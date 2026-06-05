@@ -34,7 +34,11 @@ export default function ShowBirthdays({
             onLongPress={() => handleDeleteBirthday(birthday.id)}
             onPress={() => handleShowBirthday(birthday.id)}
         >
-            <Card size="lg" variant="outline" className="m-2 bg-background-neutral border-neutral-200">
+            <Card 
+                size="lg" 
+                variant="outline" 
+                className={`m-2 bg-background-neutral border-neutral-200 ${remainingDays === 0 ? 'border-amber-400 bg-amber-50/20 dark:bg-amber-950/10' : ''}`}
+            >
                 <Box className="flex flex-row justify-between items-center">
                     <Heading size="md" className="mb-1 text-typography-900 font-bold">
                         {birthday.name}
