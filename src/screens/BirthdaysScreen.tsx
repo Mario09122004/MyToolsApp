@@ -1,4 +1,4 @@
-import { Platform, View, ScrollView, Text } from "react-native";
+import { ScrollView, Text } from "react-native";
 import { name_Screen } from "../helpers/name_screen";
 import { useEffect, useState } from "react";
 import ShowBirthdays from "@/src/components/Birthday/show_birthdays";
@@ -122,7 +122,7 @@ export default function BirthdaysScreen() {
                         action="primary" 
                         className="w-full justify-center items-center my-2 border-primary-500"
                     >
-                        <ButtonText className="text-primary-500 font-semibold">Probar Notificación (2s)</ButtonText>
+                        <ButtonText className="text-primary-500 font-semibold">Text notifications</ButtonText>
                     </Button>
 
                     <Box className="flex flex-col gap-2">
@@ -155,16 +155,12 @@ export default function BirthdaysScreen() {
                 size="lg"
             >
                 <ModalBackdrop />
-                <ModalContent className="bg-background-neutral">
-                    <ModalHeader className="border-b border-neutral-200 pb-3">
+                <ModalContent >
+                    <ModalHeader className="border-b pb-3">
                         <Heading size="lg" className="text-typography-900 font-bold">
                             {editMode ? "Edit Birthday" : "Register Birthday"}
                         </Heading>
-                        <ModalCloseButton>
-                            <Icon as={CloseIcon} className="text-typography-500" />
-                        </ModalCloseButton>
                     </ModalHeader>
-                    <Divider className="my-1" />
                     <ModalBody className="py-4">
                         <FormBirthday 
                             editMode={editMode} 

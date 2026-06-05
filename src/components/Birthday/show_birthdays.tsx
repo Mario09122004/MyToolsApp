@@ -22,7 +22,7 @@ export default function ShowBirthdays({
     const ageText = `${age} años`;
     let remainingText = '';
     if (remainingDays === 0) {
-        remainingText = '¡Hoy! 🎂';
+        remainingText = '¡Hoy!';
     } else if (remainingDays === 1) {
         remainingText = 'Falta 1 día';
     } else {
