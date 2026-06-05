@@ -122,7 +122,7 @@ export default function BirthdaysScreen() {
                         action="primary" 
                         className="w-full justify-center items-center my-2 border-primary-500"
                     >
-                        <ButtonText className="text-primary-500 font-semibold">Text notifications</ButtonText>
+                        <ButtonText className="text-primary-500 font-semibold">Test notifications</ButtonText>
                     </Button>
 
                     <Box className="flex flex-col gap-2">
