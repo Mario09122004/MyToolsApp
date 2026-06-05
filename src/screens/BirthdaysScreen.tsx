@@ -34,38 +34,8 @@ async function schedulePushNotification() {
 export default function BirthdaysScreen() {
     const { changeNameScreen } = name_Screen();
 
-    //Permission
     useEffect(() => {
         changeNameScreen("Birthdays");
-
-        // 2. Pedir permisos y configurar el Canal de Android al cargar la pantalla
-        async function setupNotifications() {
-            // Revisar y pedir permiso al usuario
-            const { status: existingStatus } = await Notifications.getPermissionsAsync();
-            let finalStatus = existingStatus;
-            
-            if (existingStatus !== 'granted') {
-                const { status } = await Notifications.requestPermissionsAsync();
-                finalStatus = status;
-            }
-            
-            if (finalStatus !== 'granted') {
-                console.log('¡Permiso de notificación denegado!');
-                return;
-            }
-
-            // Crear el canal exclusivo para Android
-            if (Platform.OS === 'android') {
-                await Notifications.setNotificationChannelAsync('default', {
-                    name: 'default',
-                    importance: Notifications.AndroidImportance.MAX,
-                    vibrationPattern: [0, 250, 250, 250],
-                    lightColor: '#FF231F7C',
-                });
-            }
-        }
-
-        setupNotifications();
     }, [])
 
     const handleDeleteBirthday = () => {
