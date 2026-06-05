@@ -6,12 +6,13 @@ import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import '@/global.css';
 import { Text } from '@/components/ui/text';
 //db
-import { Suspense } from 'react';
-import { ActivityIndicator } from 'react-native';
+import { Suspense, useEffect } from 'react';
+import { ActivityIndicator, Platform } from 'react-native';
 import { SQLiteProvider, openDatabaseSync } from 'expo-sqlite';
 import { drizzle } from 'drizzle-orm/expo-sqlite';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import migrations from '@/drizzle/migrations';
+import * as Notifications from 'expo-notifications';
 
 //
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -22,6 +23,35 @@ const db = drizzle(expoDb);
 
 export const ScreenLayout = ({ children }: { children: React.ReactNode }) => {
     const { success, error } = useMigrations(db, migrations);
+
+    useEffect(() => {
+        // Chack and ask permition for notifications
+        async function setupNotifications() {
+            const { status: existingStatus } = await Notifications.getPermissionsAsync();
+            let finalStatus = existingStatus;
+            
+            if (existingStatus !== 'granted') {
+                const { status } = await Notifications.requestPermissionsAsync();
+                finalStatus = status;
+            }
+            
+            if (finalStatus !== 'granted') {
+                console.log('¡Permiso de notificación denegado!');
+                return;
+            }
+
+            if (Platform.OS === 'android') {
+                await Notifications.setNotificationChannelAsync('default', {
+                    name: 'default',
+                    importance: Notifications.AndroidImportance.MAX,
+                    vibrationPattern: [0, 250, 250, 250],
+                    lightColor: '#FF231F7C',
+                });
+            }
+        }
+
+        setupNotifications();
+    })
 
     if (error) {
         return (
