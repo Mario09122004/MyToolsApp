@@ -2,6 +2,9 @@ import { View } from "react-native"
 import { Text } from "@/components/ui/text"
 import { useEffect } from "react";
 import { name_Screen } from "../helpers/name_screen";
+import DonutGraph from "../components/Habits/donut graph";
+import { ScrollView } from "react-native-gesture-handler";
+import DaysCount from "../components/Habits/dayscount";
 
 export default function HabitsScreen() {
     const { changeNameScreen } = name_Screen();
@@ -11,8 +14,10 @@ export default function HabitsScreen() {
     }, [])
 
     return (
-        <View>
+        <ScrollView>
             <Text>HabitsScreen</Text>
-        </View>
+            <DonutGraph />
+            <DaysCount />
+        </ScrollView>
     )
 }
