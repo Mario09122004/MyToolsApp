@@ -51,7 +51,7 @@ export const ScreenLayout = ({ children }: { children: React.ReactNode }) => {
         }
 
         setupNotifications();
-    })
+    }, [])
 
     if (error) {
         return (

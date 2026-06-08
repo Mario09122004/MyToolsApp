@@ -15,12 +15,17 @@ export const useCRUDBirthdays = () => {
     const insertBirthday = async (
         name: string = "",
         date: number = Date.now()
-    ) => drizzleDb.insert(
-        schema.birthdays
-    ).values({
-        name: name,
-        date: date,
-    });
+    ) => {
+        const [result] = await drizzleDb.insert(
+            schema.birthdays
+        ).values({
+            name: name,
+            date: date,
+        })
+        .returning({ id: schema.birthdays.id }); 
+
+        return result?.id; 
+    };
 
     const deleteBirthday = async (
         id: number = 0
