@@ -24,7 +24,6 @@ import {
     AlertDialogFooter,
     AlertDialogBody,
 } from '@/components/ui/alert-dialog';
-import * as Notifications from 'expo-notifications';
 
 // Hooks
 import { useModalBirthdays } from "@/src/hooks/birthdays/modalAdd";
@@ -35,29 +34,7 @@ import { useCRUDBirthdays } from "@/src/hooks/birthdays/birthdayAdd";
 import { FormBirthday } from "@/src/components/Birthday/formBirthday";
 import { Birthday } from "@/db/schema";
 import { calculateRemainingDays } from "@/src/utils/birthdayHelpers";
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
-});
-
-async function schedulePushNotification() {
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: "Today " + new Date().toLocaleDateString() + ", it is birthday of someone ",
-      body: 'Remember to congratulate them! ',
-      data: { data: 'goes here', test: { test1: 'more data' } },
-    },
-    trigger: {
-      type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-      seconds: 2,
-    },
-  });
-}
+import * as Notifications from 'expo-notifications';
 
 export default function BirthdaysScreen() {
     const { changeNameScreen } = name_Screen();
@@ -90,8 +67,15 @@ export default function BirthdaysScreen() {
     }, []);
 
     const handleDeleteBirthday = async () => {
+        try {
+            await Notifications.cancelScheduledNotificationAsync(`cumple-${idBirthday.toString()}`);
+            console.log(`Notification cancelled for birthday ID: ${idBirthday}`);
+        } catch (error) {
+            console.error("Error cancelling notification:", error);
+        }
         await deleteBirthday(idBirthday);
         await fetchBirthdays();
+
         closeDeleteModal();
     };
 
@@ -107,24 +91,10 @@ export default function BirthdaysScreen() {
         openAddModal();
     };
 
-    const handleNotificationTest = () => {
-        schedulePushNotification();
-        console.log("Notification test");
-    };
-
     return (
         <>
             <ScrollView className="bg-background-neutral flex-1">
                 <Box className="p-4 gap-4">
-                    <Button 
-                        onPress={handleNotificationTest} 
-                        variant="outline" 
-                        action="primary" 
-                        className="w-full justify-center items-center my-2 border-primary-500"
-                    >
-                        <ButtonText className="text-primary-500 font-semibold">Test notifications</ButtonText>
-                    </Button>
-
                     <Box className="flex flex-col gap-2">
                         {dataBirthdays && dataBirthdays.length > 0 ? (
                             dataBirthdays.map((birthday) => (
