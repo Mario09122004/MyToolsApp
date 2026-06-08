@@ -106,7 +106,7 @@ export const Roulette = ({ options, setWriteOptions, setOptions }: { options: St
             <GestureHandlerRootView style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
                 <GestureDetector gesture={panGesture}>
                     <Animated.View style={[wheelAnimatedStyle, { width: "100%", height: "100%" }]} >
-                        <Svg height="100%" width="100%"viewBox="0 0 100 100">
+                        <Svg height="100%" width="100%" viewBox="0 0 100 100">
                             <Circle cx="50" cy="50" r="45" stroke="#969696" strokeWidth="0.5" fill="#c3073f" />
                             {
                                 option.map((data, index) => (
