@@ -8,7 +8,7 @@ export default function DonutGraph() {
         <>
             <ProgressCircle style={{ height: 200 }} progress={0.7} progressColor={'#FF0000'} />
             <View className="absolute inset-0 items-center justify-center text-center">
-                <Svg height="50%" width="100%" viewBox="-1 -12 100 50">
+                <Svg height="50%" width="100%" viewBox="0 0 100 50">
                     <Text x="50" y="25" textAnchor="middle" fill="#FF0000" fontSize="25">70%</Text>
                 </Svg>
             </View>
