@@ -11,7 +11,7 @@ export const NoteItem = ({ title, content, date }: { title: string; content: str
     });
 
     return (
-        <Card size="md" variant="outline" className="bg-background-neutral border-neutral-200 dark:border-neutral-800 p-4 rounded-xl">
+        <Card size="md" variant="outline" className="p-4 rounded-xl">
             <Box className="flex-row justify-between items-center mb-2">
                 <Heading size="md" className="text-typography-900 font-bold flex-1 pr-2">
                     {title}

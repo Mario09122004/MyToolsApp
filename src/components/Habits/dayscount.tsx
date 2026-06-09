@@ -24,7 +24,7 @@ export default function DaysCount() {
     const completedCount = days.filter(day => day.active).length;
 
     return (
-        <Card size="md" variant="outline" className="bg-background-neutral border-neutral-200 p-4">
+        <Card size="md" variant="outline" className="p-4">
             <View className="flex-row justify-between items-center mb-3">
                 <View>
                     <Text size="sm" className="text-typography-900 font-bold capitalize mt-0.5">

@@ -7,7 +7,7 @@ import { Box } from "@/components/ui/box";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Heading } from '@/components/ui/heading';
 import { Divider } from '@/components/ui/divider';
-import { Icon, CloseIcon, TrashIcon } from '@/components/ui/icon';
+import { Icon, CloseIcon, TrashIcon, InfoIcon } from '@/components/ui/icon';
 import {
     Modal,
     ModalBackdrop,
@@ -93,28 +93,36 @@ export default function BirthdaysScreen() {
 
     return (
         <>
-            <ScrollView className="bg-background-neutral flex-1">
-                <Box className="p-4 gap-4">
-                    <Box className="flex flex-col gap-2">
-                        {dataBirthdays && dataBirthdays.length > 0 ? (
-                            dataBirthdays.map((birthday) => (
+            {dataBirthdays && dataBirthdays.length > 0 ? (
+                <ScrollView className="bg-background-neutral flex-1">
+                    <Box className="p-4 gap-4">
+                        <Box className="flex flex-col gap-2">
+                            {dataBirthdays.map((birthday) => (
                                 <ShowBirthdays 
                                     key={birthday.id} 
                                     birthday={birthday}
                                     handleShowBirthday={handleShowBirthday}
                                     handleDeleteBirthday={openDeleteModal}
                                 />
-                            ))
-                        ) : (
-                            <Box className="py-10 items-center justify-center">
-                                <Text className="text-typography-400 font-medium text-center">
-                                    No hay cumpleaños registrados.
-                                </Text>
-                            </Box>
-                        )}
+                            ))}
+                        </Box>
+                    </Box>
+                </ScrollView>
+            ) : (
+                <Box className="flex-1 bg-background-neutral px-4 items-center justify-center">
+                    <Box className="w-full py-20 items-center justify-center bg-background-neutral border border-dashed border-neutral-300 dark:border-neutral-800 rounded-2xl p-6 mb-24">
+                        <Box className="h-12 w-12 rounded-full bg-neutral-100 dark:bg-neutral-800 items-center justify-center mb-3">
+                            <Icon as={InfoIcon} size="xl" className="text-red-600 dark:text-red-500" />
+                        </Box>
+                        <Text className="text-typography-500 font-semibold text-center text-base">
+                            No birthdays registered
+                        </Text>
+                        <Text className="text-typography-400 text-center mt-1 text-sm">
+                            Press the "Register" button below to add a birthday.
+                        </Text>
                     </Box>
                 </Box>
-            </ScrollView>
+            )}
 
             <ButtonAddBirthday handleNewBirthdays={handleNewBirthdays} />
 
@@ -126,10 +134,13 @@ export default function BirthdaysScreen() {
             >
                 <ModalBackdrop />
                 <ModalContent >
-                    <ModalHeader className="border-b pb-3">
+                    <ModalHeader className="border-b pb-3 relative">
                         <Heading size="lg" className="text-typography-900 font-bold">
                             {editMode ? "Edit Birthday" : "Register Birthday"}
                         </Heading>
+                        <ModalCloseButton className="absolute right-4 top-1/2 -translate-y-1/2">
+                            <Icon as={CloseIcon} />
+                        </ModalCloseButton>
                     </ModalHeader>
                     <ModalBody className="py-4">
                         <FormBirthday 
@@ -145,7 +156,7 @@ export default function BirthdaysScreen() {
             {/* Delete Confirmation Alert Dialog */}
             <AlertDialog isOpen={deleteConfirmModalVisible} onClose={closeDeleteModal}>
                 <AlertDialogBackdrop />
-                <AlertDialogContent className="max-w-[415px] gap-4 items-center bg-background-neutral">
+                <AlertDialogContent className="max-w-[415px] gap-4 items-center">
                     <Box className="rounded-full h-[52px] w-[52px] bg-background-error items-center justify-center">
                         <Icon as={TrashIcon} size="lg" className="stroke-error-500" />
                     </Box>
@@ -160,18 +171,16 @@ export default function BirthdaysScreen() {
                     <AlertDialogFooter className="mt-5 gap-3 w-full flex-row justify-center">
                         <Button
                             size="sm"
-                            action="negative"
                             onPress={handleDeleteBirthday}
-                            className="px-[30px]"
+                            className="px-[30px] bg-red-600 active:bg-red-700 hover:bg-red-700 border-none"
                         >
-                            <ButtonText className="font-bold">Delete</ButtonText>
+                            <ButtonText className="font-bold text-white">Delete</ButtonText>
                         </Button>
                         <Button
                             variant="outline"
-                            action="secondary"
                             onPress={closeDeleteModal}
                             size="sm"
-                            className="px-[30px]"
+                            className="px-[30px] border-neutral-300 dark:border-neutral-700 active:bg-neutral-50 dark:active:bg-neutral-900"
                         >
                             <ButtonText className="font-bold text-typography-700">Cancel</ButtonText>
                         </Button>

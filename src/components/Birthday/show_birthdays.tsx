@@ -19,14 +19,14 @@ export default function ShowBirthdays({
     const age = calculateAge(birthday.date);
     const remainingDays = calculateRemainingDays(birthday.date);
 
-    const ageText = `${age} años`;
+    const ageText = `${age} years old`;
     let remainingText = '';
     if (remainingDays === 0) {
-        remainingText = '¡Hoy!';
+        remainingText = 'Today!';
     } else if (remainingDays === 1) {
-        remainingText = 'Falta 1 día';
+        remainingText = '1 day left';
     } else {
-        remainingText = `Faltan ${remainingDays} días`;
+        remainingText = `${remainingDays} days left`;
     }
 
     return (
@@ -37,7 +37,7 @@ export default function ShowBirthdays({
             <Card 
                 size="lg" 
                 variant="outline" 
-                className={`m-2 bg-background-neutral border-neutral-200 ${remainingDays === 0 ? 'border-amber-400 bg-amber-50/20 dark:bg-amber-950/10' : ''}`}
+                className={`m-2 ${remainingDays === 0 ? 'border-amber-400 bg-amber-50/20 dark:bg-amber-950/10' : ''}`}
             >
                 <Box className="flex flex-row justify-between items-center">
                     <Heading size="md" className="mb-1 text-typography-900 font-bold">

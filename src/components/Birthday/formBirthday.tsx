@@ -179,9 +179,9 @@ export const FormBirthday = ({
 
             <Button
                 onPress={handleSave}
-                className="bg-green-500 mt-5"
+                className="bg-red-600 hover:bg-red-700 active:bg-red-800 mt-5 border-none"
             >
-                <ButtonText className="text-black dark:text-white font-bold">Save</ButtonText>
+                <ButtonText className="text-white font-bold">Save</ButtonText>
             </Button>
         </FormControl>
     );

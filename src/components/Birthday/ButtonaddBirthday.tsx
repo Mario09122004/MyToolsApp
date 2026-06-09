@@ -12,7 +12,7 @@ export const ButtonAddBirthday = ({ handleNewBirthdays }: { handleNewBirthdays: 
             onPress={() => {
                 handleNewBirthdays();
             }}
-            className="absolute bottom-16 right-4"
+            className="absolute bottom-16 right-4 bg-red-600 hover:bg-red-700 active:bg-red-800 border-none"
         >
             <FabIcon as={AddIcon} />
             <FabLabel>Register</FabLabel>

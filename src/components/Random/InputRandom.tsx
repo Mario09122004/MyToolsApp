@@ -37,7 +37,7 @@ export const InputRandom = () => {
                 </FormControlLabel>
                 <Textarea 
                     isDisabled={writeoptions} 
-                    className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-background-neutral p-1 min-h-[120px]"
+                    className="rounded-xl p-1 min-h-[120px]"
                 >
                     <TextareaInput 
                         placeholder={`Option 1\nOption 2\nOption 3`} 
