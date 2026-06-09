@@ -75,13 +75,21 @@ export const Roulette = ({ options, setWriteOptions, setOptions }: { options: St
             rotate.value = startRotation.value + (event.translationX * -0.2);
         })
         .onEnd((event) => {
-            // start to slowing down 
+            // start to slowing down
+            const rawVelocity = event.velocityX * 0.5;
+            const minVelocity = 400; // minimum velocity required to trigger a result
+            const hasSufficientSpeed = Math.abs(rawVelocity) >= minVelocity;
+
             rotate.value = withDecay({
-                velocity: event.velocityX * 0.5,
+                velocity: rawVelocity,
                 deceleration: 0.9999,
             },
             (finished) => {
-                runOnJS(reportDegrees)(rotate.value);
+                if (hasSufficientSpeed) {
+                    runOnJS(reportDegrees)(rotate.value);
+                } else {
+                    runOnJS(setWriteOptions)(false);
+                }
             }
         );
         });
