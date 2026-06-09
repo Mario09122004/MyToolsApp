@@ -19,8 +19,14 @@ export default function Habits() {
     return (
         <ScrollView>
             {habits.map((habit) => (
-                <Habit key={habit.id} Title="Title" Description="Description"/>
+                <Habit 
+                    key={habit.id} 
+                    Title={habit.name}
+                    Description={"Insert description if exist"}
+                    Check={habit.check}
+                />
             ))}
         </ScrollView>
     );
+
 }
