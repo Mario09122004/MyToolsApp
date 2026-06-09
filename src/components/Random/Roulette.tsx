@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
-import Svg, { Circle, Line, Text, G } from 'react-native-svg';
+import Svg, { Circle, Text, G, Path, Line } from 'react-native-svg';
 import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { withDecay } from 'react-native-reanimated';
 import { Text as TextApp } from "@/components/ui/text";
+import { Box } from "@/components/ui/box";
 import { Arrow } from "./arrow";
 
 import {
@@ -174,8 +175,8 @@ export const Roulette = ({ options, setWriteOptions, setOptions }: { options: St
               className="w-1/2 text-center"
               variant="outline"
             >
-              <ButtonText>
-                Discart option
+              <ButtonText className="text-typography-600 dark:text-typography-400 font-bold">
+                Discard
               </ButtonText>
             </Button>
 

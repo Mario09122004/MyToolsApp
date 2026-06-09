@@ -107,10 +107,10 @@ export default function NotesScreen() {
                             <Icon as={InfoIcon} size="xl" className="text-typography-400" />
                         </Box>
                         <Text className="text-typography-500 font-semibold text-center text-base">
-                            No hay notas creadas
+                            No notes created yet
                         </Text>
                         <Text className="text-typography-400 text-center mt-1">
-                            Presiona el botón "Create" para agregar una nueva nota.
+                            Press the "Create" button to add a new note.
                         </Text>
                     </Box>
                 </Box>

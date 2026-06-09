@@ -12,7 +12,7 @@ export default function RandomScreen() {
     }, [])
 
     return (
-        <View className="p-1 h-full">
+        <View className="bg-background-neutral flex-1 px-4 py-4">
             <Instruction />
             <InputRandom />
         </View>
