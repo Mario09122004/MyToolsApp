@@ -15,7 +15,7 @@ export default function HabitsScreen() {
     }, [])
 
     return (
-        <ScrollView>
+        <ScrollView className="px-4">
             <DonutGraph />
             <DaysCount />
             <Habits />
