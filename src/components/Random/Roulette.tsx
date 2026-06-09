@@ -16,6 +16,7 @@ import {
   ModalFooter,
 } from '@/components/ui/modal';
 import { Button, ButtonText } from '@/components/ui/button';
+import { Icon, InfoIcon } from '@/components/ui/icon';
 
 export const Roulette = ({ options, setWriteOptions, setOptions }: { options: String[], setWriteOptions: (writeoptions: boolean) => void, setOptions: (options:string) => void }) => {
     const [option, setOption] = useState<String[]>(options);
@@ -93,11 +94,21 @@ export const Roulette = ({ options, setWriteOptions, setOptions }: { options: St
             };
     });
 
+    const rouletteColors = ["#dc2626", "#171717", "#ffffff"];
+
     if (options.length < 1) {
         return (
-            <View>
-                <TextApp>Add options to the roulette.</TextApp>
-            </View>
+            <Box className="w-full flex-1 items-center justify-center border border-dashed border-neutral-300 dark:border-neutral-800 rounded-2xl p-6">
+                <Box className="h-10 w-10 rounded-full bg-neutral-100 dark:bg-neutral-800 items-center justify-center mb-3">
+                    <Icon as={InfoIcon} size="md" className="text-red-600 dark:text-red-500" />
+                </Box>
+                <TextApp className="text-typography-500 font-semibold text-center text-sm mb-1">
+                    Add options to the roulette.
+                </TextApp>
+                <TextApp size="xs" className="text-typography-400 text-center">
+                    Type options in the box above to generate the wheel.
+                </TextApp>
+            </Box>
         )
     }
 
@@ -108,19 +119,21 @@ export const Roulette = ({ options, setWriteOptions, setOptions }: { options: St
                 <GestureDetector gesture={panGesture}>
                     <Animated.View style={[wheelAnimatedStyle, { width: "100%", height: "100%" }]} >
                         <Svg height="100%" width="100%" viewBox="0 0 100 100">
-                            <Circle cx="50" cy="50" r="45" stroke="#969696" strokeWidth="0.5" fill="#c3073f" />
+                            <Circle cx="50" cy="50" r="45" stroke="#ffffff" strokeWidth="0.8" fill="#dc2626" />
                             {
                                 option.map((data, index) => (
                                     <G key={index}>
                                         <Text
                                             x="50" y="20"
                                             textAnchor="middle"
-                                            fill="#969696"
+                                            fill="#ffffff"
+                                            fontWeight="bold"
+                                            fontSize="4.5"
                                             transform={`rotate(${textRotation + (index * rotation)}, 50, 50)`}
                                         >
                                             {data}
                                         </Text>
-                                        <Line x1="50" y1="50" x2="50" y2="5" stroke="#969696" strokeWidth="1" transform={`rotate(${index * rotation}, 50, 50)`} />
+                                        <Line x1="50" y1="50" x2="50" y2="5" stroke="#ffffff" strokeWidth="0.5" transform={`rotate(${index * rotation}, 50, 50)`} />
                                     </G>
                                 ))
                             }
