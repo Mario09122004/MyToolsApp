@@ -1,21 +1,20 @@
 import { Fab, FabIcon, FabLabel } from '@/components/ui/fab';
 import { AddIcon } from '@/components/ui/icon';
 
-export const ButtonAddNote = ({ handleNewNotes }: { handleNewNotes: () => void }) => {
+export default function AddHabit() {
     return (
         <Fab
             size="lg"
-            placement="bottom right"
+            placement="top right"
             isHovered={false}
             isDisabled={false}
             isPressed={true}
             onPress={() => {
-                handleNewNotes();
+                console.log("Add Habit");
             }}
-            className='absolute bottom-16 right-4 bg-red-600 hover:bg-red-700 active:bg-red-800 dark:bg-red-500'
+            className='bg-red-600 hover:bg-red-700 active:bg-red-800 dark:bg-red-500'
         >
             <FabIcon as={AddIcon} />
-            <FabLabel>Create</FabLabel>
         </Fab>
     )
 }

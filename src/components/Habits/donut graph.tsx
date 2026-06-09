@@ -1,17 +1,31 @@
 import React from 'react'
 import { ProgressCircle } from 'react-native-svg-charts'
-import Svg, { Circle, Line, Text, G } from 'react-native-svg';
 import { View } from 'react-native';
+import { Card } from '@/components/ui/card';
+import { Text } from '@/components/ui/text';
 
 export default function DonutGraph() {
+    const progress = 0.7;
+
     return (
-        <>
-            <ProgressCircle style={{ height: 200 }} progress={0.7} progressColor={'#FF0000'} />
-            <View className="absolute inset-0 items-center justify-center text-center">
-                <Svg height="50%" width="100%" viewBox="0 0 100 50">
-                    <Text x="50" y="25" textAnchor="middle" fill="#FF0000" fontSize="25">70%</Text>
-                </Svg>
+        <Card size="md" className="p-4 items-center bg-current">
+            <View className="relative items-center justify-center w-full">
+                <ProgressCircle
+                    style={{ height: 160, width: 160 }}
+                    progress={progress}
+                    progressColor={'rgb(220, 38, 38)'}
+                    backgroundColor={'rgba(220, 38, 38, 0.12)'}
+                    strokeWidth={12}
+                />
+                <View className="absolute items-center justify-center">
+                    <Text size="3xl" className="font-extrabold text-red-600 dark:text-red-500">
+                        {Math.round(progress * 100)}%
+                    </Text>
+                    <Text size="xs" className="text-typography-500 font-medium mt-0.5">
+                        Completed
+                    </Text>
+                </View>
             </View>
-        </>
+        </Card>
     )
-}   
+}

@@ -13,7 +13,7 @@ import {
     ModalFooter,
 } from '@/components/ui/modal';
 import { Button, ButtonText } from '@/components/ui/button';
-import { Icon, CloseIcon, TrashIcon } from '@/components/ui/icon';
+import { Icon, CloseIcon, TrashIcon, InfoIcon } from '@/components/ui/icon';
 import { Divider } from '@/components/ui/divider';
 import { Pressable } from '@/components/ui/pressable';
 import {
@@ -86,56 +86,61 @@ export default function NotesScreen() {
 
     return (
         <>
-            <ScrollView>
-                <Box className="h-full w-full rounded-xs">
-
-                    {
-                        dataNotes ? (
-                            dataNotes.map((note) => (
-                                <Pressable
-                                    onPress={() => handleShowNote(note.id)}
-                                    onLongPress={() => openDeleteModal(note.id)}
-                                    key={note.id}
-                                >
-                                    <NoteItem title={note.title as string} content={note.content as string} date={note.date} />
-                                </Pressable>
-                            ))
-                        ) : (
-                            <Text>No hay notas</Text>
-                        )
-                    }
+            {dataNotes && dataNotes.length > 0 ? (
+                <ScrollView className="bg-background-neutral flex-1 px-4 py-2">
+                    <Box className="gap-3 pb-24">
+                        {dataNotes.map((note) => (
+                            <Pressable
+                                onPress={() => handleShowNote(note.id)}
+                                onLongPress={() => openDeleteModal(note.id)}
+                                key={note.id}
+                            >
+                                <NoteItem title={note.title as string} content={note.content as string} date={note.date} />
+                            </Pressable>
+                        ))}
+                    </Box>
+                </ScrollView>
+            ) : (
+                <Box className="flex-1 bg-background-neutral px-4 items-center justify-center">
+                    <Box className="w-full py-20 items-center justify-center bg-background-neutral border border-dashed border-neutral-300 dark:border-neutral-800 rounded-2xl p-6 mb-24">
+                        <Box className="h-12 w-12 rounded-full bg-neutral-100 dark:bg-neutral-800 items-center justify-center mb-3">
+                            <Icon as={InfoIcon} size="xl" className="text-red-600 dark:text-red-500" />
+                        </Box>
+                        <Text className="text-typography-500 font-semibold text-center text-base">
+                            No notes created yet
+                        </Text>
+                        <Text className="text-typography-400 text-center mt-1">
+                            Press the "Create" button to add a new note.
+                        </Text>
+                    </Box>
                 </Box>
+            )}
 
-                <Modal
-                    isOpen={addNoteModalVisible}
-                    onClose={() => {
-                        closeAddModal();
-                    }}
-                    size="lg"
-                >
-                    <ModalBackdrop />
-                    <ModalContent>
-                        <ModalHeader>
-                            <Heading size="lg">{editMode ? "Edit" : "Add"} note</Heading>
-                            <ModalCloseButton>
-                                <Icon as={CloseIcon} />
-                            </ModalCloseButton>
-                        </ModalHeader>
-                        <Divider className="my-3" />
-                        <ModalBody>
-
-                            <FormNote editMode={editMode} idNote={idNOte} onSave={async () => {
-                                const notes = await queryNotes();
-                                setDataNotes(notes);
-                            }} />
-
-                        </ModalBody>
-                        <ModalFooter>
-
-                        </ModalFooter>
-                    </ModalContent>
-                </Modal>
-            </ScrollView>
+            <Modal
+                isOpen={addNoteModalVisible}
+                onClose={() => {
+                    closeAddModal();
+                }}
+                size="lg"
+            >
+                <ModalBackdrop />
+                <ModalContent>
+                    <ModalHeader>
+                        <Heading size="lg">{editMode ? "Edit" : "Add"} note</Heading>
+                        <ModalCloseButton>
+                            <Icon as={CloseIcon} />
+                        </ModalCloseButton>
+                    </ModalHeader>
+                    <Divider className="my-3" />
+                    <ModalBody>
+                        <FormNote editMode={editMode} idNote={idNOte} onSave={async () => {
+                            const notes = await queryNotes();
+                            setDataNotes(notes);
+                        }} />
+                    </ModalBody>
+                    <ModalFooter />
+                </ModalContent>
+            </Modal>
 
             <ButtonAddNote handleNewNotes={handleNewNotes} />
 
@@ -174,7 +179,6 @@ export default function NotesScreen() {
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
-
         </>
     );
 }

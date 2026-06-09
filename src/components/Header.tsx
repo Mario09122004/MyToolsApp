@@ -27,16 +27,16 @@ export const Header = () => {
     const { nameScreen } = name_Screen();
 
     return (
-        <Box className='p-4 flex-row items-center'>
+        <Box className='p-4 flex-row items-center bg-background-neutral border-b border-neutral-100 dark:border-neutral-900'>
             <Button
                 onPress={() => {
                     setShowDrawer(true);
                 }}
-                className=''
+                className="bg-transparent p-0 w-10 h-10 items-center justify-center rounded-full hover:bg-neutral-100 active:bg-neutral-200 dark:hover:bg-neutral-800 dark:active:bg-neutral-700"
             >
-                <Icon as={MenuIcon} />
+                <Icon as={MenuIcon} size="xl" className="text-red-600 dark:text-red-500" />
             </Button>
-            <Heading className="mx-5 w-4/5" size="xl">
+            <Heading className="ml-3 flex-1 text-typography-900 font-extrabold tracking-tight" size="xl">
                 {nameScreen}
             </Heading>
             <Drawer
@@ -48,33 +48,27 @@ export const Header = () => {
                 }}
             >
                 <DrawerBackdrop />
-                <DrawerContent style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
-                    <DrawerHeader>
-                        <Heading size="xl" className="w-full text-center" >Menu</Heading>
-                        <DrawerCloseButton className="absolute right-0">
-                            <Icon as={CloseIcon} size="xl" />
+                <DrawerContent style={{ paddingTop: insets.top, paddingBottom: insets.bottom }} className="bg-white/75 dark:bg-black/75 backdrop-blur-3xl">
+                    <DrawerHeader className="border-b border-neutral-100 dark:border-neutral-900 py-3 relative">
+                        <Heading size="xl" className="w-full text-center text-typography-950 font-extrabold tracking-tight" >Menu</Heading>
+                        <DrawerCloseButton className="absolute right-4 top-1/2 -translate-y-1/2">
+                            <Icon as={CloseIcon} size="xl" className="text-red-600 dark:text-red-500" />
                         </DrawerCloseButton>
                     </DrawerHeader>
 
-                    <Divider className="my-0.5" />
-
-                    <DrawerBody className="mt-2" >
-
+                    <DrawerBody className="mt-2 px-4" >
                         <MenuOptions navigation={navigation} handleClose={() => setShowDrawer(false)} />
-
                     </DrawerBody>
 
-                    <Divider className="mb-2" />
-
-                    <DrawerFooter className="py-3">
+                    <DrawerFooter className="py-4 px-4 border-t border-neutral-100 dark:border-neutral-900">
                         <Button
                             variant="outline"
                             onPress={() => {
                                 setShowDrawer(false);
                             }}
-                            className="w-full"
+                            className="w-full border-red-600 active:bg-red-50 dark:border-red-500 dark:active:bg-red-950/20"
                         >
-                            <ButtonText>Close Menu</ButtonText>
+                            <ButtonText className="text-red-600 dark:text-red-400 font-bold">Close Menu</ButtonText>
                         </Button>
                     </DrawerFooter>
                 </DrawerContent>

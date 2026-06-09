@@ -98,9 +98,9 @@ export const FormNote = ({ editMode, idNote = 0, onSave }: { editMode: boolean, 
                         handleSaveNote();
                     }
                 }}
-                className="bg-green-500 mt-5"
+                className="bg-red-600 hover:bg-red-700 active:bg-red-800 dark:bg-red-500 mt-5"
             >
-                <ButtonText className='text-black dark:text-white'>Save</ButtonText>
+                <ButtonText className='text-white font-bold'>Save</ButtonText>
             </Button>
 
         </FormControl>
