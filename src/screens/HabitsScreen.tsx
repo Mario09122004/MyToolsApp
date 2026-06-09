@@ -6,6 +6,7 @@ import DonutGraph from "../components/Habits/donut graph";
 import { ScrollView } from "react-native-gesture-handler";
 import DaysCount from "../components/Habits/dayscount";
 import Habits from "../components/Habits/habits";
+import AddHabit from "../components/Habits/addhabit";
 
 export default function HabitsScreen() {
     const { changeNameScreen } = name_Screen();
@@ -16,6 +17,7 @@ export default function HabitsScreen() {
 
     return (
         <ScrollView className="px-4">
+            <AddHabit />
             <DonutGraph />
             <DaysCount />
             <Habits />
