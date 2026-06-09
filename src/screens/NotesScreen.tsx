@@ -104,7 +104,7 @@ export default function NotesScreen() {
                 <Box className="flex-1 bg-background-neutral px-4 items-center justify-center">
                     <Box className="w-full py-20 items-center justify-center bg-background-neutral border border-dashed border-neutral-300 dark:border-neutral-800 rounded-2xl p-6 mb-24">
                         <Box className="h-12 w-12 rounded-full bg-neutral-100 dark:bg-neutral-800 items-center justify-center mb-3">
-                            <Icon as={InfoIcon} size="xl" className="text-typography-400" />
+                            <Icon as={InfoIcon} size="xl" className="text-red-600 dark:text-red-500" />
                         </Box>
                         <Text className="text-typography-500 font-semibold text-center text-base">
                             No notes created yet
