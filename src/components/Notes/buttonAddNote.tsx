@@ -12,7 +12,7 @@ export const ButtonAddNote = ({ handleNewNotes }: { handleNewNotes: () => void }
             onPress={() => {
                 handleNewNotes();
             }}
-            className='absolute bottom-16 right-4'
+            className='absolute bottom-16 right-4 bg-red-600 hover:bg-red-700 active:bg-red-800 dark:bg-red-500'
         >
             <FabIcon as={AddIcon} />
             <FabLabel>Create</FabLabel>

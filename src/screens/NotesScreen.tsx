@@ -86,11 +86,10 @@ export default function NotesScreen() {
 
     return (
         <>
-            <ScrollView>
-                <Box className="h-full w-full rounded-xs">
-
+            <ScrollView className="bg-background-neutral flex-1 px-4 py-2">
+                <Box className="gap-3 pb-24">
                     {
-                        dataNotes ? (
+                        dataNotes && dataNotes.length > 0 ? (
                             dataNotes.map((note) => (
                                 <Pressable
                                     onPress={() => handleShowNote(note.id)}
@@ -101,7 +100,11 @@ export default function NotesScreen() {
                                 </Pressable>
                             ))
                         ) : (
-                            <Text>No hay notas</Text>
+                            <Box className="py-10 items-center justify-center">
+                                <Text className="text-typography-400 font-medium text-center">
+                                    No hay notas
+                                </Text>
+                            </Box>
                         )
                     }
                 </Box>
