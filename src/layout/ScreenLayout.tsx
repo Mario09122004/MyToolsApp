@@ -72,6 +72,8 @@ export const ScreenLayout = ({ children }: { children: React.ReactNode }) => {
         );
     }
 
+    //Add the syc with the birthday notifications
+
     return (
         <Suspense fallback={<ActivityIndicator size="large" />}>
             <SQLiteProvider
