@@ -12,10 +12,15 @@ interface ProductItemProps {
     product: ProductWithIngredients;
     onEdit: (id: number) => void;
     onDelete: (id: number) => void;
+    reservedQuantity?: number;
+    reservedOrdersCount?: number;
 }
 
-export const ProductItem = ({ product, onEdit, onDelete }: ProductItemProps) => {
+export const ProductItem = ({ product, onEdit, onDelete, reservedQuantity = 0, reservedOrdersCount = 0 }: ProductItemProps) => {
     const [expanded, setExpanded] = useState(false);
+
+    // Calculate batches needed
+    const batchesNeeded = Math.ceil(reservedQuantity / (product.yieldAmount || 1));
 
     // Format price
     const formattedPrice = new Intl.NumberFormat('en-US', {
@@ -41,6 +46,16 @@ export const ProductItem = ({ product, onEdit, onDelete }: ProductItemProps) => 
                             <Text size="sm" className="text-typography-500 mt-1" numberOfLines={expanded ? undefined : 2}>
                                 {product.description}
                             </Text>
+                        ) : null}
+                        {reservedQuantity > 0 ? (
+                            <Box className="mt-2 flex-row items-center gap-1.5 flex-wrap">
+                                <Text size="xs" className="text-red-650 dark:text-red-400 font-bold bg-red-50 dark:bg-red-950/25 px-2 py-0.5 rounded border border-red-200/50 dark:border-red-900/30">
+                                    ★ {reservedQuantity} reserved
+                                </Text>
+                                <Text size="xs" className="text-neutral-800 dark:text-neutral-200 font-bold bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 rounded">
+                                    Needs {batchesNeeded} {batchesNeeded === 1 ? 'batch' : 'batches'}
+                                </Text>
+                            </Box>
                         ) : null}
                     </Box>
                     <Box className="items-end">
