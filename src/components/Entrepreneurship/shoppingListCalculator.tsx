@@ -2,9 +2,11 @@ import React, { useMemo } from 'react';
 import { ScrollView, TouchableOpacity, View, Text, TextInput } from 'react-native';
 import { ProductWithIngredients } from '@/src/hooks/entrepreneurship/useCRUDProducts';
 import { useShoppingListStore } from '@/src/helpers/shopping_list_store';
+import { OrderWithProduct } from '@/src/hooks/entrepreneurship/useCRUDOrders';
 
 interface ShoppingListCalculatorProps {
     products: ProductWithIngredients[];
+    orders: OrderWithProduct[];
 }
 
 interface ConsolidatedIngredient {
@@ -86,7 +88,7 @@ const ShoppingListItemRow = ({ item, owned, isBought, onToggle, onUpdateOwned }:
                     onBlur={handleBlur}
                     keyboardType="decimal-pad"
                     selectTextOnFocus
-                    className={`w-16 h-8 text-center border border-neutral-200 dark:border-neutral-700 rounded-lg bg-neutral-50 dark:bg-neutral-800 text-xs font-bold text-neutral-800 dark:text-neutral-200 p-0 ${isBought ? 'line-through text-typography-400 font-normal' : ''}`}
+                    className={`w-16 h-8 text-center border border-neutral-200 dark:border-neutral-700 rounded-lg bg-neutral-50 dark:bg-neutral-850 text-xs font-bold text-neutral-800 dark:text-neutral-200 p-0 ${isBought ? 'line-through text-typography-400 font-normal' : ''}`}
                 />
                 <Text className={`font-bold text-xs min-w-[50px] text-neutral-500 ${isBought ? 'line-through text-typography-400 font-normal' : ''}`}>
                     / {displayTarget} {item.unit}
@@ -96,17 +98,62 @@ const ShoppingListItemRow = ({ item, owned, isBought, onToggle, onUpdateOwned }:
     );
 };
 
-export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps) => {
+export const ShoppingListCalculator = ({ products, orders }: ShoppingListCalculatorProps) => {
     const {
         plan,
         ownedIngredients,
         incrementPlanQty,
         decrementPlanQty,
+        setPlanQty,
         setOwnedQty,
         resetPlan
     } = useShoppingListStore();
 
     console.log("[ShoppingListCalculator] Rendering. Products count:", products.length, "Plan:", JSON.stringify(plan));
+
+    // Calculate pre-order batch requirements per product
+    const preOrderRequirements = useMemo(() => {
+        const reqs: { [productId: number]: { quantity: number; batches: number } } = {};
+        
+        orders.forEach(order => {
+            const prod = products.find(p => p.id === order.productId);
+            if (!prod) return;
+            
+            if (!reqs[prod.id]) {
+                reqs[prod.id] = { quantity: 0, batches: 0 };
+            }
+            reqs[prod.id].quantity += order.quantity;
+        });
+
+        Object.entries(reqs).forEach(([prodIdStr, req]) => {
+            const prodId = parseInt(prodIdStr);
+            const prod = products.find(p => p.id === prodId);
+            if (prod) {
+                req.batches = Math.ceil(req.quantity / (prod.yieldAmount || 1));
+            }
+        });
+
+        return reqs;
+    }, [orders, products]);
+
+    // Check if the plan is short of the pre-order requirements
+    const needsPlanUpdate = useMemo(() => {
+        return Object.entries(preOrderRequirements).some(([prodIdStr, req]) => {
+            const prodId = parseInt(prodIdStr);
+            const current = plan[prodId] || 0;
+            return current < req.batches;
+        });
+    }, [preOrderRequirements, plan]);
+
+    const applyPreOrdersToPlan = () => {
+        Object.entries(preOrderRequirements).forEach(([prodIdStr, req]) => {
+            const prodId = parseInt(prodIdStr);
+            const current = plan[prodId] || 0;
+            if (current < req.batches) {
+                setPlanQty(prodId, req.batches);
+            }
+        });
+    };
 
     // Calculate consolidated list
     const consolidatedList = useMemo((): ConsolidatedIngredient[] => {
@@ -178,6 +225,27 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
                     </Text>
                 </View>
 
+                {/* Pre-order Auto-apply Banner */}
+                {needsPlanUpdate && (
+                    <View className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 p-4 rounded-2xl flex-row justify-between items-center">
+                        <View className="flex-1 pr-3">
+                            <Text className="text-red-700 dark:text-red-400 font-bold text-sm">
+                                ★ Pre-order Requirements
+                            </Text>
+                            <Text className="text-neutral-500 dark:text-neutral-400 text-xs mt-1">
+                                You have active reservations. Click to auto-fill the recipe batches needed.
+                            </Text>
+                        </View>
+                        <TouchableOpacity 
+                            onPress={applyPreOrdersToPlan}
+                            activeOpacity={0.8}
+                            className="bg-red-650 px-3.5 py-2 rounded-lg"
+                        >
+                            <Text className="text-white font-bold text-xs">Apply to Plan</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+
                 {/* Products Planner List */}
                 <View>
                     <Text className="text-typography-900 font-bold text-lg mb-3">
@@ -191,39 +259,55 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
                         <View className="gap-3">
                             {products.map((product) => {
                                 const qty = plan[product.id] || 0;
+                                const req = preOrderRequirements[product.id];
+                                const reqBatches = req ? req.batches : 0;
+                                const reqQty = req ? req.quantity : 0;
+                                const isCovered = qty >= reqBatches;
+
                                 return (
-                                    <View key={product.id} className="flex-row items-center justify-between bg-white dark:bg-neutral-900 p-3 rounded-xl border border-neutral-200 dark:border-neutral-800">
-                                        <View className="flex-1 pr-2">
-                                            <Text className="font-bold text-sm text-typography-900">
-                                                {product.name}
-                                            </Text>
-                                            <Text className="text-xs text-typography-400 mt-0.5">
-                                                Yields {product.yieldAmount} {product.yieldUnit}
-                                            </Text>
-                                        </View>
-                                        
-                                        {/* Counter Controls */}
-                                        <View className="flex-row items-center gap-1">
-                                            <TouchableOpacity 
-                                                onPress={() => decrementPlanQty(product.id)}
-                                                className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-800 items-center justify-center"
-                                            >
-                                                <Text className="font-bold text-neutral-800 dark:text-neutral-200">-</Text>
-                                            </TouchableOpacity>
- 
-                                            <View className="w-12 h-8 items-center justify-center border border-neutral-200 dark:border-neutral-700 rounded-lg">
-                                                <Text className="font-bold text-sm text-neutral-800 dark:text-neutral-200">
-                                                    {qty}
+                                    <View key={product.id} className="bg-white dark:bg-neutral-900 p-3.5 rounded-xl border border-neutral-200 dark:border-neutral-800">
+                                        <View className="flex-row items-center justify-between">
+                                            <View className="flex-1 pr-2">
+                                                <Text className="font-bold text-sm text-typography-900">
+                                                    {product.name}
+                                                </Text>
+                                                <Text className="text-xs text-typography-400 mt-0.5">
+                                                    Yields {product.yieldAmount} {product.yieldUnit}
                                                 </Text>
                                             </View>
- 
-                                            <TouchableOpacity 
-                                                onPress={() => incrementPlanQty(product.id)}
-                                                className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-800 items-center justify-center"
-                                            >
-                                                <Text className="font-bold text-neutral-800 dark:text-neutral-200">+</Text>
-                                            </TouchableOpacity>
+                                            
+                                            {/* Counter Controls */}
+                                            <View className="flex-row items-center gap-1">
+                                                <TouchableOpacity 
+                                                    onPress={() => decrementPlanQty(product.id)}
+                                                    className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-800 items-center justify-center"
+                                                >
+                                                    <Text className="font-bold text-neutral-850 dark:text-neutral-200">-</Text>
+                                                </TouchableOpacity>
+     
+                                                <View className="w-12 h-8 items-center justify-center border border-neutral-200 dark:border-neutral-700 rounded-lg">
+                                                    <Text className="font-bold text-sm text-neutral-800 dark:text-neutral-200">
+                                                        {qty}
+                                                    </Text>
+                                                </View>
+     
+                                                <TouchableOpacity 
+                                                    onPress={() => incrementPlanQty(product.id)}
+                                                    className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-800 items-center justify-center"
+                                                >
+                                                    <Text className="font-bold text-neutral-850 dark:text-neutral-200">+</Text>
+                                                </TouchableOpacity>
+                                            </View>
                                         </View>
+
+                                        {/* Reservation requirement label */}
+                                        {reqBatches > 0 && (
+                                            <View className="mt-2.5 pt-2 border-t border-neutral-100 dark:border-neutral-800/80">
+                                                <Text className={`text-xs font-semibold ${isCovered ? 'text-green-600 dark:text-green-400' : 'text-red-650 dark:text-red-400'}`}>
+                                                    {isCovered ? '✓' : '★'} Reservations: {reqQty} units ({reqBatches} {reqBatches === 1 ? 'batch' : 'batches'} needed)
+                                                </Text>
+                                            </View>
+                                        )}
                                     </View>
                                 );
                             })}
@@ -235,9 +319,9 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
                     <View className="flex-row justify-end">
                         <TouchableOpacity 
                             onPress={resetPlan}
-                            className="border border-red-600 px-3 py-1.5 rounded-lg active:bg-neutral-50 dark:active:bg-neutral-850"
+                            className="border border-red-650 px-3 py-1.5 rounded-lg active:bg-neutral-50 dark:active:bg-neutral-850"
                         >
-                            <Text className="text-red-600 dark:text-red-400 font-bold text-xs">Clear Plan</Text>
+                            <Text className="text-red-605 dark:text-red-400 font-bold text-xs">Clear Plan</Text>
                         </TouchableOpacity>
                     </View>
                 )}

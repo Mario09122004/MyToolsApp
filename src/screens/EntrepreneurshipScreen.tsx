@@ -26,17 +26,20 @@ import {
 // Helpers and Hooks
 import { name_Screen } from '../helpers/name_screen';
 import { useCRUDProducts, ProductWithIngredients } from '../hooks/entrepreneurship/useCRUDProducts';
+import { useCRUDOrders, OrderWithProduct } from '../hooks/entrepreneurship/useCRUDOrders';
 
 // Components
 import { FormProduct } from '../components/Entrepreneurship/formProduct';
 import { ProductItem } from '../components/Entrepreneurship/productItem';
 import { ShoppingListCalculator } from '../components/Entrepreneurship/shoppingListCalculator';
+import { ReservationsModal } from '../components/Entrepreneurship/reservationsModal';
 
 type TabType = 'products' | 'shopping';
 
 export default function EntrepreneurshipScreen() {
     const { changeNameScreen } = name_Screen();
     const { queryProducts, deleteProduct } = useCRUDProducts();
+    const { queryOrders } = useCRUDOrders();
 
     // Screen setup
     useEffect(() => {
@@ -46,9 +49,11 @@ export default function EntrepreneurshipScreen() {
     // State
     const [activeTab, setActiveTab] = useState<TabType>('products');
     const [dataProducts, setDataProducts] = useState<ProductWithIngredients[]>([]);
+    const [orders, setOrders] = useState<OrderWithProduct[]>([]);
     
     // Modal & Dialog state
     const [modalVisible, setModalVisible] = useState(false);
+    const [reservationsVisible, setReservationsVisible] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [selectedProductId, setSelectedProductId] = useState<number>(0);
     const [deleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
@@ -63,8 +68,22 @@ export default function EntrepreneurshipScreen() {
         }
     };
 
+    // Fetch Reservations/Orders from db
+    const fetchOrders = async () => {
+        try {
+            const list = await queryOrders();
+            setOrders(list);
+        } catch (error) {
+            console.error("Error fetching orders:", error);
+        }
+    };
+
+    const loadData = async () => {
+        await Promise.all([fetchProducts(), fetchOrders()]);
+    };
+
     useEffect(() => {
-        fetchProducts();
+        loadData();
     }, []);
 
     const handleNewProduct = () => {
@@ -88,7 +107,7 @@ export default function EntrepreneurshipScreen() {
         if (selectedProductId > 0) {
             try {
                 await deleteProduct(selectedProductId);
-                await fetchProducts();
+                await loadData(); // Refresh both products and orders (due to cascade delete)
             } catch (error) {
                 console.error("Error deleting product:", error);
             }
@@ -123,34 +142,62 @@ export default function EntrepreneurshipScreen() {
             {/* Tab Content */}
             {activeTab === 'products' ? (
                 <>
-                    {dataProducts && dataProducts.length > 0 ? (
-                        <ScrollView className="flex-1 px-4 pt-4 pb-20">
-                            <Box className="gap-1 pb-24">
-                                {dataProducts.map((product) => (
-                                    <ProductItem 
-                                        key={product.id}
-                                        product={product}
-                                        onEdit={handleEditProduct}
-                                        onDelete={handleDeleteClick}
-                                    />
-                                ))}
-                            </Box>
-                        </ScrollView>
-                    ) : (
-                        <Box className="flex-1 items-center justify-center px-4">
-                            <Box className="w-full py-20 items-center justify-center bg-transparent border border-dashed border-neutral-300 dark:border-neutral-800 rounded-2xl p-6 mb-24">
-                                <Box className="h-12 w-12 rounded-full bg-neutral-100 dark:bg-neutral-900 items-center justify-center mb-3">
-                                    <Icon as={InfoIcon} size="xl" className="text-red-600 dark:text-red-500" />
+                    <ScrollView className="flex-1 px-4 pt-4 pb-20" showsVerticalScrollIndicator={false}>
+                        <Box className="gap-1 pb-24">
+                            
+                            {/* Reservations Summary Header Card */}
+                            <TouchableOpacity 
+                                onPress={() => setReservationsVisible(true)}
+                                activeOpacity={0.8}
+                                className="mb-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/40 p-4 rounded-xl flex-row justify-between items-center"
+                            >
+                                <Box className="flex-row items-center gap-2">
+                                    <Text className="text-red-700 dark:text-red-400 font-bold text-sm">
+                                        ★ Customer Reservations
+                                    </Text>
+                                    {orders.length > 0 ? (
+                                        <Box className="bg-red-650 px-2 py-0.5 rounded-full">
+                                            <Text className="text-white text-xs font-bold">{orders.length}</Text>
+                                        </Box>
+                                    ) : null}
                                 </Box>
-                                <Text className="text-typography-500 font-semibold text-center text-base">
-                                    No products registered yet
-                                </Text>
-                                <Text className="text-typography-400 text-center mt-1 text-sm">
-                                    Press the "+" button below to register a product and its recipe.
-                                </Text>
-                            </Box>
+                                <Text className="text-red-600 dark:text-red-400 font-bold text-xs">Manage &gt;</Text>
+                            </TouchableOpacity>
+
+                            {dataProducts && dataProducts.length > 0 ? (
+                                dataProducts.map((product) => {
+                                    const productOrders = orders.filter(o => o.productId === product.id);
+                                    const reservedQuantity = productOrders.reduce((sum, o) => sum + o.quantity, 0);
+                                    const reservedOrdersCount = productOrders.length;
+
+                                    return (
+                                        <ProductItem 
+                                            key={product.id}
+                                            product={product}
+                                            onEdit={handleEditProduct}
+                                            onDelete={handleDeleteClick}
+                                            reservedQuantity={reservedQuantity}
+                                            reservedOrdersCount={reservedOrdersCount}
+                                        />
+                                    );
+                                })
+                            ) : (
+                                <Box className="flex-1 items-center justify-center px-4">
+                                    <Box className="w-full py-20 items-center justify-center bg-transparent border border-dashed border-neutral-300 dark:border-neutral-800 rounded-2xl p-6 mb-24">
+                                        <Box className="h-12 w-12 rounded-full bg-neutral-100 dark:bg-neutral-900 items-center justify-center mb-3">
+                                            <Icon as={InfoIcon} size="xl" className="text-red-600 dark:text-red-500" />
+                                        </Box>
+                                        <Text className="text-typography-500 font-semibold text-center text-base">
+                                            No products registered yet
+                                        </Text>
+                                        <Text className="text-typography-400 text-center mt-1 text-sm">
+                                            Press the "+" button below to register a product and its recipe.
+                                        </Text>
+                                    </Box>
+                                </Box>
+                            )}
                         </Box>
-                    )}
+                    </ScrollView>
 
                     {/* Floating Add Button */}
                     <Fab
@@ -167,7 +214,7 @@ export default function EntrepreneurshipScreen() {
                     </Fab>
                 </>
             ) : (
-                <ShoppingListCalculator products={dataProducts} />
+                <ShoppingListCalculator products={dataProducts} orders={orders} />
             )}
 
             {/* Product registration/edit modal */}
@@ -190,12 +237,20 @@ export default function EntrepreneurshipScreen() {
                         <FormProduct 
                             editMode={editMode}
                             productId={selectedProductId}
-                            onSave={fetchProducts}
+                            onSave={loadData}
                             onClose={() => setModalVisible(false)}
                         />
                     </ModalBody>
                 </ModalContent>
             </Modal>
+
+            {/* Reservations management modal */}
+            <ReservationsModal 
+                visible={reservationsVisible}
+                onClose={() => setReservationsVisible(false)}
+                products={dataProducts}
+                onOrdersUpdated={fetchOrders}
+            />
 
             {/* Delete Confirmation Alert Dialog */}
             <AlertDialog isOpen={deleteConfirmVisible} onClose={() => setDeleteConfirmVisible(false)}>
