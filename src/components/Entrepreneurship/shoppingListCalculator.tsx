@@ -142,7 +142,7 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
                             {products.map((product) => {
                                 const qty = plan[product.id] || 0;
                                 return (
-                                    <Box key={product.id} className="flex-row items-center justify-between bg-white dark:bg-neutral-900 p-3 rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-sm">
+                                    <Box key={product.id} className="flex-row items-center justify-between bg-white dark:bg-neutral-900 p-3 rounded-xl border border-neutral-200 dark:border-neutral-800">
                                         <Box className="flex-1 pr-2">
                                             <Text size="sm" className="font-bold text-typography-900">
                                                 {product.name}
@@ -210,7 +210,7 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
                             </Text>
                         </Box>
                     ) : (
-                        <Box className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 shadow-sm gap-3">
+                        <Box className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 gap-3">
                             {consolidatedList.map((item) => {
                                 const isBought = !!boughtIngredients[item.key];
                                 return (
