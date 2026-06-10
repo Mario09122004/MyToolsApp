@@ -40,3 +40,13 @@ export type Birthday = typeof birthdays.$inferSelect;
 export type Product = typeof products.$inferSelect;
 
 export type Ingredient = typeof ingredients.$inferSelect;
+
+export const orders = sqliteTable('orders', {
+    id: integer().primaryKey({ autoIncrement: true }),
+    productId: integer().notNull().references(() => products.id, { onDelete: 'cascade' }),
+    customerName: text().notNull(),
+    quantity: real().notNull(),
+    dueDate: text(), // Optional delivery date
+});
+
+export type Order = typeof orders.$inferSelect;
