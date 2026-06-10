@@ -3,10 +3,7 @@ import { ScrollView, TouchableOpacity } from 'react-native';
 import { Box } from '@/components/ui/box';
 import { Text } from '@/components/ui/text';
 import { Heading } from '@/components/ui/heading';
-import { Button, ButtonText } from '@/components/ui/button';
 import { Divider } from '@/components/ui/divider';
-import { Input, InputField } from '@/components/ui/input';
-import { Icon, CheckIcon } from '@/components/ui/icon';
 import { ProductWithIngredients } from '@/src/hooks/entrepreneurship/useCRUDProducts';
 
 interface ShoppingListCalculatorProps {
@@ -186,9 +183,12 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
 
                 {consolidatedList.length > 0 && (
                     <Box className="flex-row justify-end">
-                        <Button size="xs" action="secondary" variant="outline" onPress={handleReset} className="border-red-500">
-                            <ButtonText className="text-red-600 dark:text-red-400 font-bold">Clear Plan</ButtonText>
-                        </Button>
+                        <TouchableOpacity 
+                            onPress={handleReset}
+                            className="border border-red-600 px-3 py-1.5 rounded-lg active:bg-neutral-50 dark:active:bg-neutral-850"
+                        >
+                            <Text size="xs" className="text-red-600 dark:text-red-400 font-bold">Clear Plan</Text>
+                        </TouchableOpacity>
                     </Box>
                 )}
 
@@ -219,13 +219,13 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
                                         onPress={() => toggleBought(item.key)}
                                         activeOpacity={0.7}
                                     >
-                                        <Box className="flex-row items-center justify-between py-2 border-b border-neutral-100 dark:border-neutral-850 last:border-0">
+                                        <Box className="flex-row items-center justify-between py-2 border-b border-neutral-100 dark:border-neutral-800">
                                             <Box className="flex-row items-center gap-3 flex-1 pr-2">
                                                 
                                                 {/* Check Button (Checkbox) */}
                                                 <Box className={`w-6 h-6 rounded-md border items-center justify-center ${isBought ? 'bg-red-600 border-red-600' : 'border-neutral-300 dark:border-neutral-700 bg-transparent'}`}>
                                                     {isBought && (
-                                                        <Icon as={CheckIcon} className="text-white" size="xs" />
+                                                        <Text className="text-white font-bold text-xs">✓</Text>
                                                     )}
                                                 </Box>
 
