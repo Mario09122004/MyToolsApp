@@ -6,20 +6,26 @@ import { openDatabaseSync } from 'expo-sqlite';
 const DATABASE_NAME = 'tasks.db';
 const db = openDatabaseSync(DATABASE_NAME);
 
-// Ensure the persistent key-value store table exists
-try {
-    db.execSync(`
-        CREATE TABLE IF NOT EXISTS key_value_store (
-            key TEXT PRIMARY KEY,
-            value TEXT
-        );
-    `);
-} catch (err) {
-    console.error("Failed to initialize key_value_store table:", err);
-}
+let isInitialized = false;
+
+const ensureTableExists = () => {
+    if (isInitialized) return;
+    try {
+        db.execSync(`
+            CREATE TABLE IF NOT EXISTS key_value_store (
+                key TEXT PRIMARY KEY,
+                value TEXT
+            );
+        `);
+        isInitialized = true;
+    } catch (err) {
+        console.error("Failed to initialize key_value_store table:", err);
+    }
+};
 
 const sqliteStorage: StateStorage = {
     getItem: async (name: string): Promise<string | null> => {
+        ensureTableExists();
         try {
             const result = await db.getFirstAsync<{ value: string }>(
                 'SELECT value FROM key_value_store WHERE key = ?',
@@ -32,6 +38,7 @@ const sqliteStorage: StateStorage = {
         }
     },
     setItem: async (name: string, value: string): Promise<void> => {
+        ensureTableExists();
         try {
             await db.runAsync(
                 'INSERT OR REPLACE INTO key_value_store (key, value) VALUES (?, ?)',
@@ -42,6 +49,7 @@ const sqliteStorage: StateStorage = {
         }
     },
     removeItem: async (name: string): Promise<void> => {
+        ensureTableExists();
         try {
             await db.runAsync('DELETE FROM key_value_store WHERE key = ?', [name]);
         } catch (err) {
