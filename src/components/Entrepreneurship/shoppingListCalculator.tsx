@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { ScrollView, TouchableOpacity, View, Text } from 'react-native';
+import { ScrollView, TouchableOpacity, View, Text, TextInput } from 'react-native';
 import { ProductWithIngredients } from '@/src/hooks/entrepreneurship/useCRUDProducts';
 import { useShoppingListStore } from '@/src/helpers/shopping_list_store';
 
@@ -14,16 +14,86 @@ interface ConsolidatedIngredient {
     key: string; // "name-unit"
 }
 
-// Get dynamic step size for partial purchases based on unit and amount needed
-const getStep = (quantity: number, unit: string) => {
-    const u = (unit || '').trim().toLowerCase();
-    if (u === 'kg' || u === 'kg.' || u === 'kilo' || u === 'kilos' || u === 'l' || u === 'liter' || u === 'liters' || u === 'lt' || u === 'lts') {
-        return quantity <= 2 ? 0.1 : 0.5;
-    }
-    if (u === 'gm' || u === 'g' || u === 'gr' || u === 'grams' || u === 'ml') {
-        return quantity >= 500 ? 50 : 10;
-    }
-    return 1;
+// Individual row item component to prevent whole list re-renders on every keystroke
+interface ShoppingListItemRowProps {
+    item: ConsolidatedIngredient;
+    owned: number;
+    isBought: boolean;
+    onToggle: () => void;
+    onUpdateOwned: (qty: number) => void;
+}
+
+const ShoppingListItemRow = ({ item, owned, isBought, onToggle, onUpdateOwned }: ShoppingListItemRowProps) => {
+    const [inputValue, setInputValue] = React.useState<string>(owned.toString());
+
+    // Sync input value when owned prop changes (e.g., checkbox toggled or cleared)
+    React.useEffect(() => {
+        setInputValue(owned.toString());
+    }, [owned]);
+
+    const handleChangeText = (text: string) => {
+        // Sanitize input: allow only numbers and a single decimal point
+        const sanitized = text.replace(/[^0-9.,]/g, '').replace(/,/g, '.');
+        setInputValue(sanitized);
+
+        const val = parseFloat(sanitized);
+        if (!isNaN(val) && val >= 0) {
+            onUpdateOwned(val);
+        } else if (sanitized === '') {
+            onUpdateOwned(0);
+        }
+    };
+
+    const handleBlur = () => {
+        const val = parseFloat(inputValue);
+        if (isNaN(val) || val < 0) {
+            setInputValue('0');
+            onUpdateOwned(0);
+        } else {
+            const formatted = parseFloat(val.toFixed(2));
+            setInputValue(formatted.toString());
+            onUpdateOwned(formatted);
+        }
+    };
+
+    const displayTarget = parseFloat(item.quantity.toFixed(2));
+
+    return (
+        <View className="flex-row items-center justify-between py-2 border-b border-neutral-100 dark:border-neutral-800">
+            <View className="flex-row items-center gap-3 flex-1 pr-2">
+                
+                {/* Check Button (Checkbox) */}
+                <TouchableOpacity 
+                    onPress={onToggle}
+                    activeOpacity={0.7}
+                    className={`w-6 h-6 rounded-md border items-center justify-center ${isBought ? 'bg-red-600 border-red-600' : 'border-neutral-300 dark:border-neutral-700 bg-transparent'}`}
+                >
+                    {isBought && (
+                        <Text className="text-white font-bold text-xs">✓</Text>
+                    )}
+                </TouchableOpacity>
+
+                <Text className={`font-semibold text-sm flex-1 ${isBought ? 'line-through text-typography-400 font-normal' : 'text-typography-800'}`}>
+                    {item.name}
+                </Text>
+            </View>
+            
+            {/* Input field & Target quantity */}
+            <View className="flex-row items-center gap-2">
+                <TextInput
+                    value={inputValue}
+                    onChangeText={handleChangeText}
+                    onBlur={handleBlur}
+                    keyboardType="decimal-pad"
+                    selectTextOnFocus
+                    className={`w-16 h-8 text-center border border-neutral-200 dark:border-neutral-700 rounded-lg bg-neutral-50 dark:bg-neutral-800 text-xs font-bold text-neutral-800 dark:text-neutral-200 p-0 ${isBought ? 'line-through text-typography-400 font-normal' : ''}`}
+                />
+                <Text className={`font-bold text-xs min-w-[50px] text-neutral-500 ${isBought ? 'line-through text-typography-400 font-normal' : ''}`}>
+                    / {displayTarget} {item.unit}
+                </Text>
+            </View>
+        </View>
+    );
 };
 
 export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps) => {
@@ -32,8 +102,6 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
         ownedIngredients,
         incrementPlanQty,
         decrementPlanQty,
-        incrementOwnedQty,
-        decrementOwnedQty,
         setOwnedQty,
         resetPlan
     } = useShoppingListStore();
@@ -196,58 +264,15 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
                             {consolidatedList.map((item) => {
                                 const owned = ownedIngredients[item.key] || 0;
                                 const isBought = owned >= item.quantity;
-                                const step = getStep(item.quantity, item.unit);
-
-                                // Format float representation to display cleanly
-                                const displayOwned = parseFloat(owned.toFixed(2));
-                                const displayTarget = parseFloat(item.quantity.toFixed(2));
-
                                 return (
-                                    <View 
-                                        key={item.key} 
-                                        className="flex-row items-center justify-between py-2 border-b border-neutral-100 dark:border-neutral-800"
-                                    >
-                                        <View className="flex-row items-center gap-3 flex-1 pr-2">
-                                            
-                                            {/* Check Button (Checkbox) */}
-                                            <TouchableOpacity 
-                                                onPress={() => toggleBought(item.key, item.quantity)}
-                                                activeOpacity={0.7}
-                                                className={`w-6 h-6 rounded-md border items-center justify-center ${isBought ? 'bg-red-600 border-red-600' : 'border-neutral-300 dark:border-neutral-700 bg-transparent'}`}
-                                            >
-                                                {isBought && (
-                                                    <Text className="text-white font-bold text-xs">✓</Text>
-                                                )}
-                                            </TouchableOpacity>
-
-                                            <Text className={`font-semibold text-sm flex-1 ${isBought ? 'line-through text-typography-400 font-normal' : 'text-typography-800'}`}>
-                                                {item.name}
-                                            </Text>
-                                        </View>
-                                        
-                                        {/* Steppers & Quantity Info */}
-                                        <View className="flex-row items-center gap-2">
-                                            <TouchableOpacity 
-                                                onPress={() => decrementOwnedQty(item.key, step)}
-                                                disabled={owned <= 0}
-                                                className={`w-6 h-6 rounded bg-neutral-100 dark:bg-neutral-850 items-center justify-center ${owned <= 0 ? 'opacity-40' : ''}`}
-                                            >
-                                                <Text className="font-bold text-xs text-neutral-800 dark:text-neutral-200">-</Text>
-                                            </TouchableOpacity>
-
-                                            <Text className={`font-bold text-xs text-center min-w-[70px] ${isBought ? 'line-through text-typography-400 font-normal' : 'text-neutral-800 dark:text-neutral-200'}`}>
-                                                {displayOwned} / {displayTarget} {item.unit}
-                                            </Text>
-
-                                            <TouchableOpacity 
-                                                onPress={() => incrementOwnedQty(item.key, step, item.quantity)}
-                                                disabled={owned >= item.quantity}
-                                                className={`w-6 h-6 rounded bg-neutral-100 dark:bg-neutral-850 items-center justify-center ${owned >= item.quantity ? 'opacity-40' : ''}`}
-                                            >
-                                                <Text className="font-bold text-xs text-neutral-800 dark:text-neutral-200">+</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
+                                    <ShoppingListItemRow
+                                        key={item.key}
+                                        item={item}
+                                        owned={owned}
+                                        isBought={isBought}
+                                        onToggle={() => toggleBought(item.key, item.quantity)}
+                                        onUpdateOwned={(qty) => setOwnedQty(item.key, qty)}
+                                    />
                                 );
                             })}
                         </View>
