@@ -73,16 +73,19 @@ export const ProductItem = ({ product, onEdit, onDelete }: ProductItemProps) => 
                             </Text>
                         ) : (
                             <Box className="gap-1.5 pl-1 mb-3">
-                                {product.ingredients.map((ing) => (
-                                    <Box key={ing.id} className="flex-row justify-between items-center">
-                                        <Text size="sm" className="text-typography-700 font-medium">
-                                            • {ing.name}
-                                        </Text>
-                                        <Text size="sm" className="text-typography-800 font-bold">
-                                            {ing.quantity} {ing.unit}
-                                        </Text>
-                                    </Box>
-                                ))}
+                                {product.ingredients.map((ing) => {
+                                    if (!ing) return null;
+                                    return (
+                                        <Box key={ing.id} className="flex-row justify-between items-center">
+                                            <Text size="sm" className="text-typography-700 font-medium">
+                                                • {ing.name || 'Unnamed Ingredient'}
+                                            </Text>
+                                            <Text size="sm" className="text-typography-800 font-bold">
+                                                {ing.quantity ?? 0} {ing.unit || 'units'}
+                                            </Text>
+                                        </Box>
+                                    );
+                                })}
                             </Box>
                         )}
                         

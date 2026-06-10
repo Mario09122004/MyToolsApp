@@ -63,37 +63,49 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
 
     // Calculate consolidated list
     const consolidatedList = useMemo((): ConsolidatedIngredient[] => {
-        const totals: { [key: string]: { name: string; quantity: number; unit: string } } = {};
+        try {
+            const totals: { [key: string]: { name: string; quantity: number; unit: string } } = {};
 
-        Object.entries(plan).forEach(([prodIdStr, batchQty]) => {
-            if (batchQty <= 0) return;
-            const prodId = parseInt(prodIdStr);
-            const product = products.find(p => p.id === prodId);
-            if (!product) return;
+            Object.entries(plan).forEach(([prodIdStr, batchQty]) => {
+                if (batchQty <= 0) return;
+                const prodId = parseInt(prodIdStr);
+                const product = products.find(p => p.id === prodId);
+                if (!product) return;
 
-            product.ingredients.forEach(ing => {
-                const nameClean = ing.name.trim().toLowerCase();
-                const unitClean = ing.unit.trim().toLowerCase();
-                const displayName = ing.name.trim();
-                const displayUnit = ing.unit.trim();
-                const key = `${nameClean}-${unitClean}`;
+                const ingredients = product.ingredients || [];
+                ingredients.forEach(ing => {
+                    if (!ing) return;
+                    
+                    const nameRaw = ing.name || 'Unnamed Ingredient';
+                    const unitRaw = ing.unit || 'units';
+                    const qtyRaw = typeof ing.quantity === 'number' ? ing.quantity : 0;
+                    
+                    const nameClean = nameRaw.trim().toLowerCase();
+                    const unitClean = unitRaw.trim().toLowerCase();
+                    const displayName = nameRaw.trim();
+                    const displayUnit = unitRaw.trim();
+                    const key = `${nameClean}-${unitClean}`;
 
-                if (totals[key]) {
-                    totals[key].quantity += ing.quantity * batchQty;
-                } else {
-                    totals[key] = {
-                        name: displayName,
-                        quantity: ing.quantity * batchQty,
-                        unit: displayUnit
-                    };
-                }
+                    if (totals[key]) {
+                        totals[key].quantity += qtyRaw * batchQty;
+                    } else {
+                        totals[key] = {
+                            name: displayName,
+                            quantity: qtyRaw * batchQty,
+                            unit: displayUnit
+                        };
+                    }
+                });
             });
-        });
 
-        return Object.values(totals).map(item => ({
-            ...item,
-            key: `${item.name.toLowerCase()}-${item.unit.toLowerCase()}`
-        })).sort((a, b) => a.name.localeCompare(b.name));
+            return Object.values(totals).map(item => ({
+                ...item,
+                key: `${(item.name || '').toLowerCase()}-${(item.unit || '').toLowerCase()}`
+            })).sort((a, b) => a.name.localeCompare(b.name));
+        } catch (error) {
+            console.error("Error calculating consolidated list:", error);
+            return [];
+        }
     }, [plan, products]);
 
     const toggleBought = (key: string) => {
