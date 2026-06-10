@@ -137,24 +137,6 @@ export const ShoppingListCalculator = ({ products, orders }: ShoppingListCalcula
     }, [orders, products]);
 
     // Check if the plan is short of the pre-order requirements
-    const needsPlanUpdate = useMemo(() => {
-        return Object.entries(preOrderRequirements).some(([prodIdStr, req]) => {
-            const prodId = parseInt(prodIdStr);
-            const current = plan[prodId] || 0;
-            return current < req.batches;
-        });
-    }, [preOrderRequirements, plan]);
-
-    const applyPreOrdersToPlan = () => {
-        Object.entries(preOrderRequirements).forEach(([prodIdStr, req]) => {
-            const prodId = parseInt(prodIdStr);
-            const current = plan[prodId] || 0;
-            if (current < req.batches) {
-                setPlanQty(prodId, req.batches);
-            }
-        });
-    };
-
     // Calculate consolidated list
     const consolidatedList = useMemo((): ConsolidatedIngredient[] => {
         try {
@@ -215,37 +197,6 @@ export const ShoppingListCalculator = ({ products, orders }: ShoppingListCalcula
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
             <View className="p-4 gap-6">
                 
-                {/* Header info */}
-                <View className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-4 rounded-2xl">
-                    <Text className="text-typography-900 font-bold text-lg mb-1">
-                        Batch Planner
-                    </Text>
-                    <Text className="text-typography-500 text-xs">
-                        Specify how many recipe batches you plan to prepare. The app will calculate the consolidated shopping list.
-                    </Text>
-                </View>
-
-                {/* Pre-order Auto-apply Banner */}
-                {needsPlanUpdate && (
-                    <View className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 p-4 rounded-2xl flex-row justify-between items-center">
-                        <View className="flex-1 pr-3">
-                            <Text className="text-red-700 dark:text-red-400 font-bold text-sm">
-                                ★ Pre-order Requirements
-                            </Text>
-                            <Text className="text-neutral-500 dark:text-neutral-400 text-xs mt-1">
-                                You have active reservations. Click to auto-fill the recipe batches needed.
-                            </Text>
-                        </View>
-                        <TouchableOpacity 
-                            onPress={applyPreOrdersToPlan}
-                            activeOpacity={0.8}
-                            className="bg-red-650 px-3.5 py-2 rounded-lg"
-                        >
-                            <Text className="text-white font-bold text-xs">Apply to Plan</Text>
-                        </TouchableOpacity>
-                    </View>
-                )}
-
                 {/* Products Planner List */}
                 <View>
                     <Text className="text-typography-900 font-bold text-lg mb-3">
@@ -303,8 +254,8 @@ export const ShoppingListCalculator = ({ products, orders }: ShoppingListCalcula
                                         {/* Reservation requirement label */}
                                         {reqBatches > 0 && (
                                             <View className="mt-2.5 pt-2 border-t border-neutral-100 dark:border-neutral-800/80">
-                                                <Text className={`text-xs font-semibold ${isCovered ? 'text-green-600 dark:text-green-400' : 'text-red-650 dark:text-red-400'}`}>
-                                                    {isCovered ? '✓' : '★'} Reservations: {reqQty} units ({reqBatches} {reqBatches === 1 ? 'batch' : 'batches'} needed)
+                                                <Text className="text-xs font-bold text-red-600 dark:text-red-400">
+                                                    ★ Reservations: {reqQty} units ({reqBatches} {reqBatches === 1 ? 'batch' : 'batches'} needed) {isCovered ? '(Covered ✓)' : '(Pending)'}
                                                 </Text>
                                             </View>
                                         )}
