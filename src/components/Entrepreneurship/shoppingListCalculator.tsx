@@ -1,9 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ScrollView, TouchableOpacity } from 'react-native';
-import { Box } from '@/components/ui/box';
-import { Text } from '@/components/ui/text';
-import { Heading } from '@/components/ui/heading';
-import { Divider } from '@/components/ui/divider';
+import { ScrollView, TouchableOpacity, View, Text } from 'react-native';
 import { ProductWithIngredients } from '@/src/hooks/entrepreneurship/useCRUDProducts';
 
 interface ShoppingListCalculatorProps {
@@ -116,44 +112,44 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
 
     return (
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-            <Box className="p-4 gap-6">
+            <View className="p-4 gap-6">
                 
                 {/* Header info */}
-                <Box className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-4 rounded-2xl">
-                    <Heading size="sm" className="text-typography-900 font-bold mb-1">
+                <View className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-4 rounded-2xl">
+                    <Text className="text-typography-900 font-bold text-lg mb-1">
                         Batch Planner
-                    </Heading>
-                    <Text size="xs" className="text-typography-500">
+                    </Text>
+                    <Text className="text-typography-500 text-xs">
                         Specify how many recipe batches you plan to prepare. The app will calculate the consolidated shopping list.
                     </Text>
-                </Box>
+                </View>
 
                 {/* Products Planner List */}
-                <Box>
-                    <Heading size="md" className="text-typography-900 font-bold mb-3">
+                <View>
+                    <Text className="text-typography-900 font-bold text-lg mb-3">
                         Select Recipes & Batches
-                    </Heading>
+                    </Text>
                     {products.length === 0 ? (
-                        <Box className="py-6 border border-dashed border-neutral-300 dark:border-neutral-800 rounded-xl items-center justify-center">
-                            <Text size="sm" className="text-typography-400">No products registered yet</Text>
-                        </Box>
+                        <View className="py-6 border border-dashed border-neutral-300 dark:border-neutral-800 rounded-xl items-center justify-center">
+                            <Text className="text-typography-400 text-sm">No products registered yet</Text>
+                        </View>
                     ) : (
-                        <Box className="gap-3">
+                        <View className="gap-3">
                             {products.map((product) => {
                                 const qty = plan[product.id] || 0;
                                 return (
-                                    <Box key={product.id} className="flex-row items-center justify-between bg-white dark:bg-neutral-900 p-3 rounded-xl border border-neutral-200 dark:border-neutral-800">
-                                        <Box className="flex-1 pr-2">
-                                            <Text size="sm" className="font-bold text-typography-900">
+                                    <View key={product.id} className="flex-row items-center justify-between bg-white dark:bg-neutral-900 p-3 rounded-xl border border-neutral-200 dark:border-neutral-800">
+                                        <View className="flex-1 pr-2">
+                                            <Text className="font-bold text-sm text-typography-900">
                                                 {product.name}
                                             </Text>
-                                            <Text size="xs" className="text-typography-400">
+                                            <Text className="text-xs text-typography-400 mt-0.5">
                                                 Yields {product.yieldAmount} {product.yieldUnit}
                                             </Text>
-                                        </Box>
+                                        </View>
                                         
                                         {/* Counter Controls */}
-                                        <Box className="flex-row items-center gap-1">
+                                        <View className="flex-row items-center gap-1">
                                             <TouchableOpacity 
                                                 onPress={() => handleDecrement(product.id)}
                                                 className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-800 items-center justify-center"
@@ -161,11 +157,11 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
                                                 <Text className="font-bold text-neutral-800 dark:text-neutral-200">-</Text>
                                             </TouchableOpacity>
  
-                                            <Box className="w-12 h-8 items-center justify-center border border-neutral-200 dark:border-neutral-700 rounded-lg">
-                                                <Text size="sm" className="font-bold text-neutral-800 dark:text-neutral-200">
+                                            <View className="w-12 h-8 items-center justify-center border border-neutral-200 dark:border-neutral-700 rounded-lg">
+                                                <Text className="font-bold text-sm text-neutral-800 dark:text-neutral-200">
                                                     {qty}
                                                 </Text>
-                                            </Box>
+                                            </View>
  
                                             <TouchableOpacity 
                                                 onPress={() => handleIncrement(product.id)}
@@ -173,44 +169,44 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
                                             >
                                                 <Text className="font-bold text-neutral-800 dark:text-neutral-200">+</Text>
                                             </TouchableOpacity>
-                                        </Box>
-                                    </Box>
+                                        </View>
+                                    </View>
                                 );
                             })}
-                        </Box>
+                        </View>
                     )}
-                </Box>
+                </View>
 
                 {consolidatedList.length > 0 && (
-                    <Box className="flex-row justify-end">
+                    <View className="flex-row justify-end">
                         <TouchableOpacity 
                             onPress={handleReset}
                             className="border border-red-600 px-3 py-1.5 rounded-lg active:bg-neutral-50 dark:active:bg-neutral-850"
                         >
-                            <Text size="xs" className="text-red-600 dark:text-red-400 font-bold">Clear Plan</Text>
+                            <Text className="text-red-600 dark:text-red-400 font-bold text-xs">Clear Plan</Text>
                         </TouchableOpacity>
-                    </Box>
+                    </View>
                 )}
 
-                <Divider className="my-2" />
+                <View className="h-[1px] bg-neutral-200 dark:bg-neutral-800 my-2" />
 
                 {/* Generated Shopping List Section */}
-                <Box className="pb-12">
-                    <Heading size="md" className="text-typography-900 font-bold mb-3">
+                <View className="pb-12">
+                    <Text className="text-typography-900 font-bold text-lg mb-3">
                         Shopping List
-                    </Heading>
+                    </Text>
 
                     {consolidatedList.length === 0 ? (
-                        <Box className="py-10 bg-neutral-50 dark:bg-neutral-900 border border-dashed border-neutral-300 dark:border-neutral-800 rounded-xl items-center justify-center">
-                            <Text size="sm" className="text-typography-500 text-center font-medium">
+                        <View className="py-10 bg-neutral-50 dark:bg-neutral-900 border border-dashed border-neutral-300 dark:border-neutral-800 rounded-xl items-center justify-center">
+                            <Text className="text-typography-500 text-center font-medium text-sm">
                                 Plan is empty
                             </Text>
-                            <Text size="xs" className="text-typography-400 text-center mt-1">
+                            <Text className="text-typography-400 text-center mt-1 text-xs">
                                 Adjust recipe batch counts above to generate shopping list.
                             </Text>
-                        </Box>
+                        </View>
                     ) : (
-                        <Box className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 gap-3">
+                        <View className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 gap-3">
                             {consolidatedList.map((item) => {
                                 const isBought = !!boughtIngredients[item.key];
                                 return (
@@ -219,32 +215,32 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
                                         onPress={() => toggleBought(item.key)}
                                         activeOpacity={0.7}
                                     >
-                                        <Box className="flex-row items-center justify-between py-2 border-b border-neutral-100 dark:border-neutral-800">
-                                            <Box className="flex-row items-center gap-3 flex-1 pr-2">
+                                        <View className="flex-row items-center justify-between py-2 border-b border-neutral-100 dark:border-neutral-800">
+                                            <View className="flex-row items-center gap-3 flex-1 pr-2">
                                                 
                                                 {/* Check Button (Checkbox) */}
-                                                <Box className={`w-6 h-6 rounded-md border items-center justify-center ${isBought ? 'bg-red-600 border-red-600' : 'border-neutral-300 dark:border-neutral-700 bg-transparent'}`}>
+                                                <View className={`w-6 h-6 rounded-md border items-center justify-center ${isBought ? 'bg-red-600 border-red-600' : 'border-neutral-300 dark:border-neutral-700 bg-transparent'}`}>
                                                     {isBought && (
                                                         <Text className="text-white font-bold text-xs">✓</Text>
                                                     )}
-                                                </Box>
+                                                </View>
 
-                                                <Text size="md" className={`font-semibold ${isBought ? 'line-through text-typography-400 font-normal' : 'text-typography-800'}`}>
+                                                <Text className={`font-semibold text-sm ${isBought ? 'line-through text-typography-400 font-normal' : 'text-typography-800'}`}>
                                                     {item.name}
                                                 </Text>
-                                            </Box>
+                                            </View>
                                             
-                                            <Text size="md" className={`font-bold ${isBought ? 'line-through text-typography-400 font-normal' : 'text-red-600 dark:text-red-500'}`}>
+                                            <Text className={`font-bold text-sm ${isBought ? 'line-through text-typography-400 font-normal' : 'text-red-600 dark:text-red-500'}`}>
                                                 {item.quantity} {item.unit}
                                             </Text>
-                                        </Box>
+                                        </View>
                                     </TouchableOpacity>
                                 );
                             })}
-                        </Box>
+                        </View>
                     )}
-                </Box>
-            </Box>
+                </View>
+            </View>
         </ScrollView>
     );
 };
