@@ -17,13 +17,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MenuOptions } from "./menu";
 import { Divider } from "@/components/ui/divider";
 
-import { useNavigation } from '@react-navigation/native';
 import { name_Screen } from "../helpers/name_screen";
 
-export const Header = () => {
+export const Header = ({ navigation }: { navigation: any }) => {
     const [showDrawer, setShowDrawer] = useState(false);
     const insets = useSafeAreaInsets();
-    const navigation = useNavigation();
     const { nameScreen } = name_Screen();
 
     return (

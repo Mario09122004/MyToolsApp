@@ -16,9 +16,9 @@ import RandomScreen from '../screens/RandomScreen';
 
 const RootStack = createNativeStackNavigator({
     screenOptions: {
-        header: () => (
+        header: ({ navigation }) => (
             <>
-                <Header />
+                <Header navigation={navigation} />
                 <Divider className="my-0.5" />
             </>
         ),
