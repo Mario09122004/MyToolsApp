@@ -28,6 +28,8 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
     const [plan, setPlan] = useState<ProductionPlan>({});
     const [boughtIngredients, setBoughtIngredients] = useState<{ [key: string]: boolean }>({});
 
+    console.log("[ShoppingListCalculator] Rendering. Products:", JSON.stringify(products), "Plan:", JSON.stringify(plan));
+
     // Handle updating quantity
     const handleQtyChange = (productId: number, qtyStr: string) => {
         const num = parseFloat(qtyStr);
@@ -120,7 +122,7 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
             <Box className="p-4 gap-6">
                 
                 {/* Header info */}
-                <Box className="bg-neutral-55 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-4 rounded-2xl">
+                <Box className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-4 rounded-2xl">
                     <Heading size="sm" className="text-typography-900 font-bold mb-1">
                         Batch Planner
                     </Heading>
@@ -143,7 +145,7 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
                             {products.map((product) => {
                                 const qty = plan[product.id] || 0;
                                 return (
-                                    <Box key={product.id} className="flex-row items-center justify-between bg-white dark:bg-neutral-900 p-3 rounded-xl border border-neutral-150 dark:border-neutral-800 shadow-sm">
+                                    <Box key={product.id} className="flex-row items-center justify-between bg-white dark:bg-neutral-900 p-3 rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-sm">
                                         <Box className="flex-1 pr-2">
                                             <Text size="sm" className="font-bold text-typography-900">
                                                 {product.name}
@@ -157,25 +159,20 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
                                         <Box className="flex-row items-center gap-1">
                                             <TouchableOpacity 
                                                 onPress={() => handleDecrement(product.id)}
-                                                className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-850 items-center justify-center"
+                                                className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-800 items-center justify-center"
                                             >
                                                 <Text className="font-bold text-neutral-800 dark:text-neutral-200">-</Text>
                                             </TouchableOpacity>
-
-                                            <Input size="sm" className="w-14 text-center">
-                                                <InputField
-                                                    type="text"
-                                                    keyboardType="numeric"
-                                                    className="text-center font-bold"
-                                                    value={qty > 0 ? qty.toString() : ''}
-                                                    placeholder="0"
-                                                    onChangeText={(val) => handleQtyChange(product.id, val)}
-                                                />
-                                            </Input>
-
+ 
+                                            <Box className="w-12 h-8 items-center justify-center border border-neutral-200 dark:border-neutral-700 rounded-lg">
+                                                <Text size="sm" className="font-bold text-neutral-800 dark:text-neutral-200">
+                                                    {qty}
+                                                </Text>
+                                            </Box>
+ 
                                             <TouchableOpacity 
                                                 onPress={() => handleIncrement(product.id)}
-                                                className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-850 items-center justify-center"
+                                                className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-800 items-center justify-center"
                                             >
                                                 <Text className="font-bold text-neutral-800 dark:text-neutral-200">+</Text>
                                             </TouchableOpacity>
