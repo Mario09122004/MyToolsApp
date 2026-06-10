@@ -231,9 +231,10 @@ export const ShoppingListCalculator = ({ products, orders }: ShoppingListCalcula
                                             <View className="flex-row items-center gap-1">
                                                 <TouchableOpacity 
                                                     onPress={() => decrementPlanQty(product.id)}
-                                                    className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-800 items-center justify-center"
+                                                    disabled={qty <= 0}
+                                                    className={`w-8 h-8 rounded-lg items-center justify-center ${qty <= 0 ? 'bg-neutral-50 dark:bg-neutral-900 opacity-40' : 'bg-neutral-100 dark:bg-neutral-800'}`}
                                                 >
-                                                    <Text className="font-bold text-neutral-850 dark:text-neutral-200">-</Text>
+                                                    <Text className={`font-bold ${qty <= 0 ? 'text-neutral-400 dark:text-neutral-600' : 'text-neutral-850 dark:text-neutral-200'}`}>-</Text>
                                                 </TouchableOpacity>
      
                                                 <View className="w-12 h-8 items-center justify-center border border-neutral-200 dark:border-neutral-700 rounded-lg">
