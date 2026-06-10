@@ -1,7 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { Modal, View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { useCRUDOrders, OrderWithProduct, OrderInput } from '@/src/hooks/entrepreneurship/useCRUDOrders';
 import { ProductWithIngredients } from '@/src/hooks/entrepreneurship/useCRUDProducts';
+
+// Import custom UI components matching EntrepreneurshipScreen
+import {
+    AlertDialog,
+    AlertDialogBackdrop,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogFooter,
+    AlertDialogBody,
+} from '@/components/ui/alert-dialog';
+import { Button, ButtonText } from '@/components/ui/button';
+import { Icon, TrashIcon } from '@/components/ui/icon';
+import { Box } from '@/components/ui/box';
+import { Heading } from '@/components/ui/heading';
 
 interface ReservationsModalProps {
     visible: boolean;
@@ -21,6 +35,10 @@ export const ReservationsModal = ({ visible, onClose, products, onOrdersUpdated 
     const [quantity, setQuantity] = useState('');
     const [dueDate, setDueDate] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
+
+    // Delete confirmation state
+    const [deleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
+    const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
 
     useEffect(() => {
         if (visible) {
@@ -76,27 +94,23 @@ export const ReservationsModal = ({ visible, onClose, products, onOrdersUpdated 
         }
     };
 
-    const handleDeleteOrder = (id: number) => {
-        Alert.alert(
-            "Delete Reservation",
-            "Are you sure you want to delete this reservation?",
-            [
-                { text: "Cancel", style: "cancel" },
-                { 
-                    text: "Delete", 
-                    style: "destructive", 
-                    onPress: async () => {
-                        try {
-                            await deleteOrder(id);
-                            await loadOrders();
-                            onOrdersUpdated();
-                        } catch (err) {
-                            console.error("Error deleting reservation:", err);
-                        }
-                    } 
-                }
-            ]
-        );
+    const handleDeleteClick = (id: number) => {
+        setSelectedOrderId(id);
+        setDeleteConfirmVisible(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (selectedOrderId) {
+            try {
+                await deleteOrder(selectedOrderId);
+                await loadOrders();
+                onOrdersUpdated();
+            } catch (err) {
+                console.error("Error deleting reservation:", err);
+            }
+        }
+        setDeleteConfirmVisible(false);
+        setSelectedOrderId(null);
     };
 
     return (
@@ -224,7 +238,6 @@ export const ReservationsModal = ({ visible, onClose, products, onOrdersUpdated 
                                 <TouchableOpacity
                                     onPress={() => {
                                         if (products.length === 0) {
-                                            Alert.alert("Error", "Please register a product first.");
                                             return;
                                         }
                                         setIsAdding(true);
@@ -266,7 +279,7 @@ export const ReservationsModal = ({ visible, onClose, products, onOrdersUpdated 
                                                 </View>
                                                 
                                                 <TouchableOpacity
-                                                    onPress={() => handleDeleteOrder(order.id)}
+                                                    onPress={() => handleDeleteClick(order.id)}
                                                     className="p-2 bg-red-100 dark:bg-red-950/40 rounded-lg"
                                                 >
                                                     <Text className="text-red-600 dark:text-red-400 font-bold text-xs">Delete</Text>
@@ -280,6 +293,41 @@ export const ReservationsModal = ({ visible, onClose, products, onOrdersUpdated 
                     )}
                 </View>
             </View>
+
+            {/* Custom AlertDialog for Delete Confirmation */}
+            <AlertDialog isOpen={deleteConfirmVisible} onClose={() => setDeleteConfirmVisible(false)}>
+                <AlertDialogBackdrop />
+                <AlertDialogContent className="max-w-[415px] gap-4 items-center">
+                    <Box className="rounded-full h-[52px] w-[52px] bg-background-error items-center justify-center">
+                        <Icon as={TrashIcon} size="lg" className="stroke-error-500" />
+                    </Box>
+                    <AlertDialogHeader className="mb-2">
+                        <Heading size="md" className="text-typography-900 font-bold">Delete Reservation?</Heading>
+                    </AlertDialogHeader>
+                    <AlertDialogBody>
+                        <Text className="text-center text-neutral-600 dark:text-neutral-400 text-sm">
+                            Are you sure you want to delete this reservation? This action cannot be undone.
+                        </Text>
+                    </AlertDialogBody>
+                    <AlertDialogFooter className="mt-5 gap-3 w-full flex-row justify-center">
+                        <Button
+                            size="sm"
+                            onPress={handleConfirmDelete}
+                            className="px-[30px] bg-red-600 active:bg-red-700 hover:bg-red-700 border-none"
+                        >
+                            <ButtonText className="font-bold text-white">Delete</ButtonText>
+                        </Button>
+                        <Button
+                            variant="outline"
+                            onPress={() => setDeleteConfirmVisible(false)}
+                            size="sm"
+                            className="px-[30px] border-neutral-300 dark:border-neutral-700 active:bg-neutral-50 dark:active:bg-neutral-900"
+                        >
+                            <ButtonText className="font-bold text-typography-700">Cancel</ButtonText>
+                        </Button>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </Modal>
     );
 };
