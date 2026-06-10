@@ -88,7 +88,7 @@ const ShoppingListItemRow = ({ item, owned, isBought, onToggle, onUpdateOwned }:
                     onBlur={handleBlur}
                     keyboardType="decimal-pad"
                     selectTextOnFocus
-                    className={`w-16 h-8 text-center border border-neutral-200 dark:border-neutral-700 rounded-lg bg-neutral-50 dark:bg-neutral-850 text-xs font-bold text-neutral-800 dark:text-neutral-200 p-0 ${isBought ? 'line-through text-typography-400 font-normal' : ''}`}
+                    className={`w-16 h-8 text-center border border-neutral-200 dark:border-neutral-700 rounded-lg bg-neutral-50 dark:bg-neutral-800 text-xs font-bold text-black dark:text-neutral-100 p-0 ${isBought ? 'line-through text-typography-400 font-normal' : ''}`}
                 />
                 <Text className={`font-bold text-xs min-w-[50px] text-neutral-500 ${isBought ? 'line-through text-typography-400 font-normal' : ''}`}>
                     / {displayTarget} {item.unit}
@@ -234,7 +234,7 @@ export const ShoppingListCalculator = ({ products, orders }: ShoppingListCalcula
                                                     disabled={qty <= 0}
                                                     className={`w-8 h-8 rounded-lg items-center justify-center ${qty <= 0 ? 'bg-neutral-50 dark:bg-neutral-900 opacity-40' : 'bg-neutral-100 dark:bg-neutral-800'}`}
                                                 >
-                                                    <Text className={`font-bold ${qty <= 0 ? 'text-neutral-400 dark:text-neutral-600' : 'text-neutral-850 dark:text-neutral-200'}`}>-</Text>
+                                                    <Text className={`font-bold ${qty <= 0 ? 'text-neutral-400 dark:text-neutral-600' : 'text-neutral-800 dark:text-neutral-200'}`}>-</Text>
                                                 </TouchableOpacity>
      
                                                 <View className="w-12 h-8 items-center justify-center border border-neutral-200 dark:border-neutral-700 rounded-lg">
@@ -247,7 +247,7 @@ export const ShoppingListCalculator = ({ products, orders }: ShoppingListCalcula
                                                     onPress={() => incrementPlanQty(product.id)}
                                                     className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-800 items-center justify-center"
                                                 >
-                                                    <Text className="font-bold text-neutral-850 dark:text-neutral-200">+</Text>
+                                                    <Text className="font-bold text-neutral-800 dark:text-neutral-200">+</Text>
                                                 </TouchableOpacity>
                                             </View>
                                         </View>
@@ -271,7 +271,7 @@ export const ShoppingListCalculator = ({ products, orders }: ShoppingListCalcula
                     <View className="flex-row justify-end">
                         <TouchableOpacity 
                             onPress={resetPlan}
-                            className="border border-red-650 px-3 py-1.5 rounded-lg active:bg-neutral-50 dark:active:bg-neutral-850"
+                            className="border border-red-650 px-3 py-1.5 rounded-lg active:bg-neutral-50 dark:active:bg-neutral-800"
                         >
                             <Text className="text-red-605 dark:text-red-400 font-bold text-xs">Clear Plan</Text>
                         </TouchableOpacity>

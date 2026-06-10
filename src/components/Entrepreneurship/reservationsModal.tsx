@@ -132,7 +132,7 @@ export const ReservationsModal = ({ visible, onClose, products, onOrdersUpdated 
                 {isAdding ? (
                     /* Add Reservation Form */
                     <ScrollView className="flex-1" contentContainerStyle={{ gap: 16 }}>
-                        <Text className="text-lg font-bold text-neutral-850 dark:text-neutral-100">
+                        <Text className="text-lg font-bold text-neutral-800 dark:text-neutral-100">
                             New Reservation
                         </Text>
 
@@ -175,7 +175,7 @@ export const ReservationsModal = ({ visible, onClose, products, onOrdersUpdated 
                                 onChangeText={setCustomerName}
                                 placeholder="e.g. John Doe"
                                 placeholderTextColor="#a3a3a3"
-                                className="border border-neutral-300 dark:border-neutral-700 rounded-lg p-2.5 text-sm text-neutral-900 dark:text-neutral-50 bg-neutral-50 dark:bg-neutral-850"
+                                className="border border-neutral-300 dark:border-neutral-700 rounded-lg p-2.5 text-sm text-neutral-900 dark:text-neutral-50 bg-neutral-50 dark:bg-neutral-800"
                             />
                         </View>
 
@@ -190,7 +190,7 @@ export const ReservationsModal = ({ visible, onClose, products, onOrdersUpdated 
                                 keyboardType="decimal-pad"
                                 placeholder="e.g. 2"
                                 placeholderTextColor="#a3a3a3"
-                                className="border border-neutral-300 dark:border-neutral-700 rounded-lg p-2.5 text-sm text-neutral-900 dark:text-neutral-50 bg-neutral-50 dark:bg-neutral-850"
+                                className="border border-neutral-300 dark:border-neutral-700 rounded-lg p-2.5 text-sm text-neutral-900 dark:text-neutral-50 bg-neutral-50 dark:bg-neutral-800"
                             />
                         </View>
 
@@ -204,7 +204,7 @@ export const ReservationsModal = ({ visible, onClose, products, onOrdersUpdated 
                                 onChangeText={setDueDate}
                                 placeholder="e.g. Friday, June 12th"
                                 placeholderTextColor="#a3a3a3"
-                                className="border border-neutral-300 dark:border-neutral-700 rounded-lg p-2.5 text-sm text-neutral-900 dark:text-neutral-50 bg-neutral-50 dark:bg-neutral-850"
+                                className="border border-neutral-300 dark:border-neutral-700 rounded-lg p-2.5 text-sm text-neutral-900 dark:text-neutral-50 bg-neutral-50 dark:bg-neutral-800"
                             />
                         </View>
 

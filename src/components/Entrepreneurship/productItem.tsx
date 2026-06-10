@@ -70,7 +70,7 @@ export const ProductItem = ({ product, onEdit, onDelete, reservedQuantity = 0, r
 
                 <Box className="mt-3 flex-row justify-between items-center bg-neutral-50 dark:bg-neutral-950 p-2 rounded-lg">
                     <Text size="xs" className="text-typography-600 font-semibold flex-1 pr-2">
-                        Yields: <Text size="xs" className="font-bold text-neutral-850 dark:text-neutral-205">{yieldText}{subYieldText}</Text>
+                        Yields: <Text size="xs" className="font-bold text-neutral-800 dark:text-neutral-200">{yieldText}{subYieldText}</Text>
                     </Text>
                     <Text size="xs" className="text-red-600 dark:text-red-400 font-bold">
                         {expanded ? 'Hide Recipe' : 'View Recipe'}
