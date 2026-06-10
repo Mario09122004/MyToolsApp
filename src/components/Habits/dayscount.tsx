@@ -2,26 +2,40 @@ import { View } from "react-native";
 import { Text } from "@/components/ui/text";
 import { Card } from "@/components/ui/card";
 
+type Days = {
+    label: string,
+    active: boolean
+}
+
 export default function DaysCount() {
     const today = new Date()
 
-    const todayDate = today.toLocaleDateString('en-US', { 
-        weekday: 'long', 
-        day: 'numeric', 
-        month: 'short' 
-    })
-    
-    const days = [
-        { label: "L", active: false },
-        { label: "M", active: true },
-        { label: "M", active: false },
-        { label: "J", active: true },
-        { label: "V", active: true },
-        { label: "S", active: false },
-        { label: "D", active: false },
-    ];
+    const days: Days[] = [];
 
-    const completedCount = days.filter(day => day.active).length;
+    days.push({
+            label: today.toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            day: 'numeric', 
+            month: 'short' 
+        }).slice(0,3),
+            active: false
+        }
+    )
+
+    for(let i=6; i>0; i--){
+        let day = new Date(today.setDate(today.getDate() - 1));
+        let dayString = day.toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            day: 'numeric', 
+            month: 'short' 
+        })
+        days.push({
+            label: dayString.slice(0,3),
+            active: false
+        })
+    }
+
+    const daysCompleted = 8;
 
     return (
         <Card size="md" variant="outline" className="p-4">
@@ -39,13 +53,13 @@ export default function DaysCount() {
                 </View>
                 <View className="bg-red-50 dark:bg-red-950/30 px-2.5 py-1 rounded-full">
                     <Text size="xs" className="text-red-600 dark:text-red-400 font-bold">
-                        {completedCount} days
+                        {daysCompleted} days
                     </Text>
                 </View>
             </View>
 
             <View className="flex-row justify-between items-center mt-2 px-1">
-                {days.map((day, index) => (
+                {days.reverse().map((day, index) => (
                     <View key={index} className="items-center flex-1">
                         <Text size="xs" className="mb-1.5 font-bold text-typography-400">
                             {day.label}
