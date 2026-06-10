@@ -38,7 +38,7 @@ export default function DaysCount() {
     const daysCompleted = 8;
 
     return (
-        <Card size="md" variant="outline" className="p-4">
+        <Card size="md" variant="outline" className="p-4 mb-4">
             <View className="flex-row justify-between items-center mb-3">
                 <View>
                     <Text size="sm" className="text-typography-900 font-bold capitalize mt-0.5">
