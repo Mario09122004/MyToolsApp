@@ -83,7 +83,7 @@ export const ScreenLayout = ({ children }: { children: React.ReactNode }) => {
                 <SafeAreaProvider>
                     <GluestackUIProvider>
                         <GestureHandlerRootView>
-                            <SafeAreaView style={{ flex: 1 }}>
+                            <SafeAreaView className="flex-1 bg-background-neutral">
                                 {children}
                             </SafeAreaView>
                         </GestureHandlerRootView>

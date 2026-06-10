@@ -16,7 +16,6 @@ import { useColorScheme } from 'nativewind';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MenuOptions } from "./menu";
-import { Divider } from "@/components/ui/divider";
 
 import { name_Screen } from "../helpers/name_screen";
 

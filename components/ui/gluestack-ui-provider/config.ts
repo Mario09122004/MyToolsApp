@@ -148,6 +148,7 @@ export const config = {
     '--color-background-success': '237 252 242',
     '--color-background-muted': '247 248 247',
     '--color-background-info': '235 248 254',
+    '--color-background-neutral': '246 246 246',
 
     /* Focus Ring Indicator  */
     '--color-indicator-primary': '55 55 55',
@@ -300,6 +301,7 @@ export const config = {
     '--color-background-success': '28 43 33',
     '--color-background-muted': '51 51 51',
     '--color-background-info': '26 40 46',
+    '--color-background-neutral': '18 18 18',
 
     /* Focus Ring Indicator  */
     '--color-indicator-primary': '247 247 247',
