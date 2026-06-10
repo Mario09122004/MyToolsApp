@@ -30,7 +30,7 @@ export const Header = ({ navigation }: { navigation: any }) => {
     };
 
     return (
-        <Box className='p-4 flex-row items-center bg-background-neutral border-b border-neutral-100 dark:border-neutral-900'>
+        <Box className='p-4 flex-row items-center bg-neutral-50 dark:bg-neutral-950 border-b border-neutral-100 dark:border-neutral-900'>
             <Button
                 onPress={() => {
                     setShowDrawer(true);

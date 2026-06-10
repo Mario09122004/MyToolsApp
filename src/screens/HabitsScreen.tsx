@@ -16,7 +16,7 @@ export default function HabitsScreen() {
     }, [])
 
     return (
-        <ScrollView className="px-4">
+        <ScrollView className="bg-neutral-50 dark:bg-neutral-950 flex-1 px-4 py-2">
             <AddHabit />
             <DonutGraph />
             <DaysCount />

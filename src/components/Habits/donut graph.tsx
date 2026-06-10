@@ -8,7 +8,7 @@ export default function DonutGraph() {
     const progress = 0.7;
 
     return (
-        <Card size="md" className="p-4 items-center bg-current">
+        <Card size="md" className="p-4 items-center mb-4">
             <View className="relative items-center justify-center w-full">
                 <ProgressCircle
                     style={{ height: 160, width: 160 }}

@@ -117,7 +117,7 @@ export default function EntrepreneurshipScreen() {
     };
 
     return (
-        <Box className="flex-1 bg-background-neutral">
+        <Box className="flex-1 bg-neutral-50 dark:bg-neutral-950">
             
             {/* Tab Selector Segment */}
             <Box className="flex-row p-2 bg-neutral-100 dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800">

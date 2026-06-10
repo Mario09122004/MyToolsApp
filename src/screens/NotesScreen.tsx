@@ -87,7 +87,7 @@ export default function NotesScreen() {
     return (
         <>
             {dataNotes && dataNotes.length > 0 ? (
-                <ScrollView className="bg-background-neutral flex-1 px-4 py-2">
+                <ScrollView className="bg-neutral-50 dark:bg-neutral-950 flex-1 px-4 py-2">
                     <Box className="gap-3 pb-24">
                         {dataNotes.map((note) => (
                             <Pressable
@@ -101,8 +101,8 @@ export default function NotesScreen() {
                     </Box>
                 </ScrollView>
             ) : (
-                <Box className="flex-1 bg-background-neutral px-4 items-center justify-center">
-                    <Box className="w-full py-20 items-center justify-center bg-background-neutral border border-dashed border-neutral-300 dark:border-neutral-800 rounded-2xl p-6 mb-24">
+                <Box className="flex-1 bg-neutral-50 dark:bg-neutral-950 px-4 items-center justify-center">
+                    <Box className="w-full py-20 items-center justify-center bg-white dark:bg-neutral-900 border border-dashed border-neutral-300 dark:border-neutral-800 rounded-2xl p-6 mb-24">
                         <Box className="h-12 w-12 rounded-full bg-neutral-100 dark:bg-neutral-800 items-center justify-center mb-3">
                             <Icon as={InfoIcon} size="xl" className="text-red-600 dark:text-red-500" />
                         </Box>
