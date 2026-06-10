@@ -1,13 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { ScrollView, TouchableOpacity, View, Text } from 'react-native';
 import { ProductWithIngredients } from '@/src/hooks/entrepreneurship/useCRUDProducts';
+import { useShoppingListStore } from '@/src/helpers/shopping_list_store';
 
 interface ShoppingListCalculatorProps {
     products: ProductWithIngredients[];
-}
-
-interface ProductionPlan {
-    [productId: number]: number; // productId -> quantity of recipes/batches
 }
 
 interface ConsolidatedIngredient {
@@ -17,44 +14,31 @@ interface ConsolidatedIngredient {
     key: string; // "name-unit"
 }
 
+// Get dynamic step size for partial purchases based on unit and amount needed
+const getStep = (quantity: number, unit: string) => {
+    const u = (unit || '').trim().toLowerCase();
+    if (u === 'kg' || u === 'kg.' || u === 'kilo' || u === 'kilos' || u === 'l' || u === 'liter' || u === 'liters' || u === 'lt' || u === 'lts') {
+        return quantity <= 2 ? 0.1 : 0.5;
+    }
+    if (u === 'gm' || u === 'g' || u === 'gr' || u === 'grams' || u === 'ml') {
+        return quantity >= 500 ? 50 : 10;
+    }
+    return 1;
+};
+
 export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps) => {
-    const [plan, setPlan] = useState<ProductionPlan>({});
-    const [boughtIngredients, setBoughtIngredients] = useState<{ [key: string]: boolean }>({});
+    const {
+        plan,
+        ownedIngredients,
+        incrementPlanQty,
+        decrementPlanQty,
+        incrementOwnedQty,
+        decrementOwnedQty,
+        setOwnedQty,
+        resetPlan
+    } = useShoppingListStore();
 
-    console.log("[ShoppingListCalculator] Rendering. Products:", JSON.stringify(products), "Plan:", JSON.stringify(plan));
-
-    // Handle updating quantity
-    const handleQtyChange = (productId: number, qtyStr: string) => {
-        const num = parseFloat(qtyStr);
-        setPlan(prev => ({
-            ...prev,
-            [productId]: isNaN(num) || num < 0 ? 0 : num
-        }));
-    };
-
-    const handleIncrement = (productId: number) => {
-        const current = plan[productId] || 0;
-        setPlan(prev => ({
-            ...prev,
-            [productId]: current + 1
-        }));
-    };
-
-    const handleDecrement = (productId: number) => {
-        const current = plan[productId] || 0;
-        if (current > 0) {
-            setPlan(prev => ({
-                ...prev,
-                [productId]: Math.max(0, current - 1)
-            }));
-        }
-    };
-
-    // Reset plan
-    const handleReset = () => {
-        setPlan({});
-        setBoughtIngredients({});
-    };
+    console.log("[ShoppingListCalculator] Rendering. Products count:", products.length, "Plan:", JSON.stringify(plan));
 
     // Calculate consolidated list
     const consolidatedList = useMemo((): ConsolidatedIngredient[] => {
@@ -103,11 +87,13 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
         }
     }, [plan, products]);
 
-    const toggleBought = (key: string) => {
-        setBoughtIngredients(prev => ({
-            ...prev,
-            [key]: !prev[key]
-        }));
+    const toggleBought = (key: string, targetQty: number) => {
+        const current = ownedIngredients[key] || 0;
+        if (current >= targetQty) {
+            setOwnedQty(key, 0);
+        } else {
+            setOwnedQty(key, targetQty);
+        }
     };
 
     return (
@@ -151,7 +137,7 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
                                         {/* Counter Controls */}
                                         <View className="flex-row items-center gap-1">
                                             <TouchableOpacity 
-                                                onPress={() => handleDecrement(product.id)}
+                                                onPress={() => decrementPlanQty(product.id)}
                                                 className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-800 items-center justify-center"
                                             >
                                                 <Text className="font-bold text-neutral-800 dark:text-neutral-200">-</Text>
@@ -164,7 +150,7 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
                                             </View>
  
                                             <TouchableOpacity 
-                                                onPress={() => handleIncrement(product.id)}
+                                                onPress={() => incrementPlanQty(product.id)}
                                                 className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-800 items-center justify-center"
                                             >
                                                 <Text className="font-bold text-neutral-800 dark:text-neutral-200">+</Text>
@@ -180,7 +166,7 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
                 {consolidatedList.length > 0 && (
                     <View className="flex-row justify-end">
                         <TouchableOpacity 
-                            onPress={handleReset}
+                            onPress={resetPlan}
                             className="border border-red-600 px-3 py-1.5 rounded-lg active:bg-neutral-50 dark:active:bg-neutral-850"
                         >
                             <Text className="text-red-600 dark:text-red-400 font-bold text-xs">Clear Plan</Text>
@@ -208,33 +194,60 @@ export const ShoppingListCalculator = ({ products }: ShoppingListCalculatorProps
                     ) : (
                         <View className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 gap-3">
                             {consolidatedList.map((item) => {
-                                const isBought = !!boughtIngredients[item.key];
-                                return (
-                                    <TouchableOpacity 
-                                        key={item.key} 
-                                        onPress={() => toggleBought(item.key)}
-                                        activeOpacity={0.7}
-                                    >
-                                        <View className="flex-row items-center justify-between py-2 border-b border-neutral-100 dark:border-neutral-800">
-                                            <View className="flex-row items-center gap-3 flex-1 pr-2">
-                                                
-                                                {/* Check Button (Checkbox) */}
-                                                <View className={`w-6 h-6 rounded-md border items-center justify-center ${isBought ? 'bg-red-600 border-red-600' : 'border-neutral-300 dark:border-neutral-700 bg-transparent'}`}>
-                                                    {isBought && (
-                                                        <Text className="text-white font-bold text-xs">✓</Text>
-                                                    )}
-                                                </View>
+                                const owned = ownedIngredients[item.key] || 0;
+                                const isBought = owned >= item.quantity;
+                                const step = getStep(item.quantity, item.unit);
 
-                                                <Text className={`font-semibold text-sm ${isBought ? 'line-through text-typography-400 font-normal' : 'text-typography-800'}`}>
-                                                    {item.name}
-                                                </Text>
-                                            </View>
+                                // Format float representation to display cleanly
+                                const displayOwned = parseFloat(owned.toFixed(2));
+                                const displayTarget = parseFloat(item.quantity.toFixed(2));
+
+                                return (
+                                    <View 
+                                        key={item.key} 
+                                        className="flex-row items-center justify-between py-2 border-b border-neutral-100 dark:border-neutral-800"
+                                    >
+                                        <View className="flex-row items-center gap-3 flex-1 pr-2">
                                             
-                                            <Text className={`font-bold text-sm ${isBought ? 'line-through text-typography-400 font-normal' : 'text-red-600 dark:text-red-500'}`}>
-                                                {item.quantity} {item.unit}
+                                            {/* Check Button (Checkbox) */}
+                                            <TouchableOpacity 
+                                                onPress={() => toggleBought(item.key, item.quantity)}
+                                                activeOpacity={0.7}
+                                                className={`w-6 h-6 rounded-md border items-center justify-center ${isBought ? 'bg-red-600 border-red-600' : 'border-neutral-300 dark:border-neutral-700 bg-transparent'}`}
+                                            >
+                                                {isBought && (
+                                                    <Text className="text-white font-bold text-xs">✓</Text>
+                                                )}
+                                            </TouchableOpacity>
+
+                                            <Text className={`font-semibold text-sm flex-1 ${isBought ? 'line-through text-typography-400 font-normal' : 'text-typography-800'}`}>
+                                                {item.name}
                                             </Text>
                                         </View>
-                                    </TouchableOpacity>
+                                        
+                                        {/* Steppers & Quantity Info */}
+                                        <View className="flex-row items-center gap-2">
+                                            <TouchableOpacity 
+                                                onPress={() => decrementOwnedQty(item.key, step)}
+                                                disabled={owned <= 0}
+                                                className={`w-6 h-6 rounded bg-neutral-100 dark:bg-neutral-850 items-center justify-center ${owned <= 0 ? 'opacity-40' : ''}`}
+                                            >
+                                                <Text className="font-bold text-xs text-neutral-800 dark:text-neutral-200">-</Text>
+                                            </TouchableOpacity>
+
+                                            <Text className={`font-bold text-xs text-center min-w-[70px] ${isBought ? 'line-through text-typography-400 font-normal' : 'text-neutral-800 dark:text-neutral-200'}`}>
+                                                {displayOwned} / {displayTarget} {item.unit}
+                                            </Text>
+
+                                            <TouchableOpacity 
+                                                onPress={() => incrementOwnedQty(item.key, step, item.quantity)}
+                                                disabled={owned >= item.quantity}
+                                                className={`w-6 h-6 rounded bg-neutral-100 dark:bg-neutral-850 items-center justify-center ${owned >= item.quantity ? 'opacity-40' : ''}`}
+                                            >
+                                                <Text className="font-bold text-xs text-neutral-800 dark:text-neutral-200">+</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
                                 );
                             })}
                         </View>
