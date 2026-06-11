@@ -36,7 +36,7 @@ export const ScreenLayout = ({ children }: { children: React.ReactNode }) => {
             }
             
             if (finalStatus !== 'granted') {
-                console.log('¡Permiso de notificación denegado!');
+                // console.log('¡Permiso de notificación denegado!');
                 return;
             }
 

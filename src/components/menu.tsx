@@ -17,6 +17,7 @@ const options = [
         name: 'Birthdays',
         screenName: 'BirthdaysScreen',
     },
+    /*
     {
         name: 'Habits',
         screenName: 'HabitsScreen',
@@ -37,6 +38,7 @@ const options = [
         name: 'Programing message',
         screenName: 'ProgramingMessageScreen',
     },
+    */
     {
         name: 'Entrepreneurship',
         screenName: 'EntrepreneurshipScreen',

@@ -48,7 +48,7 @@ async function NotificationBirthday(day: number, month: number, id: number, name
             },
         });
 
-        console.log(`Notification scheduled for ${name} on ${nextBirthday.toDateString()} (Android)`);
+        // console.log(`Notification scheduled for ${name} on ${nextBirthday.toDateString()} (Android)`);
     } catch (error) {
         console.error(`Error scheduling notification for ${name}:`, error);
     }
@@ -105,19 +105,19 @@ export const FormBirthday = ({
         try {
             if (editModeBirthday) {
                 await updateBirthday(birthdayIdEdit, birthdayForm.name, birthdayForm.date.getTime());
-                console.log("Init Notification reschedule");
+                // console.log("Init Notification reschedule");
                 await NotificationBirthday(birthdayForm.date.getDate(), birthdayForm.date.getMonth() + 1, birthdayIdEdit, birthdayForm.name);
-                console.log("Notification rescheduled");
+                // console.log("Notification rescheduled");
             } else {
                 const data = await insertBirthday(birthdayForm.name, birthdayForm.date.getTime());
-                console.log("Init Notification schedule");
+                // console.log("Init Notification schedule");
                 await NotificationBirthday(birthdayForm.date.getDate(), birthdayForm.date.getMonth() + 1, Number(data), birthdayForm.name);
-                console.log("Notification scheduled");
+                // console.log("Notification scheduled");
             }
             if (onSave) onSave();
             if (onClose) onClose();
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     };
 

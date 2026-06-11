@@ -109,7 +109,7 @@ export const ShoppingListCalculator = ({ products, orders }: ShoppingListCalcula
         resetPlan
     } = useShoppingListStore();
 
-    console.log("[ShoppingListCalculator] Rendering. Products count:", products.length, "Plan:", JSON.stringify(plan));
+    // console.log("[ShoppingListCalculator] Rendering. Products count:", products.length, "Plan:", JSON.stringify(plan));
 
     // Calculate pre-order batch requirements per product
     const preOrderRequirements = useMemo(() => {

@@ -69,7 +69,7 @@ export default function BirthdaysScreen() {
     const handleDeleteBirthday = async () => {
         try {
             await Notifications.cancelScheduledNotificationAsync(`cumple-${idBirthday.toString()}`);
-            console.log(`Notification cancelled for birthday ID: ${idBirthday}`);
+            // console.log(`Notification cancelled for birthday ID: ${idBirthday}`);
         } catch (error) {
             console.error("Error cancelling notification:", error);
         }

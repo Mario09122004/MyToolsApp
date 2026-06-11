@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import DatePicker from 'react-native-date-picker';
 import { useCRUDOrders, OrderWithProduct, OrderInput } from '@/src/hooks/entrepreneurship/useCRUDOrders';
 import { ProductWithIngredients } from '@/src/hooks/entrepreneurship/useCRUDProducts';
 
@@ -32,6 +33,8 @@ export const ReservationsView = ({ products, onOrdersUpdated }: ReservationsView
     const [customerName, setCustomerName] = useState('');
     const [quantity, setQuantity] = useState('');
     const [dueDate, setDueDate] = useState('');
+    const [dueDateObj, setDueDateObj] = useState<Date>(new Date());
+    const [datePickerOpen, setDatePickerOpen] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
 
     // Delete confirmation state
@@ -80,6 +83,7 @@ export const ReservationsView = ({ products, onOrdersUpdated }: ReservationsView
             setCustomerName('');
             setQuantity('');
             setDueDate('');
+            setDueDateObj(new Date());
             setIsAdding(false);
             // Refresh
             await loadOrders();
@@ -181,19 +185,53 @@ export const ReservationsView = ({ products, onOrdersUpdated }: ReservationsView
                         <Text className="text-xs font-bold text-neutral-500">
                             Delivery / Pickup Day (Optional)
                         </Text>
-                        <TextInput
-                            value={dueDate}
-                            onChangeText={setDueDate}
-                            placeholder="e.g. Friday, June 12th"
-                            placeholderTextColor="#a3a3a3"
-                            className="border border-neutral-300 dark:border-neutral-700 rounded-lg p-2.5 text-sm text-neutral-900 dark:text-neutral-50 bg-neutral-50 dark:bg-neutral-800"
+                        <View className="flex-row gap-2 items-center">
+                            <TouchableOpacity 
+                                onPress={() => setDatePickerOpen(true)}
+                                className="flex-1 border border-neutral-300 dark:border-neutral-700 rounded-lg p-2.5 bg-neutral-50 dark:bg-neutral-800 flex-row justify-between items-center"
+                            >
+                                <Text className={`text-sm ${dueDate ? 'text-neutral-900 dark:text-neutral-50' : 'text-neutral-400'}`}>
+                                    {dueDate ? dueDate : "Select Date"}
+                                </Text>
+                            </TouchableOpacity>
+                            {dueDate ? (
+                                <TouchableOpacity 
+                                    onPress={() => {
+                                        setDueDate('');
+                                        setDueDateObj(new Date());
+                                    }}
+                                    className="px-3 py-2.5 border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/20 rounded-lg"
+                                >
+                                    <Text className="text-xs font-bold text-red-600 dark:text-red-400">Clear</Text>
+                                </TouchableOpacity>
+                            ) : null}
+                        </View>
+                        <DatePicker
+                            modal
+                            open={datePickerOpen}
+                            date={dueDateObj}
+                            mode="date"
+                            onConfirm={(selectedDate) => {
+                                setDatePickerOpen(false);
+                                setDueDateObj(selectedDate);
+                                setDueDate(selectedDate.toLocaleDateString());
+                            }}
+                            onCancel={() => {
+                                setDatePickerOpen(false);
+                            }}
                         />
                     </View>
 
                     {/* Actions */}
                     <View className="flex-row gap-3 mt-4 pb-12">
                         <TouchableOpacity
-                            onPress={() => setIsAdding(false)}
+                            onPress={() => {
+                                setCustomerName('');
+                                setQuantity('');
+                                setDueDate('');
+                                setDueDateObj(new Date());
+                                setIsAdding(false);
+                            }}
                             className="flex-1 py-3 border border-neutral-300 dark:border-neutral-700 rounded-lg items-center justify-center bg-white dark:bg-neutral-900"
                         >
                             <Text className="text-neutral-800 dark:text-neutral-200 font-bold text-sm">Cancel</Text>
