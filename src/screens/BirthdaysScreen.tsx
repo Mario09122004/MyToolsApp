@@ -94,7 +94,7 @@ export default function BirthdaysScreen() {
     return (
         <>
             {dataBirthdays && dataBirthdays.length > 0 ? (
-                <ScrollView className="bg-background-neutral flex-1">
+                <ScrollView className="bg-neutral-50 dark:bg-neutral-950 flex-1">
                     <Box className="p-4 gap-4">
                         <Box className="flex flex-col gap-2">
                             {dataBirthdays.map((birthday) => (
@@ -109,8 +109,8 @@ export default function BirthdaysScreen() {
                     </Box>
                 </ScrollView>
             ) : (
-                <Box className="flex-1 bg-background-neutral px-4 items-center justify-center">
-                    <Box className="w-full py-20 items-center justify-center bg-background-neutral border border-dashed border-neutral-300 dark:border-neutral-800 rounded-2xl p-6 mb-24">
+                <Box className="flex-1 bg-neutral-50 dark:bg-neutral-950 px-4 items-center justify-center">
+                    <Box className="w-full py-20 items-center justify-center bg-white dark:bg-neutral-900 border border-dashed border-neutral-300 dark:border-neutral-800 rounded-2xl p-6 mb-24">
                         <Box className="h-12 w-12 rounded-full bg-neutral-100 dark:bg-neutral-800 items-center justify-center mb-3">
                             <Icon as={InfoIcon} size="xl" className="text-red-600 dark:text-red-500" />
                         </Box>

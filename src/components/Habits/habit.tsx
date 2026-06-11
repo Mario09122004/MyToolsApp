@@ -7,7 +7,7 @@ export default function Habit({ Title, Description, Check = false } : { Title: s
     const [isCompleted, setIsCompleted] = useState(Check);
 
     return (
-        <Box className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800 p-4 mb-3 bg-background-neutral flex-row justify-between items-center">
+        <Box className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800 p-4 mb-3 bg-white dark:bg-neutral-900 flex-row justify-between items-center">
             <Box className="flex-1 pr-4">
                 <Text size="md" className="font-bold text-typography-900 mb-0.5">{Title}</Text>
                 <Text size="xs" className="text-typography-400 font-medium">{Description}</Text>

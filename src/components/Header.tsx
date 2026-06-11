@@ -11,23 +11,26 @@ import {
 } from '@/components/ui/drawer';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
-import { Icon, CloseIcon, MenuIcon } from '@/components/ui/icon';
+import { Icon, CloseIcon, MenuIcon, SunIcon, MoonIcon } from '@/components/ui/icon';
+import { useColorScheme } from 'nativewind';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MenuOptions } from "./menu";
-import { Divider } from "@/components/ui/divider";
 
-import { useNavigation } from '@react-navigation/native';
 import { name_Screen } from "../helpers/name_screen";
 
-export const Header = () => {
+export const Header = ({ navigation }: { navigation: any }) => {
     const [showDrawer, setShowDrawer] = useState(false);
     const insets = useSafeAreaInsets();
-    const navigation = useNavigation();
     const { nameScreen } = name_Screen();
+    const { colorScheme, setColorScheme } = useColorScheme();
+
+    const toggleTheme = () => {
+        setColorScheme(colorScheme === 'dark' ? 'light' : 'dark');
+    };
 
     return (
-        <Box className='p-4 flex-row items-center bg-background-neutral border-b border-neutral-100 dark:border-neutral-900'>
+        <Box className='p-4 flex-row items-center bg-neutral-50 dark:bg-neutral-950 border-b border-neutral-100 dark:border-neutral-900'>
             <Button
                 onPress={() => {
                     setShowDrawer(true);
@@ -39,6 +42,12 @@ export const Header = () => {
             <Heading className="ml-3 flex-1 text-typography-900 font-extrabold tracking-tight" size="xl">
                 {nameScreen}
             </Heading>
+            <Button
+                onPress={toggleTheme}
+                className="bg-transparent p-0 w-10 h-10 items-center justify-center rounded-full hover:bg-neutral-100 active:bg-neutral-200 dark:hover:bg-neutral-800 dark:active:bg-neutral-700"
+            >
+                <Icon as={colorScheme === 'dark' ? SunIcon : MoonIcon} size="xl" className="text-red-600 dark:text-red-500" />
+            </Button>
             <Drawer
                 isOpen={showDrawer}
                 size="full"

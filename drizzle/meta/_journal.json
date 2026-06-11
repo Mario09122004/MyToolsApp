@@ -22,6 +22,20 @@
       "when": 1780677019839,
       "tag": "0002_daffy_crusher_hogan",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1781113058487,
+      "tag": "0003_material_deathbird",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1781115501492,
+      "tag": "0004_ancient_lenny_balinger",
+      "breakpoints": true
     }
   ]
 }
