@@ -32,9 +32,9 @@ import { useCRUDOrders, OrderWithProduct } from '../hooks/entrepreneurship/useCR
 import { FormProduct } from '../components/Entrepreneurship/formProduct';
 import { ProductItem } from '../components/Entrepreneurship/productItem';
 import { ShoppingListCalculator } from '../components/Entrepreneurship/shoppingListCalculator';
-import { ReservationsModal } from '../components/Entrepreneurship/reservationsModal';
+import { ReservationsView } from '../components/Entrepreneurship/reservationsView';
 
-type TabType = 'products' | 'shopping';
+type TabType = 'products' | 'reservations' | 'shopping';
 
 export default function EntrepreneurshipScreen() {
     const { changeNameScreen } = name_Screen();
@@ -53,7 +53,6 @@ export default function EntrepreneurshipScreen() {
     
     // Modal & Dialog state
     const [modalVisible, setModalVisible] = useState(false);
-    const [reservationsVisible, setReservationsVisible] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [selectedProductId, setSelectedProductId] = useState<number>(0);
     const [deleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
@@ -120,50 +119,38 @@ export default function EntrepreneurshipScreen() {
         <Box className="flex-1 bg-neutral-50 dark:bg-neutral-950">
             
             {/* Tab Selector Segment */}
-            <Box className="flex-row p-2 bg-neutral-100 dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800">
+            <Box className="flex-row p-1 bg-neutral-100 dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800">
                 <TouchableOpacity 
                     onPress={() => setActiveTab('products')}
                     className={`flex-1 py-2 rounded-lg items-center ${activeTab === 'products' ? 'bg-red-600' : 'bg-transparent'}`}
                 >
-                    <Text className={`font-bold ${activeTab === 'products' ? 'text-white' : 'text-neutral-600 dark:text-neutral-400'}`}>
+                    <Text className={`font-bold text-xs ${activeTab === 'products' ? 'text-white' : 'text-neutral-600 dark:text-neutral-400'}`}>
                         Products & Recipes
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                    onPress={() => setActiveTab('reservations')}
+                    className={`flex-1 py-2 rounded-lg items-center ${activeTab === 'reservations' ? 'bg-red-600' : 'bg-transparent'}`}
+                >
+                    <Text className={`font-bold text-xs ${activeTab === 'reservations' ? 'text-white' : 'text-neutral-600 dark:text-neutral-400'}`}>
+                        Reservations
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
                     onPress={() => setActiveTab('shopping')}
                     className={`flex-1 py-2 rounded-lg items-center ${activeTab === 'shopping' ? 'bg-red-600' : 'bg-transparent'}`}
                 >
-                    <Text className={`font-bold ${activeTab === 'shopping' ? 'text-white' : 'text-neutral-600 dark:text-neutral-400'}`}>
+                    <Text className={`font-bold text-xs ${activeTab === 'shopping' ? 'text-white' : 'text-neutral-600 dark:text-neutral-400'}`}>
                         Shopping List
                     </Text>
                 </TouchableOpacity>
             </Box>
 
             {/* Tab Content */}
-            {activeTab === 'products' ? (
+            {activeTab === 'products' && (
                 <>
                     <ScrollView className="flex-1 px-4 pt-4 pb-20" showsVerticalScrollIndicator={false}>
                         <Box className="gap-1 pb-24">
-                            
-                            {/* Reservations Summary Header Card */}
-                            <TouchableOpacity 
-                                onPress={() => setReservationsVisible(true)}
-                                activeOpacity={0.8}
-                                className="mb-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/40 p-4 rounded-xl flex-row justify-between items-center"
-                            >
-                                <Box className="flex-row items-center gap-2">
-                                    <Text className="text-red-700 dark:text-red-400 font-bold text-sm">
-                                        ★ Customer Reservations
-                                    </Text>
-                                    {orders.length > 0 ? (
-                                        <Box className="bg-red-650 px-2 py-0.5 rounded-full">
-                                            <Text className="text-white text-xs font-bold">{orders.length}</Text>
-                                        </Box>
-                                    ) : null}
-                                </Box>
-                                <Text className="text-red-600 dark:text-red-400 font-bold text-xs">Manage &gt;</Text>
-                            </TouchableOpacity>
-
                             {dataProducts && dataProducts.length > 0 ? (
                                 dataProducts.map((product) => {
                                     const productOrders = orders.filter(o => o.productId === product.id);
@@ -213,7 +200,13 @@ export default function EntrepreneurshipScreen() {
                         <FabLabel>Register</FabLabel>
                     </Fab>
                 </>
-            ) : (
+            )}
+
+            {activeTab === 'reservations' && (
+                <ReservationsView products={dataProducts} onOrdersUpdated={fetchOrders} />
+            )}
+
+            {activeTab === 'shopping' && (
                 <ShoppingListCalculator products={dataProducts} orders={orders} />
             )}
 
@@ -243,14 +236,6 @@ export default function EntrepreneurshipScreen() {
                     </ModalBody>
                 </ModalContent>
             </Modal>
-
-            {/* Reservations management modal */}
-            <ReservationsModal 
-                visible={reservationsVisible}
-                onClose={() => setReservationsVisible(false)}
-                products={dataProducts}
-                onOrdersUpdated={fetchOrders}
-            />
 
             {/* Delete Confirmation Alert Dialog */}
             <AlertDialog isOpen={deleteConfirmVisible} onClose={() => setDeleteConfirmVisible(false)}>
