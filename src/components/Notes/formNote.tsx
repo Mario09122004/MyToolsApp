@@ -41,7 +41,7 @@ export const FormNote = ({ editMode, idNote = 0, onSave }: { editMode: boolean, 
             setEditModeNote(true);
             if (onSave) onSave();
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     };
 
@@ -50,7 +50,7 @@ export const FormNote = ({ editMode, idNote = 0, onSave }: { editMode: boolean, 
             await updateNote(noteForm.tittle, noteForm.content as string, NoteIdEdit);
             if (onSave) onSave();
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     }
 
