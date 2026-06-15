@@ -17,11 +17,11 @@ const options = [
         name: 'Birthdays',
         screenName: 'BirthdaysScreen',
     },
-    /*
     {
         name: 'Habits',
         screenName: 'HabitsScreen',
     },
+    /*
     {
         name: 'Tasks',
         screenName: 'TasksScreen',
@@ -44,6 +44,7 @@ const options = [
         screenName: 'EntrepreneurshipScreen',
     }
 ]
+
 export const MenuOptions = ({ navigation, handleClose }: { navigation: any, handleClose: () => void }) => {
 
     return (
@@ -63,9 +64,6 @@ export const MenuOptions = ({ navigation, handleClose }: { navigation: any, hand
                     </Box>
                 )
             })}
-            <Text className="text-right">
-                Mario was here
-            </Text>
         </ScrollView>
     )
 }

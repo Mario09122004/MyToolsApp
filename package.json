@@ -18,6 +18,7 @@
     "babel-plugin-inline-import": "^3.0.0",
     "drizzle-orm": "^0.45.2",
     "expo": "~54.0.33",
+    "expo-blur": "^15.0.8",
     "expo-build-properties": "~1.0.10",
     "expo-drizzle-studio-plugin": "^0.2.1",
     "expo-notifications": "~0.32.17",
@@ -44,6 +45,7 @@
     "babel-plugin-module-resolver": "^5.0.3",
     "babel-preset-expo": "^54.0.10",
     "drizzle-kit": "^0.31.10",
+    "eas-cli": "^20.1.0",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "tailwindcss": "^3.4.17",
     "typescript": "~5.9.2"
