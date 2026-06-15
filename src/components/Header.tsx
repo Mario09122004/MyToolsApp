@@ -56,19 +56,20 @@ export const Header = ({ navigation }: { navigation: any }) => {
                     setShowDrawer(false);
                 }}
             >
-                <DrawerBackdrop className="bg-black/60" />
-                <DrawerContent style={{ paddingTop: insets.top, paddingBottom: insets.bottom }} 
-                    className="bg-transparent border-r border-white/10 dark:border-neutral-800/20 shadow-2xl overflow-hidden"
+                <BlurView
+                    intensity={60}
+                    tint={colorScheme === 'dark' ? 'dark' : 'light'}
+                    experimentalBlurMethod="dimezisBlurView"
+                    style={{ flex: 1 }}
                 >
-                    <BlurView
-                        intensity={25}
-                        tint={colorScheme === 'dark' ? 'dark' : 'light'}
-                        experimentalBlurMethod="dimezisBlurView"
-                        style={{ flex: 1 }}
-                        className="w-full"
+                    <DrawerBackdrop className="bg-transparent" />
+                    <DrawerContent style={{ paddingTop: insets.top, paddingBottom: insets.bottom, backgroundColor: 'transparent' }} 
+                        className="overflow-hidden border-0 shadow-none"
                     >
-                        <DrawerHeader className="border-b border-neutral-100 dark:border-neutral-900 py-3 relative">
-                            <Heading size="xl" className="w-full text-center text-typography-950 font-extrabold tracking-tight" >Menu</Heading>
+                        <DrawerHeader className="py-2 relative">
+                            <Heading size="xl" className="w-full text-center text-typography-950 font-extrabold tracking-tight" >
+                                Menu
+                            </Heading>
                             <DrawerCloseButton className="absolute right-4 top-1/2 -translate-y-1/2">
                                 <Icon as={CloseIcon} size="xl" className="text-red-600 dark:text-red-500" />
                             </DrawerCloseButton>
@@ -78,7 +79,7 @@ export const Header = ({ navigation }: { navigation: any }) => {
                             <MenuOptions navigation={navigation} handleClose={() => setShowDrawer(false)} />
                         </DrawerBody>
 
-                        <DrawerFooter className="py-4 px-4 border-t border-neutral-100 dark:border-neutral-900">
+                        <DrawerFooter className="py-4 px-4">
                             <Button
                                 variant="outline"
                                 onPress={() => {
@@ -89,8 +90,8 @@ export const Header = ({ navigation }: { navigation: any }) => {
                                 <ButtonText className="text-red-600 dark:text-red-400 font-bold">Close Menu</ButtonText>
                             </Button>
                         </DrawerFooter>
-                    </BlurView>
-                </DrawerContent>
+                    </DrawerContent>
+                </BlurView>
             </Drawer>
         </Box>
     )
