@@ -57,7 +57,7 @@ export const Header = ({ navigation }: { navigation: any }) => {
                 }}
             >
                 <BlurView
-                    intensity={60}
+                    intensity={30}
                     tint={colorScheme === 'dark' ? 'dark' : 'light'}
                     experimentalBlurMethod="dimezisBlurView"
                     style={{ flex: 1 }}
