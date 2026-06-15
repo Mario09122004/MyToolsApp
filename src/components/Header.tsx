@@ -16,8 +16,8 @@ import { useColorScheme } from 'nativewind';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MenuOptions } from "./menu";
-
 import { name_Screen } from "../helpers/name_screen";
+import { BlurView } from 'expo-blur';
 
 export const Header = ({ navigation }: { navigation: any }) => {
     const [showDrawer, setShowDrawer] = useState(false);
@@ -56,31 +56,42 @@ export const Header = ({ navigation }: { navigation: any }) => {
                     setShowDrawer(false);
                 }}
             >
-                <DrawerBackdrop />
-                <DrawerContent style={{ paddingTop: insets.top, paddingBottom: insets.bottom }} className="bg-white/75 dark:bg-black/75 backdrop-blur-3xl">
-                    <DrawerHeader className="border-b border-neutral-100 dark:border-neutral-900 py-3 relative">
-                        <Heading size="xl" className="w-full text-center text-typography-950 font-extrabold tracking-tight" >Menu</Heading>
-                        <DrawerCloseButton className="absolute right-4 top-1/2 -translate-y-1/2">
-                            <Icon as={CloseIcon} size="xl" className="text-red-600 dark:text-red-500" />
-                        </DrawerCloseButton>
-                    </DrawerHeader>
+                <BlurView
+                    intensity={30}
+                    tint={colorScheme === 'dark' ? 'dark' : 'light'}
+                    experimentalBlurMethod="dimezisBlurView"
+                    style={{ flex: 1 }}
+                >
+                    <DrawerBackdrop className="bg-transparent" />
+                    <DrawerContent style={{ paddingTop: insets.top, paddingBottom: insets.bottom, backgroundColor: 'transparent' }} 
+                        className="overflow-hidden border-0 shadow-none"
+                    >
+                        <DrawerHeader className="py-2 relative">
+                            <Heading size="xl" className="w-full text-center text-typography-950 font-extrabold tracking-tight" >
+                                Menu
+                            </Heading>
+                            <DrawerCloseButton className="absolute right-4 top-1/2 -translate-y-1/2">
+                                <Icon as={CloseIcon} size="xl" className="text-red-600 dark:text-red-500" />
+                            </DrawerCloseButton>
+                        </DrawerHeader>
 
-                    <DrawerBody className="mt-2 px-4" >
-                        <MenuOptions navigation={navigation} handleClose={() => setShowDrawer(false)} />
-                    </DrawerBody>
+                        <DrawerBody className="mt-2 px-4" >
+                            <MenuOptions navigation={navigation} handleClose={() => setShowDrawer(false)} />
+                        </DrawerBody>
 
-                    <DrawerFooter className="py-4 px-4 border-t border-neutral-100 dark:border-neutral-900">
-                        <Button
-                            variant="outline"
-                            onPress={() => {
-                                setShowDrawer(false);
-                            }}
-                            className="w-full border-red-600 active:bg-red-50 dark:border-red-500 dark:active:bg-red-950/20"
-                        >
-                            <ButtonText className="text-red-600 dark:text-red-400 font-bold">Close Menu</ButtonText>
-                        </Button>
-                    </DrawerFooter>
-                </DrawerContent>
+                        <DrawerFooter className="py-4 px-4">
+                            <Button
+                                variant="outline"
+                                onPress={() => {
+                                    setShowDrawer(false);
+                                }}
+                                className="w-full border-red-600 active:bg-red-50 dark:border-red-500 dark:active:bg-red-950/20"
+                            >
+                                <ButtonText className="text-red-600 dark:text-red-400 font-bold">Close Menu</ButtonText>
+                            </Button>
+                        </DrawerFooter>
+                    </DrawerContent>
+                </BlurView>
             </Drawer>
         </Box>
     )
