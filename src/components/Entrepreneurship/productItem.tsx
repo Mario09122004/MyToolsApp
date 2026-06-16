@@ -90,17 +90,36 @@ export const ProductItem = ({ product, onEdit, onDelete, reservedQuantity = 0, r
                             <Box className="gap-1.5 pl-1 mb-3">
                                 {product.ingredients.map((ing) => {
                                     if (!ing) return null;
+                                    const formattedIngPrice = ing.price !== null && ing.price !== undefined
+                                        ? new Intl.NumberFormat('en-US', {
+                                            style: 'currency',
+                                            currency: 'USD'
+                                        }).format(ing.price)
+                                        : '$0.00';
+
                                     return (
-                                        <Box key={ing.id} className="flex-row justify-between items-center">
+                                        <Box key={ing.id} className="flex-row justify-between items-center py-0.5">
                                             <Text size="sm" className="text-typography-700 font-medium">
-                                                • {ing.name || 'Unnamed Ingredient'}
+                                                • {ing.name || 'Unnamed Ingredient'} ({ing.quantity ?? 0} {ing.unit || 'units'})
                                             </Text>
-                                            <Text size="sm" className="text-typography-800 font-bold">
-                                                {ing.quantity ?? 0} {ing.unit || 'units'}
+                                            <Text size="sm" className="text-typography-800 dark:text-neutral-200 font-bold">
+                                                {formattedIngPrice}
                                             </Text>
                                         </Box>
                                     );
                                 })}
+                                <Divider className="my-2" />
+                                <Box className="flex-row justify-between items-center">
+                                    <Text size="sm" className="text-typography-900 font-bold">
+                                        Total Ingredients Cost:
+                                    </Text>
+                                    <Text size="sm" className="text-red-650 dark:text-red-500 font-extrabold">
+                                        {new Intl.NumberFormat('en-US', {
+                                            style: 'currency',
+                                            currency: 'USD'
+                                        }).format(product.ingredients.reduce((sum, ing) => sum + (ing?.price || 0), 0))}
+                                    </Text>
+                                </Box>
                             </Box>
                         )}
                         
