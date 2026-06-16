@@ -30,6 +30,7 @@ export const ingredients = sqliteTable('ingredients', {
     name: text().notNull(),
     quantity: real().notNull(),
     unit: text().notNull(),
+    price: real(),
 });
 
 // Export Task to use as an interface in your app
