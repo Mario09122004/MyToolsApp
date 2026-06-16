@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, TouchableOpacity } from 'react-native';
+import { ScrollView, TouchableOpacity, Modal, View, FlatList, Pressable } from 'react-native';
 import {
     FormControl,
     FormControlLabel,
@@ -50,6 +50,12 @@ export const FormProduct = ({
     const [priceError, setPriceError] = useState(false);
     const [yieldError, setYieldError] = useState(false);
 
+    // Unit Picker Modal State
+    const [activeIngredientIdx, setActiveIngredientIdx] = useState<number | null>(null);
+    const [unitPickerOpen, setUnitPickerOpen] = useState(false);
+
+    const UNIT_OPTIONS = ['unit', 'gr', 'Kg', 'ml', 'L', 'cup', 'spoonful'];
+
     useEffect(() => {
         if (editMode && productId > 0) {
             const loadProduct = async () => {
@@ -65,7 +71,8 @@ export const FormProduct = ({
                     setIngredients(prod.ingredients.map(ing => ({
                         name: ing.name,
                         quantity: ing.quantity,
-                        unit: ing.unit
+                        unit: ing.unit,
+                        price: ing.price
                     })));
                 }
             };
@@ -84,7 +91,7 @@ export const FormProduct = ({
     }, [editMode, productId]);
 
     const handleAddIngredient = () => {
-        setIngredients([...ingredients, { name: '', quantity: 1, unit: 'units' }]);
+        setIngredients([...ingredients, { name: '', quantity: 1, unit: 'unit', price: null }]);
     };
 
     const handleRemoveIngredient = (index: number) => {
@@ -98,6 +105,12 @@ export const FormProduct = ({
             updated[index] = {
                 ...updated[index],
                 quantity: isNaN(num) ? 0 : num
+            };
+        } else if (field === 'price') {
+            const num = parseFloat(value);
+            updated[index] = {
+                ...updated[index],
+                price: isNaN(num) ? null : num
             };
         } else {
             updated[index] = {
@@ -117,18 +130,28 @@ export const FormProduct = ({
             setNameError(false);
         }
 
-        const priceNum = parseFloat(pricePerUnit);
-        if (isNaN(priceNum) || priceNum < 0) {
-            setPriceError(true);
-            hasError = true;
+        let priceNum = 0;
+        if (pricePerUnit.trim()) {
+            priceNum = parseFloat(pricePerUnit);
+            if (isNaN(priceNum) || priceNum < 0) {
+                setPriceError(true);
+                hasError = true;
+            } else {
+                setPriceError(false);
+            }
         } else {
             setPriceError(false);
         }
 
-        const yieldNum = parseFloat(yieldAmount);
-        if (isNaN(yieldNum) || yieldNum <= 0) {
-            setYieldError(true);
-            hasError = true;
+        let yieldNum = 1;
+        if (yieldAmount.trim()) {
+            yieldNum = parseFloat(yieldAmount);
+            if (isNaN(yieldNum) || yieldNum <= 0) {
+                setYieldError(true);
+                hasError = true;
+            } else {
+                setYieldError(false);
+            }
         } else {
             setYieldError(false);
         }
@@ -198,11 +221,11 @@ export const FormProduct = ({
                 </FormControl>
 
                 <Box className="flex-row gap-4">
-                    {/* Price per unit */}
+                    {/* Price unit */}
                     <Box className="flex-1">
                         <FormControl isInvalid={priceError}>
                             <FormControlLabel>
-                                <FormControlLabelText className="font-semibold text-typography-700">Price per Unit *</FormControlLabelText>
+                                <FormControlLabelText className="font-semibold text-typography-700">Price unit</FormControlLabelText>
                             </FormControlLabel>
                             <Input size="md" className="mt-1">
                                 <InputField
@@ -234,7 +257,7 @@ export const FormProduct = ({
                     <Box className="flex-[2]">
                         <FormControl isInvalid={yieldError}>
                             <FormControlLabel>
-                                <FormControlLabelText className="font-semibold text-typography-700">Yield Qty *</FormControlLabelText>
+                                <FormControlLabelText className="font-semibold text-typography-700">Yield QT</FormControlLabelText>
                             </FormControlLabel>
                             <Input size="md" className="mt-1">
                                 <InputField
@@ -250,7 +273,7 @@ export const FormProduct = ({
                     <Box className="flex-[3]">
                         <FormControl>
                             <FormControlLabel>
-                                <FormControlLabelText className="font-semibold text-typography-700">Yield Unit *</FormControlLabelText>
+                                <FormControlLabelText className="font-semibold text-typography-700">Yield unit</FormControlLabelText>
                             </FormControlLabel>
                             <Input size="md" className="mt-1">
                                 <InputField
@@ -319,45 +342,62 @@ export const FormProduct = ({
                 ) : (
                     <Box className="gap-2">
                         {ingredients.map((ing, idx) => (
-                            <Box key={idx} className="flex-row gap-2 items-center">
-                                {/* Name */}
-                                <Box className="flex-[4]">
-                                    <Input size="sm">
-                                        <InputField
-                                            type="text"
-                                            placeholder="Ingredient name"
-                                            value={ing.name}
-                                            onChangeText={(val) => handleIngredientChange(idx, 'name', val)}
-                                        />
-                                    </Input>
+                            <Box key={idx} className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-3 rounded-lg gap-2 mb-2">
+                                <Box className="flex-row justify-between items-center">
+                                    <Text size="xs" className="font-semibold text-neutral-450 dark:text-neutral-505">Ingredient #{idx + 1}</Text>
+                                    <TouchableOpacity onPress={() => handleRemoveIngredient(idx)} className="p-1">
+                                        <Icon as={TrashIcon} size="sm" className="text-red-600 dark:text-red-400" />
+                                    </TouchableOpacity>
                                 </Box>
-                                {/* Quantity */}
-                                <Box className="flex-[2]">
-                                    <Input size="sm">
-                                        <InputField
-                                            type="text"
-                                            keyboardType="numeric"
-                                            placeholder="Qty"
-                                            value={ing.quantity ? ing.quantity.toString() : ''}
-                                            onChangeText={(val) => handleIngredientChange(idx, 'quantity', val)}
-                                        />
-                                    </Input>
+                                <Input size="sm">
+                                    <InputField
+                                        type="text"
+                                        placeholder="Ingredient name (e.g. Flour)"
+                                        value={ing.name}
+                                        onChangeText={(val) => handleIngredientChange(idx, 'name', val)}
+                                    />
+                                </Input>
+                                <Box className="flex-row gap-2">
+                                    <Box className="flex-1">
+                                        <Text size="xs" className="mb-1 font-semibold text-neutral-500">Qty</Text>
+                                        <Input size="sm">
+                                            <InputField
+                                                type="text"
+                                                keyboardType="numeric"
+                                                placeholder="e.g. 100"
+                                                value={ing.quantity ? ing.quantity.toString() : ''}
+                                                onChangeText={(val) => handleIngredientChange(idx, 'quantity', val)}
+                                            />
+                                        </Input>
+                                    </Box>
+                                    <Box className="flex-[1.5]">
+                                        <Text size="xs" className="mb-1 font-semibold text-neutral-500">Unit</Text>
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                setActiveIngredientIdx(idx);
+                                                setUnitPickerOpen(true);
+                                            }}
+                                            className="h-8 border border-neutral-300 dark:border-neutral-700 rounded bg-transparent justify-center px-2 flex-row items-center justify-between"
+                                        >
+                                            <Text size="xs" className="text-neutral-850 dark:text-neutral-200 font-medium">
+                                                {ing.unit || 'select'}
+                                            </Text>
+                                            <Text size="xxs" className="text-neutral-400">▼</Text>
+                                        </TouchableOpacity>
+                                    </Box>
+                                    <Box className="flex-[1.5]">
+                                        <Text size="xs" className="mb-1 font-semibold text-neutral-500">Price ($)</Text>
+                                        <Input size="sm">
+                                            <InputField
+                                                type="text"
+                                                keyboardType="numeric"
+                                                placeholder="e.g. 1.50"
+                                                value={ing.price !== undefined && ing.price !== null ? ing.price.toString() : ''}
+                                                onChangeText={(val) => handleIngredientChange(idx, 'price', val)}
+                                            />
+                                        </Input>
+                                    </Box>
                                 </Box>
-                                {/* Unit */}
-                                <Box className="flex-[2]">
-                                    <Input size="sm">
-                                        <InputField
-                                            type="text"
-                                            placeholder="Unit (e.g. kg)"
-                                            value={ing.unit}
-                                            onChangeText={(val) => handleIngredientChange(idx, 'unit', val)}
-                                        />
-                                    </Input>
-                                </Box>
-                                {/* Delete */}
-                                <TouchableOpacity onPress={() => handleRemoveIngredient(idx)} className="p-1">
-                                    <Icon as={TrashIcon} size="md" className="text-red-600 dark:text-red-500" />
-                                </TouchableOpacity>
                             </Box>
                         ))}
                     </Box>
@@ -370,6 +410,52 @@ export const FormProduct = ({
                     <ButtonText className="text-white font-bold">Save Product</ButtonText>
                 </Button>
             </Box>
+
+            {/* Unit Picker Modal */}
+            <Modal
+                visible={unitPickerOpen}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={() => {
+                    setUnitPickerOpen(false);
+                    setActiveIngredientIdx(null);
+                }}
+            >
+                <Pressable
+                    className="flex-1 bg-black/50 justify-center items-center p-4"
+                    onPress={() => {
+                        setUnitPickerOpen(false);
+                        setActiveIngredientIdx(null);
+                    }}
+                >
+                    <Box className="w-full max-w-[280px] bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 gap-3 shadow-lg">
+                        <Heading size="xs" className="text-typography-900 font-bold mb-1">
+                            Select Unit
+                        </Heading>
+                        <Divider />
+                        {UNIT_OPTIONS.map((opt) => (
+                            <TouchableOpacity
+                                key={opt}
+                                onPress={() => {
+                                    if (activeIngredientIdx !== null) {
+                                        handleIngredientChange(activeIngredientIdx, 'unit', opt);
+                                    }
+                                    setUnitPickerOpen(false);
+                                    setActiveIngredientIdx(null);
+                                }}
+                                className="py-2.5 px-1 rounded active:bg-neutral-100 dark:active:bg-neutral-800 flex-row justify-between items-center"
+                            >
+                                <Text className="text-sm font-semibold text-neutral-855 dark:text-neutral-200">
+                                    {opt}
+                                </Text>
+                                {activeIngredientIdx !== null && ingredients[activeIngredientIdx]?.unit === opt && (
+                                    <Text className="text-xs text-red-600 font-bold">✓</Text>
+                                )}
+                            </TouchableOpacity>
+                        ))}
+                    </Box>
+                </Pressable>
+            </Modal>
         </ScrollView>
     );
 };
