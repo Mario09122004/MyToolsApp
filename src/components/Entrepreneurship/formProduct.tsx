@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, TouchableOpacity, Modal, View, FlatList, Pressable } from 'react-native';
+import { ScrollView, TouchableOpacity } from 'react-native';
 import {
     FormControl,
     FormControlLabel,
@@ -15,8 +15,10 @@ import { Box } from '@/components/ui/box';
 import { Text } from '@/components/ui/text';
 import { Heading } from '@/components/ui/heading';
 import { Divider } from '@/components/ui/divider';
-import { Icon, TrashIcon, AlertCircleIcon } from '@/components/ui/icon';
+import { AlertCircleIcon } from '@/components/ui/icon';
 import { useCRUDProducts, IngredientInput, ProductInput } from '@/src/hooks/entrepreneurship/useCRUDProducts';
+import { IngredientFormCard } from './subcomponents/IngredientFormCard';
+import { UnitPickerModal } from './subcomponents/UnitPickerModal';
 
 interface FormProductProps {
     editMode: boolean;
@@ -184,7 +186,6 @@ export const FormProduct = ({
     return (
         <ScrollView className="max-h-[500px]" showsVerticalScrollIndicator={true}>
             <Box className="gap-4 pb-6 px-1">
-                
                 {/* Product Name */}
                 <FormControl isInvalid={nameError}>
                     <FormControlLabel>
@@ -342,63 +343,17 @@ export const FormProduct = ({
                 ) : (
                     <Box className="gap-2">
                         {ingredients.map((ing, idx) => (
-                            <Box key={idx} className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-3 rounded-lg gap-2 mb-2">
-                                <Box className="flex-row justify-between items-center">
-                                    <Text size="xs" className="font-semibold text-neutral-450 dark:text-neutral-505">Ingredient #{idx + 1}</Text>
-                                    <TouchableOpacity onPress={() => handleRemoveIngredient(idx)} className="p-1">
-                                        <Icon as={TrashIcon} size="sm" className="text-red-600 dark:text-red-400" />
-                                    </TouchableOpacity>
-                                </Box>
-                                <Input size="sm">
-                                    <InputField
-                                        type="text"
-                                        placeholder="Ingredient name (e.g. Flour)"
-                                        value={ing.name}
-                                        onChangeText={(val) => handleIngredientChange(idx, 'name', val)}
-                                    />
-                                </Input>
-                                <Box className="flex-row gap-2">
-                                    <Box className="flex-1">
-                                        <Text size="xs" className="mb-1 font-semibold text-neutral-500">Qty</Text>
-                                        <Input size="sm">
-                                            <InputField
-                                                type="text"
-                                                keyboardType="numeric"
-                                                placeholder="e.g. 100"
-                                                value={ing.quantity ? ing.quantity.toString() : ''}
-                                                onChangeText={(val) => handleIngredientChange(idx, 'quantity', val)}
-                                            />
-                                        </Input>
-                                    </Box>
-                                    <Box className="flex-[1.5]">
-                                        <Text size="xs" className="mb-1 font-semibold text-neutral-500">Unit</Text>
-                                        <TouchableOpacity
-                                            onPress={() => {
-                                                setActiveIngredientIdx(idx);
-                                                setUnitPickerOpen(true);
-                                            }}
-                                            className="h-8 border border-neutral-300 dark:border-neutral-700 rounded bg-transparent justify-center px-2 flex-row items-center justify-between"
-                                        >
-                                            <Text size="xs" className="text-neutral-850 dark:text-neutral-200 font-medium">
-                                                {ing.unit || 'select'}
-                                            </Text>
-                                            <Text size="2xs" className="text-neutral-400">▼</Text>
-                                        </TouchableOpacity>
-                                    </Box>
-                                    <Box className="flex-[1.5]">
-                                        <Text size="xs" className="mb-1 font-semibold text-neutral-500">Price ($)</Text>
-                                        <Input size="sm">
-                                            <InputField
-                                                type="text"
-                                                keyboardType="numeric"
-                                                placeholder="e.g. 1.50"
-                                                value={ing.price !== undefined && ing.price !== null ? ing.price.toString() : ''}
-                                                onChangeText={(val) => handleIngredientChange(idx, 'price', val)}
-                                            />
-                                        </Input>
-                                    </Box>
-                                </Box>
-                            </Box>
+                            <IngredientFormCard
+                                key={idx}
+                                index={idx}
+                                ingredient={ing}
+                                onChange={handleIngredientChange}
+                                onRemove={handleRemoveIngredient}
+                                onOpenUnitPicker={(index) => {
+                                    setActiveIngredientIdx(index);
+                                    setUnitPickerOpen(true);
+                                }}
+                            />
                         ))}
                     </Box>
                 )}
@@ -411,51 +366,20 @@ export const FormProduct = ({
                 </Button>
             </Box>
 
-            {/* Unit Picker Modal */}
-            <Modal
+            <UnitPickerModal
                 visible={unitPickerOpen}
-                transparent={true}
-                animationType="fade"
-                onRequestClose={() => {
+                options={UNIT_OPTIONS}
+                selectedUnit={activeIngredientIdx !== null ? ingredients[activeIngredientIdx]?.unit : ''}
+                onSelect={(unit) => {
+                    if (activeIngredientIdx !== null) {
+                        handleIngredientChange(activeIngredientIdx, 'unit', unit);
+                    }
+                }}
+                onClose={() => {
                     setUnitPickerOpen(false);
                     setActiveIngredientIdx(null);
                 }}
-            >
-                <Pressable
-                    className="flex-1 bg-black/50 justify-center items-center p-4"
-                    onPress={() => {
-                        setUnitPickerOpen(false);
-                        setActiveIngredientIdx(null);
-                    }}
-                >
-                    <Box className="w-full max-w-[280px] bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 gap-3 shadow-lg">
-                        <Heading size="xs" className="text-typography-900 font-bold mb-1">
-                            Select Unit
-                        </Heading>
-                        <Divider />
-                        {UNIT_OPTIONS.map((opt) => (
-                            <TouchableOpacity
-                                key={opt}
-                                onPress={() => {
-                                    if (activeIngredientIdx !== null) {
-                                        handleIngredientChange(activeIngredientIdx, 'unit', opt);
-                                    }
-                                    setUnitPickerOpen(false);
-                                    setActiveIngredientIdx(null);
-                                }}
-                                className="py-2.5 px-1 rounded active:bg-neutral-100 dark:active:bg-neutral-800 flex-row justify-between items-center"
-                            >
-                                <Text className="text-sm font-semibold text-neutral-855 dark:text-neutral-200">
-                                    {opt}
-                                </Text>
-                                {activeIngredientIdx !== null && ingredients[activeIngredientIdx]?.unit === opt && (
-                                    <Text className="text-xs text-red-600 font-bold">✓</Text>
-                                )}
-                            </TouchableOpacity>
-                        ))}
-                    </Box>
-                </Pressable>
-            </Modal>
+            />
         </ScrollView>
     );
 };
