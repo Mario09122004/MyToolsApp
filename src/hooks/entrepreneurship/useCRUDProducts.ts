@@ -7,6 +7,7 @@ export interface IngredientInput {
     name: string;
     quantity: number;
     unit: string;
+    price?: number | null;
 }
 
 export interface ProductInput {
@@ -83,7 +84,8 @@ export const useCRUDProducts = () => {
                         productId: prodId,
                         name: ing.name,
                         quantity: ing.quantity,
-                        unit: ing.unit
+                        unit: ing.unit,
+                        price: ing.price ?? null
                     }))
                 );
             }
@@ -107,7 +109,8 @@ export const useCRUDProducts = () => {
                         productId: newProductId,
                         name: ing.name,
                         quantity: ing.quantity,
-                        unit: ing.unit
+                        unit: ing.unit,
+                        price: ing.price ?? null
                     }))
                 );
             }
