@@ -382,7 +382,7 @@ export const FormProduct = ({
                                             <Text size="xs" className="text-neutral-850 dark:text-neutral-200 font-medium">
                                                 {ing.unit || 'select'}
                                             </Text>
-                                            <Text size="xxs" className="text-neutral-400">▼</Text>
+                                            <Text size="2xs" className="text-neutral-400">▼</Text>
                                         </TouchableOpacity>
                                     </Box>
                                     <Box className="flex-[1.5]">
