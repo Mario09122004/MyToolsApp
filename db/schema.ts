@@ -33,6 +33,42 @@ export const ingredients = sqliteTable('ingredients', {
     price: real(),
 });
 
+export const orders = sqliteTable('orders', {
+    id: integer().primaryKey({ autoIncrement: true }),
+    productId: integer().notNull().references(() => products.id, { onDelete: 'cascade' }),
+    customerName: text().notNull(),
+    quantity: real().notNull(),
+    dueDate: text(),
+});
+
+export const habit = sqliteTable('habit', {
+    id: integer().primaryKey({ autoIncrement: true }),
+    task: text().notNull(),
+    description: text(),
+    startDate: integer().notNull(),
+    monday: integer("monday", { mode: "boolean" }).notNull().default(false),
+    tuesday: integer("tuesday", { mode: "boolean" }).notNull().default(false),
+    wednesday: integer("wednesday", { mode: "boolean" }).notNull().default(false),
+    thursday: integer("thursday", { mode: "boolean" }).notNull().default(false),
+    friday: integer("friday", { mode: "boolean" }).notNull().default(false),
+    saturday: integer("saturday", { mode: "boolean" }).notNull().default(false),
+    sunday: integer("sunday", { mode: "boolean" }).notNull().default(false),
+    active: integer("active", { mode: "boolean" }).notNull().default(true),
+});
+
+export const habitLogs = sqliteTable('habit_logs', {
+    id: integer().primaryKey({ autoIncrement: true }),
+    habitId: integer().notNull().references(() => habit.id, { onDelete: 'cascade' }),
+    isCompleted: integer("is_completed", { mode: "boolean" }).notNull().default(false),
+    day: integer().notNull(),
+});
+
+export const freeDays = sqliteTable('free_days', {
+    id: integer().primaryKey({ autoIncrement: true }),
+    name: text().notNull(),
+    date: text().notNull(),
+});
+
 // Export Task to use as an interface in your app
 export type Task = typeof tasks.$inferSelect;
 
@@ -41,13 +77,5 @@ export type Birthday = typeof birthdays.$inferSelect;
 export type Product = typeof products.$inferSelect;
 
 export type Ingredient = typeof ingredients.$inferSelect;
-
-export const orders = sqliteTable('orders', {
-    id: integer().primaryKey({ autoIncrement: true }),
-    productId: integer().notNull().references(() => products.id, { onDelete: 'cascade' }),
-    customerName: text().notNull(),
-    quantity: real().notNull(),
-    dueDate: text(), // Optional delivery date
-});
 
 export type Order = typeof orders.$inferSelect;
