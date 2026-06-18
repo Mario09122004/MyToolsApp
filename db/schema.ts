@@ -79,3 +79,9 @@ export type Product = typeof products.$inferSelect;
 export type Ingredient = typeof ingredients.$inferSelect;
 
 export type Order = typeof orders.$inferSelect;
+
+export type Habit = typeof habit.$inferSelect;
+
+export type HabitLog = typeof habitLogs.$inferSelect;
+
+export type FreeDay = typeof freeDays.$inferSelect;
