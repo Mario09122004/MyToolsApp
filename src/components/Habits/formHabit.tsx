@@ -11,7 +11,7 @@ import { Button, ButtonText } from '@/components/ui/button';
 import { AlertCircleIcon } from '@/components/ui/icon';
 import { Box } from '@/components/ui/box';
 import { Text } from '@/components/ui/text';
-import { Pressable } from '@/components/ui/pressable';
+import { Pressable } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useHabitCRUD } from '@/src/hooks/habits/habit_CRUD';
 

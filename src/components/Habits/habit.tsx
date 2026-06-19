@@ -1,6 +1,6 @@
 import { Box } from "@/components/ui/box";
 import { Text } from "@/components/ui/text";
-import { Pressable } from "@/components/ui/pressable";
+import { Pressable } from "react-native";
 import { Icon, TrashIcon, EditIcon } from "@/components/ui/icon";
 
 export default function Habit({ 
