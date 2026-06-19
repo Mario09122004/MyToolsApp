@@ -1,4 +1,4 @@
-import { ScrollView, Text } from 'react-native';
+import { ScrollView, Text, Pressable } from 'react-native';
 
 import { Box } from '@/components/ui/box';
 import { Heading } from '@/components/ui/heading';
@@ -15,7 +15,6 @@ import {
 import { Button, ButtonText } from '@/components/ui/button';
 import { Icon, CloseIcon, TrashIcon, InfoIcon } from '@/components/ui/icon';
 import { Divider } from '@/components/ui/divider';
-import { Pressable } from '@/components/ui/pressable';
 import {
     AlertDialog,
     AlertDialogBackdrop,

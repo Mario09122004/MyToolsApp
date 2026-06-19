@@ -2,7 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Box } from '@/components/ui/box';
 import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
-import { Pressable } from '@/components/ui/pressable';
+import { Pressable } from 'react-native';
 import { Birthday } from '@/db/schema';
 import { formatBirthdayDate, calculateAge, calculateRemainingDays } from '@/src/utils/birthdayHelpers';
 
