@@ -8,20 +8,22 @@ export default function Habit({
     Description, 
     Check = false,
     onToggle,
+    onEdit,
     onDelete
 } : { 
     Title: string, 
     Description: string, 
     Check?: boolean,
     onToggle: () => void,
+    onEdit?: () => void,
     onDelete: () => void
 }) {
     return (
         <Box className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800 p-4 mb-3 bg-white dark:bg-neutral-900 flex-row justify-between items-center">
-            <Box className="flex-1 pr-2">
+            <Pressable onPress={onEdit} className="flex-1 pr-2">
                 <Text size="md" className="font-bold text-typography-900 mb-0.5">{Title}</Text>
                 <Text size="xs" className="text-typography-400 font-medium">{Description}</Text>
-            </Box>
+            </Pressable>
             
             <Box className="flex-row items-center gap-3">
                 <Pressable 

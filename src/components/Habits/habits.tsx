@@ -7,10 +7,12 @@ import Habit from "./habit";
 export default function Habits({ 
     logs, 
     onToggle, 
+    onEdit,
     onDelete 
 }: { 
     logs: any[], 
     onToggle: (id: number, currentCompleted: boolean) => void,
+    onEdit: (habitId: number) => void,
     onDelete: (habitId: number) => void 
 }) {
     if (!logs || logs.length === 0) {
@@ -38,6 +40,7 @@ export default function Habits({
                     Description={log.description || "No description"}
                     Check={log.isCompleted}
                     onToggle={() => onToggle(log.id, log.isCompleted)}
+                    onEdit={() => onEdit(log.habitId)}
                     onDelete={() => onDelete(log.habitId)}
                 />
             ))}

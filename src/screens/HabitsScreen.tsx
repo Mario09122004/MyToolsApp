@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { name_Screen } from "../helpers/name_screen";
 import DonutGraph from "../components/Habits/donut graph";
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, Text } from "react-native";
 import DaysCount from "../components/Habits/dayscount";
 import Habits from "../components/Habits/habits";
 import AddHabit from "../components/Habits/addhabit";
@@ -13,8 +13,18 @@ import {
     ModalCloseButton,
     ModalBody,
 } from '@/components/ui/modal';
+import {
+    AlertDialog,
+    AlertDialogBackdrop,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogFooter,
+    AlertDialogBody,
+} from '@/components/ui/alert-dialog';
+import { Button, ButtonText } from '@/components/ui/button';
+import { Box } from '@/components/ui/box';
 import { Heading } from '@/components/ui/heading';
-import { Icon, CloseIcon } from '@/components/ui/icon';
+import { Icon, CloseIcon, TrashIcon } from '@/components/ui/icon';
 import { FormHabit } from "../components/Habits/formHabit";
 
 // Hooks
@@ -30,6 +40,12 @@ export default function HabitsScreen() {
 
     const [todayLogs, setTodayLogs] = useState<any[]>([]);
     const [addModalVisible, setAddModalVisible] = useState(false);
+    const [editMode, setEditMode] = useState(false);
+    const [selectedHabitId, setSelectedHabitId] = useState<number>(0);
+    
+    const [deleteConfirmModalVisible, setDeleteConfirmModalVisible] = useState(false);
+    const [idHabitToDelete, setIdHabitToDelete] = useState<number>(0);
+
     const [refreshTrigger, setRefreshTrigger] = useState(0);
 
     const triggerRefresh = useCallback(() => {
@@ -54,9 +70,34 @@ export default function HabitsScreen() {
         triggerRefresh();
     };
 
-    const handleDeleteHabit = async (habitId: number) => {
-        await deleteHabit(habitId);
-        triggerRefresh();
+    const handleNewHabit = () => {
+        setEditMode(false);
+        setSelectedHabitId(0);
+        setAddModalVisible(true);
+    };
+
+    const handleEditHabit = (habitId: number) => {
+        setEditMode(true);
+        setSelectedHabitId(habitId);
+        setAddModalVisible(true);
+    };
+
+    const openDeleteConfirm = (habitId: number) => {
+        setIdHabitToDelete(habitId);
+        setDeleteConfirmModalVisible(true);
+    };
+
+    const closeDeleteConfirm = () => {
+        setIdHabitToDelete(0);
+        setDeleteConfirmModalVisible(false);
+    };
+
+    const handleDeleteHabit = async () => {
+        if (idHabitToDelete > 0) {
+            await deleteHabit(idHabitToDelete);
+            triggerRefresh();
+        }
+        closeDeleteConfirm();
     };
 
     const totalCount = todayLogs.length;
@@ -70,13 +111,14 @@ export default function HabitsScreen() {
                 <Habits 
                     logs={todayLogs} 
                     onToggle={handleToggleComplete} 
-                    onDelete={handleDeleteHabit} 
+                    onEdit={handleEditHabit}
+                    onDelete={openDeleteConfirm} 
                 />
             </ScrollView>
 
-            <AddHabit onPress={() => setAddModalVisible(true)} />
+            <AddHabit onPress={handleNewHabit} />
 
-            {/* Add Habit Modal */}
+            {/* Add/Edit Habit Modal */}
             <Modal
                 isOpen={addModalVisible}
                 onClose={() => setAddModalVisible(false)}
@@ -86,7 +128,7 @@ export default function HabitsScreen() {
                 <ModalContent>
                     <ModalHeader className="border-b pb-3 relative">
                         <Heading size="lg" className="text-typography-900 font-bold">
-                            Create New Habit
+                            {editMode ? "Edit Habit" : "Create New Habit"}
                         </Heading>
                         <ModalCloseButton className="absolute right-4 top-1/2 -translate-y-1/2">
                             <Icon as={CloseIcon} />
@@ -94,12 +136,49 @@ export default function HabitsScreen() {
                     </ModalHeader>
                     <ModalBody className="py-4">
                         <FormHabit 
+                            editMode={editMode}
+                            idHabit={selectedHabitId}
                             onSave={triggerRefresh} 
                             onClose={() => setAddModalVisible(false)} 
                         />
                     </ModalBody>
                 </ModalContent>
             </Modal>
+
+            {/* Delete Confirmation Alert Dialog */}
+            <AlertDialog isOpen={deleteConfirmModalVisible} onClose={closeDeleteConfirm}>
+                <AlertDialogBackdrop />
+                <AlertDialogContent className="max-w-[415px] gap-4 items-center">
+                    <Box className="rounded-full h-[52px] w-[52px] bg-background-error items-center justify-center">
+                        <Icon as={TrashIcon} size="lg" className="stroke-error-500" />
+                    </Box>
+                    <AlertDialogHeader className="mb-2">
+                        <Heading size="md" className="text-typography-900 font-bold">Delete Habit?</Heading>
+                    </AlertDialogHeader>
+                    <AlertDialogBody>
+                        <Text className="text-center text-typography-600">
+                            This habit and all its history will be deleted permanently. This cannot be undone.
+                        </Text>
+                    </AlertDialogBody>
+                    <AlertDialogFooter className="mt-5 gap-3 w-full flex-row justify-center">
+                        <Button
+                            size="sm"
+                            onPress={handleDeleteHabit}
+                            className="px-[30px] bg-red-600 active:bg-red-700 hover:bg-red-700 border-none"
+                        >
+                            <ButtonText className="font-bold text-white">Delete</ButtonText>
+                        </Button>
+                        <Button
+                            variant="outline"
+                            onPress={closeDeleteConfirm}
+                            size="sm"
+                            className="px-[30px] border-neutral-300 dark:border-neutral-700 active:bg-neutral-50 dark:active:bg-neutral-900"
+                        >
+                            <ButtonText className="font-bold text-typography-700">Cancel</ButtonText>
+                        </Button>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </>
     )
 }
