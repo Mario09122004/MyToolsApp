@@ -63,11 +63,12 @@ export const habitLogs = sqliteTable('habit_logs', {
     day: integer().notNull(),
 });
 
+/*
 export const freeDays = sqliteTable('free_days', {
     id: integer().primaryKey({ autoIncrement: true }),
     name: text().notNull(),
     date: text().notNull(),
-});
+});*/
 
 // Export Task to use as an interface in your app
 export type Task = typeof tasks.$inferSelect;
@@ -79,3 +80,9 @@ export type Product = typeof products.$inferSelect;
 export type Ingredient = typeof ingredients.$inferSelect;
 
 export type Order = typeof orders.$inferSelect;
+
+export type Habit = typeof habit.$inferSelect;
+
+export type HabitLog = typeof habitLogs.$inferSelect;
+
+//export type FreeDay = typeof freeDays.$inferSelect;
