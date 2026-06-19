@@ -4,8 +4,14 @@ import { View } from 'react-native';
 import { Card } from '@/components/ui/card';
 import { Text } from '@/components/ui/text';
 
-export default function DonutGraph() {
-    const progress = 0.7;
+export default function DonutGraph({ 
+    completedCount = 0, 
+    totalCount = 0 
+}: { 
+    completedCount?: number; 
+    totalCount?: number; 
+}) {
+    const progress = totalCount > 0 ? completedCount / totalCount : 0;
 
     return (
         <Card size="md" className="p-4 items-center mb-4">
@@ -22,7 +28,7 @@ export default function DonutGraph() {
                         {Math.round(progress * 100)}%
                     </Text>
                     <Text size="xs" className="text-typography-500 font-medium mt-0.5">
-                        Completed
+                        {completedCount}/{totalCount} Completed
                     </Text>
                 </View>
             </View>
