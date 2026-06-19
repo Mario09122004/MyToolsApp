@@ -1,7 +1,7 @@
-import { Fab, FabIcon, FabLabel } from '@/components/ui/fab';
+import { Fab, FabIcon } from '@/components/ui/fab';
 import { AddIcon } from '@/components/ui/icon';
 
-export default function AddHabit() {
+export default function AddHabit({ onPress }: { onPress: () => void }) {
     return (
         <Fab
             size="lg"
@@ -9,9 +9,7 @@ export default function AddHabit() {
             isHovered={false}
             isDisabled={false}
             isPressed={true}
-            onPress={() => {
-                // console.log("Add Habit");
-            }}
+            onPress={onPress}
             className='bg-red-600 hover:bg-red-700 active:bg-red-800 dark:bg-red-500'
         >
             <FabIcon as={AddIcon} />
