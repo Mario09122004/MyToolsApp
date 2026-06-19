@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { name_Screen } from "../helpers/name_screen";
 import DonutGraph from "../components/Habits/donut graph";
-import { ScrollView, Text } from "react-native";
+import { ScrollView, Text, Pressable } from "react-native";
 import DaysCount from "../components/Habits/dayscount";
 import Habits from "../components/Habits/habits";
 import AddHabit from "../components/Habits/addhabit";
@@ -36,9 +36,12 @@ export default function HabitsScreen() {
     const { changeNameScreen } = name_Screen();
     const { initHabits } = useInitHabits();
     const { showAllHabitLogsToday, updateHabitLog } = useHabitLogCRUD();
-    const { deleteHabit } = useHabitCRUD();
+    const { deleteHabit, showAllHabits } = useHabitCRUD();
 
     const [todayLogs, setTodayLogs] = useState<any[]>([]);
+    const [allHabits, setAllHabits] = useState<any[]>([]);
+    const [activeTab, setActiveTab] = useState<'today' | 'manage'>('today');
+
     const [addModalVisible, setAddModalVisible] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [selectedHabitId, setSelectedHabitId] = useState<number>(0);
@@ -61,6 +64,8 @@ export default function HabitsScreen() {
             await initHabits();
             const logs = await showAllHabitLogsToday();
             setTodayLogs(logs);
+            const habitsList = await showAllHabits();
+            setAllHabits(habitsList);
         };
         setupAndFetch();
     }, [refreshTrigger]);
@@ -108,12 +113,57 @@ export default function HabitsScreen() {
             <ScrollView className="bg-neutral-50 dark:bg-neutral-950 flex-1 px-4 py-2">
                 <DonutGraph completedCount={completedCount} totalCount={totalCount} />
                 <DaysCount refreshTrigger={refreshTrigger} />
-                <Habits 
-                    logs={todayLogs} 
-                    onToggle={handleToggleComplete} 
-                    onEdit={handleEditHabit}
-                    onDelete={openDeleteConfirm} 
-                />
+                
+                {/* Tab Switcher */}
+                <Box className="flex-row bg-neutral-200 dark:bg-neutral-900 p-1 rounded-xl mb-4 gap-1">
+                    <Pressable
+                        onPress={() => setActiveTab('today')}
+                        className={`flex-1 py-2 rounded-lg items-center ${
+                            activeTab === 'today'
+                                ? 'bg-white dark:bg-neutral-800 shadow-sm'
+                                : 'bg-transparent'
+                        }`}
+                    >
+                        <Text className={`font-bold text-sm ${
+                            activeTab === 'today'
+                                ? 'text-red-600 dark:text-red-500'
+                                : 'text-typography-500 dark:text-typography-400'
+                        }`}>
+                            Today's Checklist
+                        </Text>
+                    </Pressable>
+                    <Pressable
+                        onPress={() => setActiveTab('manage')}
+                        className={`flex-1 py-2 rounded-lg items-center ${
+                            activeTab === 'manage'
+                                ? 'bg-white dark:bg-neutral-800 shadow-sm'
+                                : 'bg-transparent'
+                        }`}
+                    >
+                        <Text className={`font-bold text-sm ${
+                            activeTab === 'manage'
+                                ? 'text-red-600 dark:text-red-500'
+                                : 'text-typography-500 dark:text-typography-400'
+                        }`}>
+                            Manage Habits
+                        </Text>
+                    </Pressable>
+                </Box>
+
+                {activeTab === 'today' ? (
+                    <Habits 
+                        mode="today"
+                        logs={todayLogs} 
+                        onToggle={handleToggleComplete} 
+                    />
+                ) : (
+                    <Habits 
+                        mode="manage"
+                        habits={allHabits} 
+                        onEdit={handleEditHabit}
+                        onDelete={openDeleteConfirm} 
+                    />
+                )}
             </ScrollView>
 
             <AddHabit onPress={handleNewHabit} />
