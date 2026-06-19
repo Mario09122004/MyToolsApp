@@ -13,7 +13,7 @@ export const initHabits = async () => {
     const dayName = days[new Date().getDay()];
 
 
-    const queryHabitsToday = await drizzleDb.select().from(schema.habit).where(eq(schema.habitLogs.day, todayDay));
+    const queryHabitsToday = await drizzleDb.select().from(schema.habitLogs).where(eq(schema.habitLogs.day, todayDay));
 
     if(queryHabitsToday.length > 0) {
         console.log("ya hay habits para hoy");
