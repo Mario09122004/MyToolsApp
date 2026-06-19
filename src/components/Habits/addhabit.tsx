@@ -10,7 +10,7 @@ export default function AddHabit({ onPress }: { onPress: () => void }) {
             isDisabled={false}
             isPressed={true}
             onPress={onPress}
-            className='bg-red-600 hover:bg-red-700 active:bg-red-800 dark:bg-red-500'
+            className='bg-red-600 hover:bg-red-700 active:bg-red-800 dark:bg-red-500 mt-20'
         >
             <FabIcon as={AddIcon} />
         </Fab>

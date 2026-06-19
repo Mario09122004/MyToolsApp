@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { name_Screen } from "../helpers/name_screen";
 import DonutGraph from "../components/Habits/donut graph";
-import { ScrollView, Text, Pressable } from "react-native";
+import { ScrollView, Text, Pressable, TouchableOpacity } from "react-native";
 import DaysCount from "../components/Habits/dayscount";
 import Habits from "../components/Habits/habits";
 import AddHabit from "../components/Habits/addhabit";
@@ -115,39 +115,35 @@ export default function HabitsScreen() {
                 <DaysCount refreshTrigger={refreshTrigger} />
                 
                 {/* Tab Switcher */}
-                <Box className="flex-row bg-neutral-200 dark:bg-neutral-900 p-1 rounded-xl mb-4 gap-1">
-                    <Pressable
+                <Box className="flex-row p-1 bg-neutral-100 dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 mb-4 rounded-lg">
+                    <TouchableOpacity
                         onPress={() => setActiveTab('today')}
                         className={`flex-1 py-2 rounded-lg items-center ${
-                            activeTab === 'today'
-                                ? 'bg-white dark:bg-neutral-800 shadow-sm'
-                                : 'bg-transparent'
+                            activeTab === 'today' ? 'bg-red-600' : 'bg-transparent'
                         }`}
                     >
-                        <Text className={`font-bold text-sm ${
+                        <Text className={`font-bold text-xs ${
                             activeTab === 'today'
-                                ? 'text-red-600 dark:text-red-500'
-                                : 'text-typography-500 dark:text-typography-400'
+                                ? 'text-white'
+                                : 'text-neutral-600 dark:text-neutral-400'
                         }`}>
                             Today's Checklist
                         </Text>
-                    </Pressable>
-                    <Pressable
+                    </TouchableOpacity>
+                    <TouchableOpacity
                         onPress={() => setActiveTab('manage')}
                         className={`flex-1 py-2 rounded-lg items-center ${
-                            activeTab === 'manage'
-                                ? 'bg-white dark:bg-neutral-800 shadow-sm'
-                                : 'bg-transparent'
+                            activeTab === 'manage' ? 'bg-red-600' : 'bg-transparent'
                         }`}
                     >
-                        <Text className={`font-bold text-sm ${
+                        <Text className={`font-bold text-xs ${
                             activeTab === 'manage'
-                                ? 'text-red-600 dark:text-red-500'
-                                : 'text-typography-500 dark:text-typography-400'
+                                ? 'text-white'
+                                : 'text-neutral-600 dark:text-neutral-400'
                         }`}>
                             Manage Habits
                         </Text>
-                    </Pressable>
+                    </TouchableOpacity>
                 </Box>
 
                 {activeTab === 'today' ? (
