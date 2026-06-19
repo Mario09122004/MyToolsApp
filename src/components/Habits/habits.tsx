@@ -1,4 +1,4 @@
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView } from "react-native";
 import { Box } from "@/components/ui/box";
 import { Text } from "@/components/ui/text";
 import { Icon, InfoIcon } from "@/components/ui/icon";
