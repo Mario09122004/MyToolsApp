@@ -3,7 +3,7 @@ import { useSQLiteContext } from "expo-sqlite";
 import * as schema from '@/db/schema';
 import { eq } from "drizzle-orm";
 
-export const habit_CRUD = () => {
+export const useHabitCRUD = () => {
     const db = useSQLiteContext();
     const drizzleDb = drizzle(db, { schema });
 

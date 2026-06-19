@@ -1,9 +1,9 @@
 import { drizzle } from "drizzle-orm/expo-sqlite";
 import { useSQLiteContext } from "expo-sqlite";
 import * as schema from '@/db/schema';
-import { eq } from "drizzle-orm";
+import { eq, and, gte, lte } from "drizzle-orm";
 
-export const habitlog_CRUD = () => {
+export const useHabitLogCRUD = () => {
     const db = useSQLiteContext();
     const drizzleDb = drizzle(db, { schema });
 
@@ -21,7 +21,8 @@ export const habitlog_CRUD = () => {
     }
 
     const showAllHabitLogsToday = async () => {
-        const todayDay = new Date().getDay();
+        const todayDay = new Date();
+        todayDay.setHours(0, 0, 0, 0);
         const query = await drizzleDb
             .select({
                 id: schema.habitLogs.id,
@@ -33,7 +34,21 @@ export const habitlog_CRUD = () => {
             })
             .from(schema.habitLogs)
             .innerJoin(schema.habit, eq(schema.habitLogs.habitId, schema.habit.id))
-            .where(eq(schema.habitLogs.day, todayDay));
+            .where(eq(schema.habitLogs.day, todayDay.getTime()));
+        return query;
+    }
+
+    const getHabitLogsForPastDays = async (daysLimit: number) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const startTime = today.getTime() - (daysLimit - 1) * 24 * 60 * 60 * 1000;
+        const query = await drizzleDb
+            .select()
+            .from(schema.habitLogs)
+            .where(and(
+                gte(schema.habitLogs.day, startTime),
+                lte(schema.habitLogs.day, today.getTime())
+            ));
         return query;
     }
 
@@ -46,6 +61,7 @@ export const habitlog_CRUD = () => {
         updateHabitLog,
         deleteHabitLog,
         showAllHabitLogsToday,
+        getHabitLogsForPastDays,
         showAllHabitLogs,
     }
 };
