@@ -10,7 +10,6 @@ import {
 import { Input, InputField } from '@/components/ui/input';
 import { Button, ButtonText } from '@/components/ui/button';
 import { AlertCircleIcon } from '@/components/ui/icon';
-import DatePicker from 'react-native-date-picker';
 import { useCRUDLoans } from '@/src/hooks/loans/useCRUDLoans';
 
 interface LoanFormProps {
@@ -26,8 +25,6 @@ export const LoanForm = ({ editMode, loanId = 0, initialName = '', onSave, onClo
     const [name, setName] = useState('');
     const [amount, setAmount] = useState('');
     const [reason, setReason] = useState('');
-    const [date, setDate] = useState(new Date());
-    const [datePickerOpen, setDatePickerOpen] = useState(false);
     const [isError, setIsError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -38,7 +35,6 @@ export const LoanForm = ({ editMode, loanId = 0, initialName = '', onSave, onClo
             setName('');
             setAmount('');
             setReason('');
-            setDate(new Date());
         }
     }, [editMode, initialName, loanId]);
 
@@ -60,7 +56,7 @@ export const LoanForm = ({ editMode, loanId = 0, initialName = '', onSave, onClo
                     name.trim(),
                     initialAmt,
                     reason.trim() || 'Initial loan',
-                    date.getTime()
+                    Date.now()
                 );
             }
             onSave();
@@ -113,34 +109,6 @@ export const LoanForm = ({ editMode, loanId = 0, initialName = '', onSave, onClo
                             onChangeText={setReason}
                         />
                     </Input>
-
-                    <FormControlLabel className="mt-4">
-                        <FormControlLabelText>Date</FormControlLabelText>
-                    </FormControlLabel>
-                    <Button 
-                        onPress={() => setDatePickerOpen(true)} 
-                        variant="outline" 
-                        action="secondary" 
-                        className="my-1 justify-start border-neutral-300 dark:border-neutral-700"
-                    >
-                        <ButtonText className="text-left font-normal text-typography-900">
-                            {date.toLocaleDateString()}
-                        </ButtonText>
-                    </Button>
-
-                    <DatePicker
-                        modal
-                        open={datePickerOpen}
-                        date={date}
-                        mode="date"
-                        onConfirm={(selectedDate) => {
-                            setDatePickerOpen(false);
-                            setDate(selectedDate);
-                        }}
-                        onCancel={() => {
-                            setDatePickerOpen(false);
-                        }}
-                    />
                 </>
             )}
 

@@ -13,7 +13,6 @@ import {
 import { Input, InputField } from '@/components/ui/input';
 import { Button, ButtonText } from '@/components/ui/button';
 import { AlertCircleIcon } from '@/components/ui/icon';
-import DatePicker from 'react-native-date-picker';
 import { useCRUDLoans } from '@/src/hooks/loans/useCRUDLoans';
 
 interface PaymentFormProps {
@@ -28,8 +27,6 @@ export const PaymentForm = ({ loanId, initialType = 'lend', onSave, onClose }: P
     const [type, setType] = useState<'lend' | 'pay'>(initialType);
     const [amount, setAmount] = useState('');
     const [reason, setReason] = useState('');
-    const [date, setDate] = useState(new Date());
-    const [datePickerOpen, setDatePickerOpen] = useState(false);
     const [isError, setIsError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -51,7 +48,7 @@ export const PaymentForm = ({ loanId, initialType = 'lend', onSave, onClose }: P
                 loanId,
                 finalAmount,
                 reason.trim() || defaultReason,
-                date.getTime()
+                Date.now()
             );
             onSave();
             onClose();
@@ -113,33 +110,7 @@ export const PaymentForm = ({ loanId, initialType = 'lend', onSave, onClose }: P
                 />
             </Input>
 
-            <FormControlLabel className="mt-4">
-                <FormControlLabelText>Date</FormControlLabelText>
-            </FormControlLabel>
-            <Button 
-                onPress={() => setDatePickerOpen(true)} 
-                variant="outline" 
-                action="secondary" 
-                className="my-1 justify-start border-neutral-300 dark:border-neutral-700"
-            >
-                <ButtonText className="text-left font-normal text-typography-900">
-                    {date.toLocaleDateString()}
-                </ButtonText>
-            </Button>
 
-            <DatePicker
-                modal
-                open={datePickerOpen}
-                date={date}
-                mode="date"
-                onConfirm={(selectedDate) => {
-                    setDatePickerOpen(false);
-                    setDate(selectedDate);
-                }}
-                onCancel={() => {
-                    setDatePickerOpen(false);
-                }}
-            />
 
             {isError && (
                 <FormControlError className="mt-2">
