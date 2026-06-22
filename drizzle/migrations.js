@@ -8,6 +8,7 @@ import m0003 from './0003_material_deathbird.sql';
 import m0004 from './0004_ancient_lenny_balinger.sql';
 import m0005 from './0005_keen_blue_blade.sql';
 import m0006 from './0006_woozy_agent_brand.sql';
+import m0007 from './0007_real_black_bird.sql';
 
   export default {
     journal,
@@ -18,7 +19,8 @@ m0002,
 m0003,
 m0004,
 m0005,
-m0006
+m0006,
+m0007
     }
   }
   
