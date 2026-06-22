@@ -63,6 +63,18 @@ export const habitLogs = sqliteTable('habit_logs', {
     day: integer().notNull(),
 });
 
+export const loan = sqliteTable('loan', {
+    id: integer().primaryKey({ autoIncrement: true }),
+    name: text().notNull(),
+});
+
+export const loanPayments = sqliteTable('loan_payments', {
+    id: integer().primaryKey({ autoIncrement: true }),
+    loanId: integer().notNull().references(() => loan.id, { onDelete: 'cascade' }),
+    amount: real().notNull(),
+    reason: text(),
+    date: integer().notNull(),
+});
 /*
 export const freeDays = sqliteTable('free_days', {
     id: integer().primaryKey({ autoIncrement: true }),

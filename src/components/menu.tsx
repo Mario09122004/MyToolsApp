@@ -2,7 +2,6 @@ import { Box } from "@/components/ui/box"
 import { Button, ButtonText } from "@/components/ui/button"
 import { Divider } from "@/components/ui/divider"
 import { ScrollView } from "react-native"
-import { Text } from '@/components/ui/text';
 
 const options = [
     {
