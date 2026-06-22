@@ -21,6 +21,14 @@ const options = [
         name: 'Habits',
         screenName: 'HabitsScreen',
     },
+    {
+        name: 'Loans',
+        screenName: 'LoansScreen',
+    },
+    {
+        name: 'Entrepreneurship',
+        screenName: 'EntrepreneurshipScreen',
+    },
     /*
     {
         name: 'Tasks',
@@ -31,18 +39,11 @@ const options = [
         screenName: 'ProjectsScreen',
     },
     {
-        name: 'Loans',
-        screenName: 'LoansScreen',
-    },
-    {
         name: 'Programing message',
         screenName: 'ProgramingMessageScreen',
     },
     */
-    {
-        name: 'Entrepreneurship',
-        screenName: 'EntrepreneurshipScreen',
-    }
+
 ]
 
 export const MenuOptions = ({ navigation, handleClose }: { navigation: any, handleClose: () => void }) => {
