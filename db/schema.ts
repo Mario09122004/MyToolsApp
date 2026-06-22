@@ -98,4 +98,8 @@ export type Habit = typeof habit.$inferSelect;
 
 export type HabitLog = typeof habitLogs.$inferSelect;
 
+export type Loan = typeof loan.$inferSelect;
+
+export type LoanPayment = typeof loanPayments.$inferSelect;
+
 //export type FreeDay = typeof freeDays.$inferSelect;
