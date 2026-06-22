@@ -75,6 +75,7 @@ export const loanPayments = sqliteTable('loan_payments', {
     reason: text(),
     date: integer().notNull(),
 });
+
 /*
 export const freeDays = sqliteTable('free_days', {
     id: integer().primaryKey({ autoIncrement: true }),
