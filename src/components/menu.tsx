@@ -28,14 +28,14 @@ const options = [
         name: 'Entrepreneurship',
         screenName: 'EntrepreneurshipScreen',
     },
+    {
+        name: 'Projects',
+        screenName: 'ProjectsScreen',
+    },
     /*
     {
         name: 'Tasks',
         screenName: 'TasksScreen',
-    },
-    {
-        name: 'Projects',
-        screenName: 'ProjectsScreen',
     },
     {
         name: 'Programing message',
