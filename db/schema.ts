@@ -76,6 +76,33 @@ export const loanPayments = sqliteTable('loan_payments', {
     date: integer().notNull(),
 });
 
+export const project = sqliteTable('project', {
+    id: integer().primaryKey({ autoIncrement: true }),
+    name: text().notNull(),
+    description: text(),
+    dueday: integer().notNull(),
+});
+
+export const phases = sqliteTable('phases', {
+    id: integer().primaryKey({ autoIncrement: true }),
+    projectId: integer().notNull().references(() => project.id, { onDelete: 'cascade' }),
+    name: text().notNull(),
+    description: text(),
+    completed: integer("completed", { mode: "boolean" }).notNull().default(false),
+    dueday: integer().notNull(),
+    order: integer().notNull(),
+});
+
+export const taskPerPhase = sqliteTable('taskPerPhase', {
+    id: integer().primaryKey({ autoIncrement: true }),
+    phaseId: integer().notNull().references(() => phases.id, { onDelete: 'cascade' }),
+    taskName: text().notNull(),
+    description: text(),
+    completed: integer("completed", { mode: "boolean" }).notNull().default(false),
+    dueday: integer().notNull(),
+    order: integer().notNull(),
+});
+
 /*
 export const freeDays = sqliteTable('free_days', {
     id: integer().primaryKey({ autoIncrement: true }),
@@ -102,4 +129,9 @@ export type Loan = typeof loan.$inferSelect;
 
 export type LoanPayment = typeof loanPayments.$inferSelect;
 
+export type Project = typeof project.$inferSelect;
+
+export type Phase = typeof phases.$inferSelect;
+
+export type TaskPerPhase = typeof taskPerPhase.$inferSelect;
 //export type FreeDay = typeof freeDays.$inferSelect;
