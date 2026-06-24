@@ -164,8 +164,16 @@ export default function ProjectsScreen() {
                 await fetchPhases(selectedProject.id);
             }
             await fetchProjects();
+            setRefreshTasksTrigger(prev => prev + 1); // trigger reload tasks in all PhaseItems
         } catch (error) {
             console.error("Error toggling phase:", error);
+        }
+    };
+
+    const handleTasksUpdated = async () => {
+        await fetchProjects();
+        if (selectedProject) {
+            await fetchPhases(selectedProject.id);
         }
     };
 
@@ -202,7 +210,7 @@ export default function ProjectsScreen() {
             try {
                 await deleteTask(taskToDelete.id);
                 setRefreshTasksTrigger(prev => prev + 1); // trigger reload tasks in all PhaseItems
-                await fetchProjects(); // refresh completed/total tasks count
+                await handleTasksUpdated();
             } catch (error) {
                 console.error("Error deleting task:", error);
             }
@@ -409,7 +417,7 @@ export default function ProjectsScreen() {
                                             setTaskToDelete(task);
                                             setDeleteTaskConfirmVisible(true);
                                         }}
-                                        onTasksUpdated={fetchProjects}
+                                        onTasksUpdated={handleTasksUpdated}
                                         refreshTrigger={refreshTasksTrigger}
                                     />
                                 ))
@@ -552,7 +560,7 @@ export default function ProjectsScreen() {
                                 }
                                 onSave={async () => {
                                     setRefreshTasksTrigger(prev => prev + 1);
-                                    await fetchProjects();
+                                    await handleTasksUpdated();
                                 }}
                                 onClose={() => setTaskModalVisible(false)}
                             />

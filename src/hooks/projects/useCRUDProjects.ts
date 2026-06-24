@@ -16,6 +16,27 @@ export const useCRUDProjects = () => {
     const db = useSQLiteContext();
     const drizzleDb = drizzle(db, { schema });
 
+    const checkAndUpdatePhaseCompletion = async (phaseId: number) => {
+        const tasks = await drizzleDb.select()
+            .from(schema.taskPerPhase)
+            .where(eq(schema.taskPerPhase.phaseId, phaseId));
+        
+        if (tasks.length > 0) {
+            const allCompleted = tasks.every(t => t.completed);
+            
+            const phaseResult = await drizzleDb.select({ completed: schema.phases.completed })
+                .from(schema.phases)
+                .where(eq(schema.phases.id, phaseId))
+                .limit(1);
+            
+            if (phaseResult.length > 0 && phaseResult[0].completed !== allCompleted) {
+                await drizzleDb.update(schema.phases)
+                    .set({ completed: allCompleted })
+                    .where(eq(schema.phases.id, phaseId));
+            }
+        }
+    };
+
     // --- PROJECTS ---
     
     const queryProjects = async (): Promise<ProjectWithStats[]> => {
@@ -104,9 +125,16 @@ export const useCRUDProjects = () => {
         completed: boolean, 
         dueday: number
     ) => {
-        return await drizzleDb.update(schema.phases)
+        const res = await drizzleDb.update(schema.phases)
             .set({ name, description, completed, dueday })
             .where(eq(schema.phases.id, id));
+
+        // Update all tasks under this phase to match this completed status
+        await drizzleDb.update(schema.taskPerPhase)
+            .set({ completed })
+            .where(eq(schema.taskPerPhase.phaseId, id));
+
+        return res;
     };
 
     const deletePhase = async (id: number) => {
@@ -188,6 +216,12 @@ export const useCRUDProjects = () => {
             dueday,
             order: nextOrder
         });
+
+        // Since a new task is inserted as incomplete, the phase must be incomplete
+        await drizzleDb.update(schema.phases)
+            .set({ completed: false })
+            .where(eq(schema.phases.id, phaseId));
+
         return res.lastInsertRowId;
     };
 
@@ -198,14 +232,34 @@ export const useCRUDProjects = () => {
         completed: boolean, 
         dueday: number
     ) => {
-        return await drizzleDb.update(schema.taskPerPhase)
+        const taskResult = await drizzleDb.select({ phaseId: schema.taskPerPhase.phaseId })
+            .from(schema.taskPerPhase)
+            .where(eq(schema.taskPerPhase.id, id))
+            .limit(1);
+
+        const res = await drizzleDb.update(schema.taskPerPhase)
             .set({ taskName, description, completed, dueday })
             .where(eq(schema.taskPerPhase.id, id));
+
+        if (taskResult.length > 0) {
+            await checkAndUpdatePhaseCompletion(taskResult[0].phaseId);
+        }
+        return res;
     };
 
     const deleteTask = async (id: number) => {
-        return await drizzleDb.delete(schema.taskPerPhase)
+        const taskResult = await drizzleDb.select({ phaseId: schema.taskPerPhase.phaseId })
+            .from(schema.taskPerPhase)
+            .where(eq(schema.taskPerPhase.id, id))
+            .limit(1);
+
+        const res = await drizzleDb.delete(schema.taskPerPhase)
             .where(eq(schema.taskPerPhase.id, id));
+
+        if (taskResult.length > 0) {
+            await checkAndUpdatePhaseCompletion(taskResult[0].phaseId);
+        }
+        return res;
     };
 
     const moveTask = async (id: number, direction: 'up' | 'down') => {
