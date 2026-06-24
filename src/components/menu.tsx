@@ -32,14 +32,14 @@ const options = [
         name: 'Projects',
         screenName: 'ProjectsScreen',
     },
+    {
+        name: 'Programing message',
+        screenName: 'ProgramingMessageScreen',
+    },
     /*
     {
         name: 'Tasks',
         screenName: 'TasksScreen',
-    },
-    {
-        name: 'Programing message',
-        screenName: 'ProgramingMessageScreen',
     },
     */
 
