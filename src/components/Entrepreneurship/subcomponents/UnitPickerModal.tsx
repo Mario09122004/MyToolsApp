@@ -31,7 +31,7 @@ export const UnitPickerModal = ({
                 className="flex-1 bg-black/50 justify-center items-center p-4"
                 onPress={onClose}
             >
-                <Box className="w-full max-w-[280px] bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 gap-3 shadow-lg">
+                <Box className="w-full max-w-[280px] bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 gap-3">
                     <Heading size="xs" className="text-typography-900 font-bold mb-1">
                         Select Unit
                     </Heading>

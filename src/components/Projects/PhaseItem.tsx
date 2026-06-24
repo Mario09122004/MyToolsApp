@@ -86,7 +86,7 @@ export const PhaseItem = ({
     const totalTasksCount = tasks.length;
 
     return (
-        <Card size="md" variant="outline" className="p-4 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-sm mb-3">
+        <Card size="md" variant="outline" className="p-4 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 mb-3">
             {/* Header / Click to Toggle Expand */}
             <Pressable onPress={() => setExpanded(!expanded)}>
                 <Box className="flex-row items-center justify-between gap-2">

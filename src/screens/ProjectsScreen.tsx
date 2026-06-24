@@ -330,7 +330,7 @@ export default function ProjectsScreen() {
 
                     <ScrollView className="flex-1 px-4 mt-3" showsVerticalScrollIndicator={false}>
                         {selectedProject.description ? (
-                            <Box className="mb-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-4 shadow-sm">
+                            <Box className="mb-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-4">
                                 <Text size="xs" className="text-typography-400 font-bold uppercase tracking-wider mb-1">Description</Text>
                                 <Text size="sm" className="text-typography-700">
                                     {selectedProject.description}
@@ -339,7 +339,7 @@ export default function ProjectsScreen() {
                         ) : null}
 
                         {/* Project Statistics Card */}
-                        <Card size="md" variant="filled" className="mb-5 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-4 shadow-sm">
+                        <Card size="md" variant="filled" className="mb-5 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-4">
                             <Box className="flex-row justify-between items-center mb-2">
                                 <Box>
                                     <Text size="xs" className="text-typography-400 font-bold uppercase tracking-wider">Project Progress</Text>
