@@ -18,7 +18,6 @@ export const useCRUDProjects = () => {
 
     // --- PROJECTS ---
     
-    // Fetch all projects along with task completion statistics
     const queryProjects = async (): Promise<ProjectWithStats[]> => {
         const result = await drizzleDb.select({
             id: schema.project.id,
@@ -26,14 +25,14 @@ export const useCRUDProjects = () => {
             description: schema.project.description,
             dueday: schema.project.dueday,
             totalTasks: sql<number>`coalesce((
-                select count(*) from ${schema.taskPerPhase} t
-                join ${schema.phases} p on t.phaseId = p.id
-                where p.projectId = ${schema.project.id}
+                select count(*) from taskPerPhase t
+                join phases p on t.phaseId = p.id
+                where p.projectId = project.id
             ), 0)`,
             completedTasks: sql<number>`coalesce((
-                select count(*) from ${schema.taskPerPhase} t
-                join ${schema.phases} p on t.phaseId = p.id
-                where p.projectId = ${schema.project.id} and t.completed = 1
+                select count(*) from taskPerPhase t
+                join phases p on t.phaseId = p.id
+                where p.projectId = project.id and t.completed = 1
             ), 0)`
         })
         .from(schema.project);
