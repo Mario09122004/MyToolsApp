@@ -84,7 +84,6 @@ export const PhaseItem = ({
 
     const completedTasksCount = tasks.filter(t => t.completed).length;
     const totalTasksCount = tasks.length;
-    const isOverdue = phase.dueday < Date.now() && !phase.completed;
 
     return (
         <Card size="md" variant="outline" className="p-4 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-sm mb-3">
@@ -121,14 +120,6 @@ export const PhaseItem = ({
                                     {phase.description}
                                 </Text>
                             ) : null}
-                            <Text
-                                size="2xs"
-                                className={`font-medium mt-1 ${
-                                    isOverdue ? 'text-red-500 font-bold' : 'text-typography-400'
-                                }`}
-                            >
-                                Due: {new Date(phase.dueday).toLocaleDateString()} {isOverdue ? '(Overdue)' : ''}
-                            </Text>
                         </Box>
                     </Box>
 

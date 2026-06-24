@@ -227,29 +227,6 @@ export default function ProjectsScreen() {
             {selectedProject === null ? (
                 // MASTER VIEW
                 <>
-                    {/* Overall Progress Card */}
-                    <Card size="md" variant="filled" className="m-4 bg-red-50 dark:bg-red-950/10 border border-red-100 dark:border-red-900/20 rounded-2xl p-4">
-                        <Box className="flex-row justify-between items-center mb-2">
-                            <Box>
-                                <Text size="xs" className="text-red-700 dark:text-red-300 font-bold uppercase tracking-wider">Overall Tasks Progress</Text>
-                                <Heading size="2xl" className="text-red-800 dark:text-red-200 font-extrabold mt-1">
-                                    {globalProgressPercent}%
-                                </Heading>
-                                <Text size="xs" className="text-red-600 dark:text-red-400 mt-0.5">
-                                    {completedGlobalTasks} / {totalGlobalTasks} tasks completed
-                                </Text>
-                            </Box>
-                            <Box className="h-12 w-12 rounded-full bg-red-100 dark:bg-red-950/40 items-center justify-center">
-                                <Icon as={InfoIcon} size="xl" className="text-red-600 dark:text-red-400" />
-                            </Box>
-                        </Box>
-                        <Box className="h-2 w-full bg-red-100 dark:bg-red-950/20 rounded-full overflow-hidden mt-1">
-                            {totalGlobalTasks > 0 ? (
-                                <Box className="h-full bg-red-600 dark:bg-red-500 rounded-full" style={{ width: `${globalProgressPercent}%` }} />
-                            ) : null}
-                        </Box>
-                    </Card>
-
                     {/* Search Field */}
                     <Box className="px-4 mb-3">
                         <Input className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900" size="md">
@@ -376,7 +353,7 @@ export default function ProjectsScreen() {
                                     </Text>
                                 </Box>
                                 <Box className="items-end">
-                                    <Text size="xs" className="text-typography-400 font-bold uppercase tracking-wider">Due Date</Text>
+                                    <Text size="xs" className="text-typography-400 font-bold uppercase tracking-wider">Created</Text>
                                     <Heading size="sm" className="text-typography-900 font-extrabold mt-1">
                                         {new Date(selectedProject.dueday).toLocaleDateString()}
                                     </Heading>

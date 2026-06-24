@@ -24,13 +24,6 @@ export const TaskItem = ({
     onDelete,
     onMove,
 }: TaskItemProps) => {
-    const formattedDate = new Date(task.dueday).toLocaleDateString('es-ES', {
-        day: 'numeric',
-        month: 'short',
-    });
-
-    const isOverdue = task.dueday < Date.now() && !task.completed;
-
     return (
         <Box className={`flex-row items-center justify-between p-3 rounded-xl border border-neutral-150 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/40 mb-2 gap-2`}>
             {/* Checkbox & Details */}
@@ -62,18 +55,6 @@ export const TaskItem = ({
                             {task.description}
                         </Text>
                     ) : null}
-                    
-                    {/* Due Date */}
-                    <Text
-                        size="2xs"
-                        className={`font-medium mt-0.5 ${
-                            isOverdue
-                                ? 'text-red-500 font-bold'
-                                : 'text-typography-400'
-                        }`}
-                    >
-                        Due: {formattedDate} {isOverdue ? '(Overdue)' : ''}
-                    </Text>
                 </Box>
             </Box>
 

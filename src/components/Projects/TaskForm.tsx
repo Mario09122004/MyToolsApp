@@ -114,33 +114,6 @@ export const TaskForm = ({
                 />
             </Textarea>
 
-            <FormControlLabel className="mt-3">
-                <FormControlLabelText>Due Date</FormControlLabelText>
-            </FormControlLabel>
-            <Button
-                onPress={() => setDatePickerOpen(true)}
-                variant="outline"
-                action="secondary"
-                className="my-1 justify-start border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900"
-            >
-                <ButtonText className="text-left font-normal text-typography-900">
-                    {form.dueday.toLocaleDateString()}
-                </ButtonText>
-            </Button>
-
-            <DatePicker
-                modal
-                open={datePickerOpen}
-                date={form.dueday}
-                mode="date"
-                onConfirm={(selectedDate) => {
-                    setDatePickerOpen(false);
-                    setDueday(selectedDate);
-                }}
-                onCancel={() => {
-                    setDatePickerOpen(false);
-                }}
-            />
 
             {isError && (
                 <FormControlError className="mt-2">
