@@ -103,6 +103,13 @@ export const taskPerPhase = sqliteTable('taskPerPhase', {
     order: integer().notNull(),
 });
 
+export const Task = sqliteTable('task', {
+    id: integer().primaryKey({ autoIncrement: true }),
+    name: text().notNull(),
+    description: text(),
+    completed: integer("completed", { mode: "boolean" }).notNull().default(false),
+    dueday: integer().notNull(),
+});
 /*
 export const freeDays = sqliteTable('free_days', {
     id: integer().primaryKey({ autoIncrement: true }),

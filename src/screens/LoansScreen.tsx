@@ -289,7 +289,7 @@ export default function LoansScreen() {
                     </Box>
 
                     {/* Balance Card */}
-                    <Card size="md" variant="filled" className="m-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-5 shadow-sm">
+                    <Card size="md" variant="filled" className="m-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-5">
                         <Box className="items-center py-2">
                             <Text size="xs" className="text-typography-400 uppercase font-bold tracking-wider mb-1">
                                 {isDebt ? 'Outstanding Debt' : (isOverpaid ? 'Overpaid Balance' : 'Settled Balance')}

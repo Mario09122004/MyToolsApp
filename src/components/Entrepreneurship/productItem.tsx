@@ -35,7 +35,7 @@ export const ProductItem = ({ product, onEdit, onDelete, reservedQuantity = 0, r
         : '';
 
     return (
-        <Card size="md" variant="outline" className="p-4 rounded-xl mb-3 border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm">
+        <Card size="md" variant="outline" className="p-4 rounded-xl mb-3 border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
             <Pressable onPress={() => setExpanded(!expanded)}>
                 <Box className="flex-row justify-between items-start">
                     <Box className="flex-1 pr-4">

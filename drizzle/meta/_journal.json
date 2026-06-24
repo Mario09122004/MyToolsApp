@@ -64,6 +64,20 @@
       "when": 1782154923552,
       "tag": "0008_green_hardball",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1782314003130,
+      "tag": "0009_dark_human_robot",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1782315729878,
+      "tag": "0010_short_iceman",
+      "breakpoints": true
     }
   ]
 }
