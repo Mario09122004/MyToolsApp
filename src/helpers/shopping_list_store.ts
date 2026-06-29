@@ -76,9 +76,20 @@ export const useShoppingListStore = create<ShoppingListState>()(
             plan: {},
             ownedIngredients: {},
 
-            setPlanQty: (productId, qty) => set((state) => ({
-                plan: { ...state.plan, [productId]: Math.max(0, qty) }
-            })),
+            setPlanQty: (productId, qty) => set((state) => {
+                const next = Math.max(0, qty);
+                const newPlan = { ...state.plan };
+                if (next === 0) {
+                    delete newPlan[productId];
+                } else {
+                    newPlan[productId] = next;
+                }
+                const isPlanEmpty = Object.keys(newPlan).length === 0;
+                return {
+                    plan: newPlan,
+                    ownedIngredients: isPlanEmpty ? {} : state.ownedIngredients
+                };
+            }),
 
             incrementPlanQty: (productId) => set((state) => {
                 const current = state.plan[productId] || 0;
@@ -97,7 +108,11 @@ export const useShoppingListStore = create<ShoppingListState>()(
                 } else {
                     newPlan[productId] = next;
                 }
-                return { plan: newPlan };
+                const isPlanEmpty = Object.keys(newPlan).length === 0;
+                return {
+                    plan: newPlan,
+                    ownedIngredients: isPlanEmpty ? {} : state.ownedIngredients
+                };
             }),
 
             setOwnedQty: (key, qty) => set((state) => ({
