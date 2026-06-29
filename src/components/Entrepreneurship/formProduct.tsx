@@ -19,6 +19,8 @@ import { AlertCircleIcon } from '@/components/ui/icon';
 import { useCRUDProducts, IngredientInput, ProductInput } from '@/src/hooks/entrepreneurship/useCRUDProducts';
 import { IngredientFormCard } from './subcomponents/IngredientFormCard';
 import { UnitPickerModal } from './subcomponents/UnitPickerModal';
+import { MaterialPickerModal } from './subcomponents/MaterialPickerModal';
+import { Material } from '@/db/schema';
 
 interface FormProductProps {
     editMode: boolean;
@@ -33,7 +35,7 @@ export const FormProduct = ({
     onSave,
     onClose
 }: FormProductProps) => {
-    const { saveProductWithIngredients, queryProductById } = useCRUDProducts();
+    const { saveProductWithIngredients, queryProductById, queryMaterials, updateMaterial, deleteMaterial } = useCRUDProducts();
     
     // Form States
     const [name, setName] = useState('');
@@ -47,6 +49,9 @@ export const FormProduct = ({
     // Ingredients
     const [ingredients, setIngredients] = useState<IngredientInput[]>([]);
     
+    // Materials registered in DB
+    const [materials, setMaterials] = useState<Material[]>([]);
+
     // Errors
     const [nameError, setNameError] = useState(false);
     const [priceError, setPriceError] = useState(false);
@@ -56,11 +61,18 @@ export const FormProduct = ({
     const [activeIngredientIdx, setActiveIngredientIdx] = useState<number | null>(null);
     const [unitPickerOpen, setUnitPickerOpen] = useState(false);
 
+    // Material Picker Modal State
+    const [activeMaterialIngredientIdx, setActiveMaterialIngredientIdx] = useState<number | null>(null);
+    const [materialPickerOpen, setMaterialPickerOpen] = useState(false);
+
     const UNIT_OPTIONS = ['unit', 'gr', 'Kg', 'ml', 'L', 'cup', 'spoonful'];
 
     useEffect(() => {
-        if (editMode && productId > 0) {
-            const loadProduct = async () => {
+        const loadFormAndMaterials = async () => {
+            const mats = await queryMaterials();
+            setMaterials(mats);
+
+            if (editMode && productId > 0) {
                 const prod = await queryProductById(productId);
                 if (prod) {
                     setName(prod.name);
@@ -70,37 +82,43 @@ export const FormProduct = ({
                     setYieldUnit(prod.yieldUnit);
                     setSubYieldAmount(prod.subYieldAmount?.toString() || '');
                     setSubYieldUnit(prod.subYieldUnit || '');
-                    setIngredients(prod.ingredients.map(ing => ({
-                        name: ing.name,
-                        quantity: ing.quantity,
-                        unit: ing.unit,
-                        price: ing.price
-                    })));
+                    
+                    setIngredients(prod.ingredients.map(ing => {
+                        const hasMatchingMaterial = mats.some(m => m.name.toLowerCase() === ing.name.toLowerCase());
+                        return {
+                            name: ing.name,
+                            quantity: ing.quantity,
+                            unit: ing.unit,
+                            price: ing.price,
+                            isOther: !hasMatchingMaterial
+                        };
+                    }));
                 }
-            };
-            loadProduct();
-        } else {
-            // Reset form
-            setName('');
-            setDescription('');
-            setPricePerUnit('');
-            setYieldAmount('1');
-            setYieldUnit('packages');
-            setSubYieldAmount('');
-            setSubYieldUnit('');
-            setIngredients([]);
-        }
+            } else {
+                // Reset form
+                setName('');
+                setDescription('');
+                setPricePerUnit('');
+                setYieldAmount('1');
+                setYieldUnit('packages');
+                setSubYieldAmount('');
+                setSubYieldUnit('');
+                setIngredients([]);
+            }
+        };
+
+        loadFormAndMaterials();
     }, [editMode, productId]);
 
     const handleAddIngredient = () => {
-        setIngredients([...ingredients, { name: '', quantity: 1, unit: 'unit', price: null }]);
+        setIngredients([...ingredients, { name: '', quantity: 1, unit: 'unit', price: null, isOther: false }]);
     };
 
     const handleRemoveIngredient = (index: number) => {
         setIngredients(ingredients.filter((_, i) => i !== index));
     };
 
-    const handleIngredientChange = (index: number, field: keyof IngredientInput, value: string) => {
+    const handleIngredientChange = (index: number, field: keyof IngredientInput, value: any) => {
         const updated = [...ingredients];
         if (field === 'quantity') {
             const num = parseFloat(value);
@@ -121,6 +139,65 @@ export const FormProduct = ({
             };
         }
         setIngredients(updated);
+    };
+
+    const handleMaterialSelect = (materialName: string, unit: string, isOther: boolean) => {
+        if (activeMaterialIngredientIdx !== null) {
+            const updated = [...ingredients];
+            updated[activeMaterialIngredientIdx] = {
+                ...updated[activeMaterialIngredientIdx],
+                name: materialName,
+                unit: unit,
+                isOther
+            };
+            setIngredients(updated);
+        }
+    };
+
+    const handleUpdateMaterial = async (id: number, materialName: string, unit: string) => {
+        try {
+            await updateMaterial(id, materialName, unit);
+            const mats = await queryMaterials();
+            setMaterials(mats);
+            
+            const updated = ingredients.map(ing => {
+                const oldMat = materials.find(m => m.id === id);
+                if (oldMat && ing.name.toLowerCase() === oldMat.name.toLowerCase()) {
+                    return {
+                        ...ing,
+                        name: materialName,
+                        unit: unit
+                    };
+                }
+                return ing;
+            });
+            setIngredients(updated);
+        } catch (error) {
+            console.error("Error updating material:", error);
+        }
+    };
+
+    const handleDeleteMaterial = async (id: number) => {
+        try {
+            await deleteMaterial(id);
+            const mats = await queryMaterials();
+            setMaterials(mats);
+            
+            const oldMat = materials.find(m => m.id === id);
+            const updated = ingredients.map(ing => {
+                if (oldMat && ing.name.toLowerCase() === oldMat.name.toLowerCase()) {
+                    return {
+                        ...ing,
+                        name: '',
+                        isOther: false
+                    };
+                }
+                return ing;
+            });
+            setIngredients(updated);
+        } catch (error) {
+            console.error("Error deleting material:", error);
+        }
     };
 
     const handleSave = async () => {
@@ -353,6 +430,10 @@ export const FormProduct = ({
                                     setActiveIngredientIdx(index);
                                     setUnitPickerOpen(true);
                                 }}
+                                onOpenMaterialPicker={(index) => {
+                                    setActiveMaterialIngredientIdx(index);
+                                    setMaterialPickerOpen(true);
+                                }}
                             />
                         ))}
                     </Box>
@@ -379,6 +460,20 @@ export const FormProduct = ({
                     setUnitPickerOpen(false);
                     setActiveIngredientIdx(null);
                 }}
+            />
+
+            <MaterialPickerModal
+                visible={materialPickerOpen}
+                materials={materials}
+                selectedMaterialName={activeMaterialIngredientIdx !== null ? ingredients[activeMaterialIngredientIdx]?.name : ''}
+                isOtherSelected={activeMaterialIngredientIdx !== null ? !!ingredients[activeMaterialIngredientIdx]?.isOther : false}
+                onSelect={handleMaterialSelect}
+                onClose={() => {
+                    setMaterialPickerOpen(false);
+                    setActiveMaterialIngredientIdx(null);
+                }}
+                onUpdateMaterial={handleUpdateMaterial}
+                onDeleteMaterial={handleDeleteMaterial}
             />
         </ScrollView>
     );

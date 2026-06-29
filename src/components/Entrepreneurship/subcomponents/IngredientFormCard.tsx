@@ -9,9 +9,10 @@ import { IngredientInput } from '@/src/hooks/entrepreneurship/useCRUDProducts';
 interface IngredientFormCardProps {
     index: number;
     ingredient: IngredientInput;
-    onChange: (index: number, field: keyof IngredientInput, value: string) => void;
+    onChange: (index: number, field: keyof IngredientInput, value: any) => void;
     onRemove: (index: number) => void;
     onOpenUnitPicker: (index: number) => void;
+    onOpenMaterialPicker: (index: number) => void;
 }
 
 export const IngredientFormCard = ({
@@ -19,7 +20,8 @@ export const IngredientFormCard = ({
     ingredient,
     onChange,
     onRemove,
-    onOpenUnitPicker
+    onOpenUnitPicker,
+    onOpenMaterialPicker
 }: IngredientFormCardProps) => {
     return (
         <Box className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-3 rounded-lg gap-2 mb-2">
@@ -32,14 +34,30 @@ export const IngredientFormCard = ({
                 </TouchableOpacity>
             </Box>
             
-            <Input size="sm">
-                <InputField
-                    type="text"
-                    placeholder="Ingredient name (e.g. Flour)"
-                    value={ingredient.name}
-                    onChangeText={(val) => onChange(index, 'name', val)}
-                />
-            </Input>
+            {/* Material Selector Trigger */}
+            <Box>
+                <Text size="xs" className="mb-1 font-semibold text-neutral-500">Material / Ingredient</Text>
+                <TouchableOpacity
+                    onPress={() => onOpenMaterialPicker(index)}
+                    className="h-10 border border-neutral-300 dark:border-neutral-700 rounded bg-transparent justify-center px-2 flex-row items-center justify-between"
+                >
+                    <Text size="xs" className="text-neutral-850 dark:text-neutral-200 font-medium">
+                        {ingredient.isOther ? 'Other (write below)' : (ingredient.name || 'Select Ingredient...')}
+                    </Text>
+                    <Text size="2xs" className="text-neutral-400">▼</Text>
+                </TouchableOpacity>
+            </Box>
+
+            {ingredient.isOther && (
+                <Input size="sm">
+                    <InputField
+                        type="text"
+                        placeholder="Ingredient name (e.g. Flour)"
+                        value={ingredient.name}
+                        onChangeText={(val) => onChange(index, 'name', val)}
+                    />
+                </Input>
+            )}
             
             <Box className="flex-row gap-2">
                 {/* Quantity */}
@@ -59,15 +77,25 @@ export const IngredientFormCard = ({
                 {/* Unit Dropdown Trigger */}
                 <Box className="flex-[1.5]">
                     <Text size="xs" className="mb-1 font-semibold text-neutral-500">Unit</Text>
-                    <TouchableOpacity
-                        onPress={() => onOpenUnitPicker(index)}
-                        className="h-8 border border-neutral-300 dark:border-neutral-700 rounded bg-transparent justify-center px-2 flex-row items-center justify-between"
-                    >
-                        <Text size="xs" className="text-neutral-850 dark:text-neutral-200 font-medium">
-                            {ingredient.unit || 'select'}
-                        </Text>
-                        <Text size="2xs" className="text-neutral-400">▼</Text>
-                    </TouchableOpacity>
+                    {ingredient.isOther ? (
+                        <TouchableOpacity
+                            onPress={() => onOpenUnitPicker(index)}
+                            className="h-10 border border-neutral-300 dark:border-neutral-700 rounded bg-transparent justify-center px-2 flex-row items-center justify-between"
+                        >
+                            <Text size="xs" className="text-neutral-850 dark:text-neutral-200 font-medium">
+                                {ingredient.unit || 'select'}
+                            </Text>
+                            <Text size="2xs" className="text-neutral-400">▼</Text>
+                        </TouchableOpacity>
+                    ) : (
+                        <Box
+                            className="h-10 border border-neutral-200 dark:border-neutral-800 rounded bg-neutral-100 dark:bg-neutral-800 justify-center px-2"
+                        >
+                            <Text size="xs" className="text-neutral-500 font-medium">
+                                {ingredient.unit || 'unit'}
+                            </Text>
+                        </Box>
+                    )}
                 </Box>
                 
                 {/* Price */}

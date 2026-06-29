@@ -8,6 +8,7 @@ export interface IngredientInput {
     quantity: number;
     unit: string;
     price?: number | null;
+    isOther?: boolean;
 }
 
 export interface ProductInput {
@@ -56,11 +57,49 @@ export const useCRUDProducts = () => {
         await drizzleDb.delete(schema.products).where(eq(schema.products.id, id));
     };
 
+    const queryMaterials = async (): Promise<schema.Material[]> => {
+        return drizzleDb.select().from(schema.materials).orderBy(schema.materials.name);
+    };
+
+    const updateMaterial = async (id: number, name: string, unit: string): Promise<void> => {
+        const [oldMat] = await drizzleDb.select().from(schema.materials).where(eq(schema.materials.id, id));
+        if (oldMat) {
+            await drizzleDb.update(schema.materials)
+                .set({ name, unit })
+                .where(eq(schema.materials.id, id));
+            
+            await drizzleDb.update(schema.ingredients)
+                .set({ name, unit })
+                .where(eq(schema.ingredients.name, oldMat.name));
+        }
+    };
+
+    const deleteMaterial = async (id: number): Promise<void> => {
+        await drizzleDb.delete(schema.materials).where(eq(schema.materials.id, id));
+    };
+
     const saveProductWithIngredients = async (
         productData: ProductInput,
         ingredientsList: IngredientInput[]
     ): Promise<number> => {
         const hasId = typeof productData.id === 'number' && productData.id > 0;
+
+        // Insert new materials into the materials table
+        for (const ing of ingredientsList) {
+            const trimmedName = ing.name.trim();
+            if (trimmedName) {
+                try {
+                    await drizzleDb.insert(schema.materials)
+                        .values({ 
+                            name: trimmedName,
+                            unit: ing.unit || 'unit'
+                        })
+                        .onConflictDoNothing();
+                } catch (e) {
+                    console.error("Error inserting material:", trimmedName, e);
+                }
+            }
+        }
 
         if (hasId) {
             const prodId = productData.id as number;
@@ -122,6 +161,9 @@ export const useCRUDProducts = () => {
         queryProducts,
         queryProductById,
         deleteProduct,
+        queryMaterials,
+        updateMaterial,
+        deleteMaterial,
         saveProductWithIngredients
     };
 };
