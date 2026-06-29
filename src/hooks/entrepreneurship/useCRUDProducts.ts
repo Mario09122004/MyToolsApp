@@ -8,6 +8,7 @@ export interface IngredientInput {
     quantity: number;
     unit: string;
     price?: number | null;
+    isOther?: boolean;
 }
 
 export interface ProductInput {
@@ -56,11 +57,29 @@ export const useCRUDProducts = () => {
         await drizzleDb.delete(schema.products).where(eq(schema.products.id, id));
     };
 
+    const queryMaterials = async (): Promise<schema.Material[]> => {
+        return drizzleDb.select().from(schema.materials).orderBy(schema.materials.name);
+    };
+
     const saveProductWithIngredients = async (
         productData: ProductInput,
         ingredientsList: IngredientInput[]
     ): Promise<number> => {
         const hasId = typeof productData.id === 'number' && productData.id > 0;
+
+        // Insert new materials into the materials table
+        for (const ing of ingredientsList) {
+            const trimmedName = ing.name.trim();
+            if (trimmedName) {
+                try {
+                    await drizzleDb.insert(schema.materials)
+                        .values({ name: trimmedName })
+                        .onConflictDoNothing();
+                } catch (e) {
+                    console.error("Error inserting material:", trimmedName, e);
+                }
+            }
+        }
 
         if (hasId) {
             const prodId = productData.id as number;
@@ -122,6 +141,7 @@ export const useCRUDProducts = () => {
         queryProducts,
         queryProductById,
         deleteProduct,
+        queryMaterials,
         saveProductWithIngredients
     };
 };

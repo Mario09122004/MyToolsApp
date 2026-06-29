@@ -117,6 +117,11 @@ export const freeDays = sqliteTable('free_days', {
     date: text().notNull(),
 });*/
 
+export const materials = sqliteTable('materials', {
+    id: integer().primaryKey({ autoIncrement: true }),
+    name: text().notNull().unique(),
+});
+
 // Export Task to use as an interface in your app
 export type Task = typeof tasks.$inferSelect;
 
@@ -142,3 +147,5 @@ export type Phase = typeof phases.$inferSelect;
 
 export type TaskPerPhase = typeof taskPerPhase.$inferSelect;
 //export type FreeDay = typeof freeDays.$inferSelect;
+
+export type Material = typeof materials.$inferSelect;

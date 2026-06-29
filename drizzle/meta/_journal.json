@@ -78,6 +78,13 @@
       "when": 1782315729878,
       "tag": "0010_short_iceman",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1782759103317,
+      "tag": "0011_regular_wind_dancer",
+      "breakpoints": true
     }
   ]
 }
