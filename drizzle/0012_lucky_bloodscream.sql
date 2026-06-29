@@ -1,0 +1,1 @@
+ALTER TABLE `materials` ADD `unit` text DEFAULT 'unit' NOT NULL;

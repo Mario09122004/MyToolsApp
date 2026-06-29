@@ -73,7 +73,10 @@ export const useCRUDProducts = () => {
             if (trimmedName) {
                 try {
                     await drizzleDb.insert(schema.materials)
-                        .values({ name: trimmedName })
+                        .values({ 
+                            name: trimmedName,
+                            unit: ing.unit || 'unit'
+                        })
                         .onConflictDoNothing();
                 } catch (e) {
                     console.error("Error inserting material:", trimmedName, e);

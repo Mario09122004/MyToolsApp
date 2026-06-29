@@ -77,15 +77,25 @@ export const IngredientFormCard = ({
                 {/* Unit Dropdown Trigger */}
                 <Box className="flex-[1.5]">
                     <Text size="xs" className="mb-1 font-semibold text-neutral-500">Unit</Text>
-                    <TouchableOpacity
-                        onPress={() => onOpenUnitPicker(index)}
-                        className="h-8 border border-neutral-300 dark:border-neutral-700 rounded bg-transparent justify-center px-2 flex-row items-center justify-between"
-                    >
-                        <Text size="xs" className="text-neutral-850 dark:text-neutral-200 font-medium">
-                            {ingredient.unit || 'select'}
-                        </Text>
-                        <Text size="2xs" className="text-neutral-400">▼</Text>
-                    </TouchableOpacity>
+                    {ingredient.isOther ? (
+                        <TouchableOpacity
+                            onPress={() => onOpenUnitPicker(index)}
+                            className="h-10 border border-neutral-300 dark:border-neutral-700 rounded bg-transparent justify-center px-2 flex-row items-center justify-between"
+                        >
+                            <Text size="xs" className="text-neutral-850 dark:text-neutral-200 font-medium">
+                                {ingredient.unit || 'select'}
+                            </Text>
+                            <Text size="2xs" className="text-neutral-400">▼</Text>
+                        </TouchableOpacity>
+                    ) : (
+                        <Box
+                            className="h-10 border border-neutral-200 dark:border-neutral-800 rounded bg-neutral-100 dark:bg-neutral-800 justify-center px-2"
+                        >
+                            <Text size="xs" className="text-neutral-500 font-medium">
+                                {ingredient.unit || 'unit'}
+                            </Text>
+                        </Box>
+                    )}
                 </Box>
                 
                 {/* Price */}

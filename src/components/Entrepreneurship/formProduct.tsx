@@ -141,12 +141,13 @@ export const FormProduct = ({
         setIngredients(updated);
     };
 
-    const handleMaterialSelect = (materialName: string, isOther: boolean) => {
+    const handleMaterialSelect = (materialName: string, unit: string, isOther: boolean) => {
         if (activeMaterialIngredientIdx !== null) {
             const updated = [...ingredients];
             updated[activeMaterialIngredientIdx] = {
                 ...updated[activeMaterialIngredientIdx],
                 name: materialName,
+                unit: unit,
                 isOther
             };
             setIngredients(updated);

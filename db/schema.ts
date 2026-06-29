@@ -120,6 +120,7 @@ export const freeDays = sqliteTable('free_days', {
 export const materials = sqliteTable('materials', {
     id: integer().primaryKey({ autoIncrement: true }),
     name: text().notNull().unique(),
+    unit: text().notNull().default('unit'),
 });
 
 // Export Task to use as an interface in your app

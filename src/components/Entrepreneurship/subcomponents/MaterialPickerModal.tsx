@@ -12,7 +12,7 @@ interface MaterialPickerModalProps {
     materials: Material[];
     selectedMaterialName: string;
     isOtherSelected: boolean;
-    onSelect: (materialName: string, isOther: boolean) => void;
+    onSelect: (materialName: string, unit: string, isOther: boolean) => void;
     onClose: () => void;
 }
 
@@ -69,7 +69,7 @@ export const MaterialPickerModal = ({
                         {/* "Other" Option */}
                         <TouchableOpacity
                             onPress={() => {
-                                onSelect('', true);
+                                onSelect('', 'unit', true);
                                 handleClose();
                             }}
                             className="py-2.5 px-1 rounded active:bg-neutral-100 dark:active:bg-neutral-800 flex-row justify-between items-center"
@@ -95,7 +95,7 @@ export const MaterialPickerModal = ({
                                     <TouchableOpacity
                                         key={mat.id}
                                         onPress={() => {
-                                            onSelect(mat.name, false);
+                                            onSelect(mat.name, mat.unit || 'unit', false);
                                             handleClose();
                                         }}
                                         className="py-2.5 px-1 rounded active:bg-neutral-100 dark:active:bg-neutral-800 flex-row justify-between items-center"
