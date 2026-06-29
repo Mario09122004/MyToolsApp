@@ -61,6 +61,23 @@ export const useCRUDProducts = () => {
         return drizzleDb.select().from(schema.materials).orderBy(schema.materials.name);
     };
 
+    const updateMaterial = async (id: number, name: string, unit: string): Promise<void> => {
+        const [oldMat] = await drizzleDb.select().from(schema.materials).where(eq(schema.materials.id, id));
+        if (oldMat) {
+            await drizzleDb.update(schema.materials)
+                .set({ name, unit })
+                .where(eq(schema.materials.id, id));
+            
+            await drizzleDb.update(schema.ingredients)
+                .set({ name, unit })
+                .where(eq(schema.ingredients.name, oldMat.name));
+        }
+    };
+
+    const deleteMaterial = async (id: number): Promise<void> => {
+        await drizzleDb.delete(schema.materials).where(eq(schema.materials.id, id));
+    };
+
     const saveProductWithIngredients = async (
         productData: ProductInput,
         ingredientsList: IngredientInput[]
@@ -145,6 +162,8 @@ export const useCRUDProducts = () => {
         queryProductById,
         deleteProduct,
         queryMaterials,
+        updateMaterial,
+        deleteMaterial,
         saveProductWithIngredients
     };
 };

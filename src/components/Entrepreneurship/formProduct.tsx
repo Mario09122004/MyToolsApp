@@ -35,7 +35,7 @@ export const FormProduct = ({
     onSave,
     onClose
 }: FormProductProps) => {
-    const { saveProductWithIngredients, queryProductById, queryMaterials } = useCRUDProducts();
+    const { saveProductWithIngredients, queryProductById, queryMaterials, updateMaterial, deleteMaterial } = useCRUDProducts();
     
     // Form States
     const [name, setName] = useState('');
@@ -151,6 +151,52 @@ export const FormProduct = ({
                 isOther
             };
             setIngredients(updated);
+        }
+    };
+
+    const handleUpdateMaterial = async (id: number, materialName: string, unit: string) => {
+        try {
+            await updateMaterial(id, materialName, unit);
+            const mats = await queryMaterials();
+            setMaterials(mats);
+            
+            const updated = ingredients.map(ing => {
+                const oldMat = materials.find(m => m.id === id);
+                if (oldMat && ing.name.toLowerCase() === oldMat.name.toLowerCase()) {
+                    return {
+                        ...ing,
+                        name: materialName,
+                        unit: unit
+                    };
+                }
+                return ing;
+            });
+            setIngredients(updated);
+        } catch (error) {
+            console.error("Error updating material:", error);
+        }
+    };
+
+    const handleDeleteMaterial = async (id: number) => {
+        try {
+            await deleteMaterial(id);
+            const mats = await queryMaterials();
+            setMaterials(mats);
+            
+            const oldMat = materials.find(m => m.id === id);
+            const updated = ingredients.map(ing => {
+                if (oldMat && ing.name.toLowerCase() === oldMat.name.toLowerCase()) {
+                    return {
+                        ...ing,
+                        name: '',
+                        isOther: false
+                    };
+                }
+                return ing;
+            });
+            setIngredients(updated);
+        } catch (error) {
+            console.error("Error deleting material:", error);
         }
     };
 
@@ -426,6 +472,8 @@ export const FormProduct = ({
                     setMaterialPickerOpen(false);
                     setActiveMaterialIngredientIdx(null);
                 }}
+                onUpdateMaterial={handleUpdateMaterial}
+                onDeleteMaterial={handleDeleteMaterial}
             />
         </ScrollView>
     );
